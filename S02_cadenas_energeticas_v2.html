@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 2 · Cadenas de Energía · CNEyT II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;
+  --az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;
+  --v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;
+  --r:#C62828;--r2:#E53935;--r3:#FFEBEE;
+  --n:#E65100;--n2:#FB8C00;--n3:#FFF3E0;
+  --gris:#666;--gris2:#E0E0E0;--gris3:#F5F5F5;
+  --dark:#1E1E2E;
+  --radio:14px;--trans:all .28s cubic-bezier(.4,0,.2,1);
+  --sombra:0 3px 12px rgba(0,0,0,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#4A006A 0%,#0D2A5E 100%);min-height:100vh;padding:18px 14px;color:var(--dark);}
+.container{max-width:780px;margin:0 auto;}
+
+/* HEADER */
+.hdr{background:white;border-radius:var(--radio);padding:24px 20px 18px;box-shadow:var(--sombra);margin-bottom:16px;animation:slideD .5s ease;}
+@keyframes slideD{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:translateY(0)}}
+.hdr-escuela{font-size:.72rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.hdr-titulo{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--mo);letter-spacing:1.5px;line-height:1.1;}
+.hdr-sub{font-size:.9rem;color:var(--az);font-weight:600;margin-top:4px;}
+.hdr-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.badge{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--gris3);color:var(--gris);}
+.badge.mo{background:var(--mo3);color:var(--mo);}
+.badge.az{background:var(--az3);color:var(--az);}
+.badge.v{background:var(--v3);color:var(--v);}
+.hdr-meta{font-size:.75rem;color:#999;margin-top:8px;border-top:1px solid var(--gris2);padding-top:8px;}
+
+/* PROGRESS */
+.prog-wrap{background:white;border-radius:var(--radio);padding:14px 18px;box-shadow:var(--sombra);margin-bottom:16px;}
+.prog-bar{height:10px;background:var(--gris2);border-radius:10px;overflow:hidden;margin-bottom:6px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--mo),var(--az));width:0%;transition:width .5s ease;}
+.prog-txt{text-align:center;font-size:.8rem;font-weight:700;color:var(--az);}
+
+/* SECCIONES */
+.sec{background:white;border-radius:var(--radio);padding:24px 20px;box-shadow:var(--sombra);margin-bottom:16px;display:none;animation:fadeI .4s ease;}
+.sec.active{display:block;}
+@keyframes fadeI{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+
+.pinfo{margin-bottom:18px;}
+.pinfo-tag{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--gris);margin-bottom:3px;}
+.pinfo-titulo{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;color:var(--dark);letter-spacing:.8px;line-height:1.1;}
+
+.pill{display:inline-block;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:20px;margin:12px 0 8px;}
+.pill-mo{background:var(--mo3);color:var(--mo);}
+.pill-az{background:var(--az3);color:var(--az);}
+.pill-v{background:var(--v3);color:var(--v);}
+.pill-r{background:var(--r3);color:var(--r);}
+.pill-n{background:var(--n3);color:var(--n);}
+
+/* INPUTS */
+.inp{width:100%;border:2px solid var(--gris2);border-radius:9px;padding:10px 13px;font-family:'Outfit',sans-serif;font-size:.9rem;color:var(--dark);transition:var(--trans);background:white;}
+.inp:focus{border-color:var(--mo);outline:none;box-shadow:0 0 0 3px rgba(123,45,139,.12);}
+.ta{resize:vertical;min-height:72px;}
+.sel-inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
+label{display:block;font-size:.84rem;font-weight:700;color:var(--dark);margin:12px 0 5px;}
+.err-msg{font-size:.8rem;color:var(--r);margin-top:4px;font-weight:600;display:none;}
+.inp.err,.sel-inp.err{border-color:var(--r);}
+
+/* BOTONES */
+.btn{display:inline-block;padding:13px 28px;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:var(--trans);}
+.btn-mo{background:var(--mo);color:white;}.btn-mo:hover{background:var(--mo2);}
+.btn-v{background:var(--v);color:white;}.btn-v:hover{background:var(--v2);}
+.btn-wrap{text-align:center;margin-top:20px;}
+
+/* OBJETO CARD */
+.objeto-card{background:linear-gradient(135deg,var(--mo3),var(--az3));border:2.5px solid var(--mo);border-radius:12px;padding:16px 18px;margin:14px 0;}
+.objeto-emoji{font-size:2.4rem;margin-bottom:5px;}
+.objeto-nombre{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--mo);letter-spacing:1px;}
+.objeto-desc{font-size:.82rem;color:var(--az);font-weight:600;margin-top:3px;line-height:1.5;}
+.objeto-pista{margin-top:8px;background:rgba(255,255,255,.7);border-radius:8px;padding:8px 11px;font-size:.8rem;color:var(--dark);line-height:1.55;}
+.objeto-pista strong{color:var(--mo);}
+
+/* PREGUNTAS ENCADENADAS */
+.preg-cadena{display:flex;flex-direction:column;gap:14px;margin:14px 0;}
+.preg-item{background:var(--gris3);border-radius:10px;padding:14px 15px;border-left:4px solid var(--mo);}
+.preg-item:nth-child(2){border-left-color:var(--az);}
+.preg-item:nth-child(3){border-left-color:var(--v);}
+.preg-item:nth-child(4){border-left-color:var(--r);}
+.preg-num{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);margin-bottom:5px;}
+.preg-texto{font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:8px;line-height:1.5;}
+.preg-hint{font-size:.78rem;color:var(--gris);font-style:italic;margin-bottom:8px;line-height:1.5;}
+
+/* CONJETURA TIPOS */
+.tipos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tipo-card{background:var(--gris3);border-radius:10px;padding:11px 9px;text-align:center;border:2px solid transparent;cursor:pointer;transition:var(--trans);}
+.tipo-card:hover{border-color:var(--mo2);transform:translateY(-2px);}
+.tipo-card.sel-alm{background:var(--v3);border-color:var(--v);}
+.tipo-card.sel-mov{background:var(--az3);border-color:var(--az);}
+.tipo-card .t-ico{font-size:1.5rem;margin-bottom:4px;}
+.tipo-card .t-nom{font-size:.77rem;font-weight:800;color:var(--dark);}
+.tipo-card .t-ej{font-size:.68rem;color:var(--gris);margin-top:2px;}
+.leyenda-cls{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 14px;font-size:.78rem;font-weight:700;}
+.ley-item{display:flex;align-items:center;gap:5px;}
+.ley-dot{width:11px;height:11px;border-radius:3px;}
+
+/* PAUSA */
+.pausa-wrap{background:linear-gradient(135deg,var(--mo) 0%,var(--az) 100%);border-radius:14px;padding:20px 18px;}
+.pausa-wrap2{background:linear-gradient(135deg,var(--az) 0%,var(--v) 100%);}
+.pausa-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.pausa-ico{font-size:2rem;}
+.pausa-tit{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:white;letter-spacing:1px;line-height:1;}
+.pausa-sub{font-size:.76rem;color:rgba(255,255,255,.75);margin-top:2px;}
+.pausa-inst{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);border-radius:9px;padding:10px 13px;font-size:.83rem;color:rgba(255,255,255,.95);margin-bottom:14px;line-height:1.6;}
+.pausa-contenido{background:white;border-radius:12px;padding:16px;margin:12px 0;}
+.pausa-contenido h4{font-size:.78rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#666;margin-bottom:10px;}
+.check-pausa{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.13);border:2px solid rgba(255,255,255,.28);border-radius:9px;padding:12px 14px;cursor:pointer;margin-top:12px;}
+.check-pausa input[type=checkbox]{width:22px;height:22px;cursor:pointer;flex-shrink:0;margin-top:1px;accent-color:#43A047;}
+.check-pausa label{font-size:.88rem;font-weight:700;color:white;cursor:pointer;line-height:1.4;margin:0;}
+.check-pausa.err-chk{border-color:#ff5252;}
+
+/* TABLA TIPOS CUADERNO */
+.tabla-tipo{width:100%;border-collapse:collapse;font-size:.81rem;}
+.tabla-tipo th{background:var(--mo);color:white;padding:7px 10px;text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.4px;}
+.tabla-tipo td{padding:7px 10px;border-bottom:1.5px solid var(--gris2);vertical-align:top;}
+.tabla-tipo tr:nth-child(even) td{background:var(--gris3);}
+.tabla-tipo .ico{font-size:1rem;text-align:center;}
+.cat-alm{color:var(--v);font-weight:800;}
+.cat-mov{color:var(--az);font-weight:800;}
+
+/* REGLAS */
+.regla-row{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:.82rem;line-height:1.5;}
+.regla-mo{background:var(--mo3);border-left:4px solid var(--mo);}
+.regla-az{background:var(--az3);border-left:4px solid var(--az);}
+.regla-ico{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+
+/* RESUMEN */
+.resumen-tabla{width:100%;border-collapse:collapse;font-size:.82rem;}
+.resumen-tabla th{background:var(--mo);color:white;padding:8px 11px;text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.3px;}
+.resumen-tabla td{padding:9px 11px;border-bottom:1.5px solid var(--gris2);vertical-align:top;}
+.resumen-tabla tr td:first-child{font-weight:800;color:var(--mo);background:#faf8ff;width:32%;}
+.resumen-tabla tr td:nth-child(2){width:34%;}
+.resumen-tabla tr td:nth-child(3){width:34%;background:var(--v3);color:#1b5e20;font-style:italic;font-size:.78rem;}
+.resumen-nota{font-size:.78rem;color:#666;margin-top:12px;line-height:1.6;}
+
+/* MISC */
+.nota-az{background:var(--az3);border-left:4px solid var(--az);border-radius:0 8px 8px 0;padding:10px 13px;font-size:.83rem;color:var(--az);margin:10px 0;line-height:1.55;}
+.nota-mo{background:var(--mo3);border-left:4px solid var(--mo);border-radius:0 8px 8px 0;padding:10px 13px;font-size:.83rem;color:var(--mo);margin:10px 0;line-height:1.55;}
+.nota-v{background:var(--v3);border-left:4px solid var(--v);border-radius:0 8px 8px 0;padding:10px 13px;font-size:.83rem;color:var(--v);margin:10px 0;line-height:1.55;}
+.escena-ref{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0;}
+.escena-chip{background:var(--n3);border:1.5px solid var(--n2);border-radius:20px;padding:4px 11px;font-size:.78rem;font-weight:700;color:var(--n);}
+p{font-size:.88rem;line-height:1.7;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-escuela">CNEyT II · El poder de la energía · Prof. Adrián Cruz · 2.º Semestre</div>
+  <div class="hdr-titulo">Cadenas de Energía</div>
+  <div class="hdr-sub">Sesión 2 · Propósito Formativo 1 · ¿Cómo viaja la energía?</div>
+  <div class="hdr-badges">
+    <span class="badge mo">⚡ Tipos de energía</span>
+    <span class="badge az">🔗 Transformación vs Transferencia</span>
+    <span class="badge v">✏️ 2 pausas de cuaderno</span>
+    <span class="badge">🎲 Objeto asignado al azar</span>
+  </div>
+  <div class="hdr-meta">Esta actividad se complementa con tu cuaderno. Al final se genera un resumen con todas tus respuestas.</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-txt" id="prog-txt">Paso 0 de 6</div>
+</div>
+
+<!-- ══════ S0 · DATOS + ACTIVACIÓN ══════ -->
+<div class="sec active" id="s0">
+  <div class="pinfo">
+    <div class="pinfo-tag">Antes de empezar · Datos y activación</div>
+    <div class="pinfo-titulo">Lo que ya sabes y lo que descubrirás hoy</div>
+  </div>
+
+  <div class="pill pill-mo">Datos del alumno</div>
+  <label for="nombre">Nombre completo (Apellido Paterno Materno, Nombre)</label>
+  <input class="inp" id="nombre" data-req data-minlen="5" autocomplete="off" placeholder="Ej. García López, Ana Sofía">
+  <div class="err-msg" id="err-nombre">Escribe tu nombre completo.</div>
+
+  <label for="grupo">Grupo</label>
+  <input class="inp" id="grupo" data-req data-minlen="1" autocomplete="off" placeholder="Ej. 203" style="max-width:140px;">
+  <div class="err-msg" id="err-grupo">Escribe tu grupo.</div>
+
+  <div class="pill pill-az" style="margin-top:20px;">Recuperación · S01</div>
+  <p>En la sesión anterior analizaste cuatro escenas de la CDMX:</p>
+  <div class="escena-ref">
+    <span class="escena-chip">🚐 El microbús que frena</span>
+    <span class="escena-chip">☕ El café que se enfría</span>
+    <span class="escena-chip">📱 El celular que se descarga</span>
+    <span class="escena-chip">🔥 El comal con tortillas</span>
+  </div>
+  <p>En cada escena viste que la energía no desaparecía, solo cambiaba. Hoy construirás el <strong>camino completo</strong> que sigue esa energía, paso a paso.</p>
+
+  <div class="pill pill-v">Pregunta de activación</div>
+  <p>Piensa en el <strong>microbús en movimiento</strong> y en el <strong>gas LP del comal</strong>. Los dos tienen energía, pero de formas distintas.</p>
+
+  <label for="act-tipo-micro">¿En cuál de los 8 tipos de energía clasificarías la energía del microbús en movimiento?</label>
+  <select class="inp sel-inp" id="act-tipo-micro" data-req data-tipo="sel">
+    <option value="">— elige un tipo —</option>
+    <option>Cinética</option>
+    <option>Química</option>
+    <option>Térmica</option>
+    <option>Potencial gravitacional</option>
+    <option>Lumínica</option>
+    <option>Sonora</option>
+    <option>Eléctrica</option>
+    <option>Elástica</option>
+  </select>
+  <div class="err-msg" id="err-act-tipo-micro">Elige un tipo.</div>
+
+  <label for="act-tipo-gas">¿Y la energía del gas LP antes de encenderse?</label>
+  <select class="inp sel-inp" id="act-tipo-gas" data-req data-tipo="sel">
+    <option value="">— elige un tipo —</option>
+    <option>Cinética</option>
+    <option>Química</option>
+    <option>Térmica</option>
+    <option>Potencial gravitacional</option>
+    <option>Lumínica</option>
+    <option>Sonora</option>
+    <option>Eléctrica</option>
+    <option>Elástica</option>
+  </select>
+  <div class="err-msg" id="err-act-tipo-gas">Elige un tipo.</div>
+
+  <label for="act-diferencia">¿Cuál es la diferencia entre esos dos tipos? (una oración es suficiente)</label>
+  <textarea class="inp ta" id="act-diferencia" data-req data-minlen="10" placeholder="La diferencia es que uno… y el otro…" style="min-height:60px;"></textarea>
+  <div class="err-msg" id="err-act-diferencia">Escribe al menos una idea.</div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-mo" onclick="avanzar('s0','s1')">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══════ S1 · CONJETURA ══════ -->
+<div class="sec" id="s1">
+  <div class="pinfo">
+    <div class="pinfo-tag">Conjetura · Antes de la clasificación formal</div>
+    <div class="pinfo-titulo">Clasifica tú primero</div>
+  </div>
+
+  <p>Aquí están los ocho tipos de energía. <strong>Antes</strong> de ver ninguna clasificación oficial, agrúpalos tú: ¿cuáles te parecen energías <em>guardadas o almacenadas</em> y cuáles están <em>en movimiento o en tránsito</em>?</p>
+  <p style="font-size:.79rem;color:var(--gris);">Toca cada tarjeta para asignarla. No te preocupes si no estás seguro.</p>
+
+  <div class="leyenda-cls">
+    <div class="ley-item"><div class="ley-dot" style="background:var(--v)"></div><span style="color:var(--v)">Almacenada</span></div>
+    <div class="ley-item"><div class="ley-dot" style="background:var(--az)"></div><span style="color:var(--az)">En movimiento</span></div>
+    <div class="ley-item"><div class="ley-dot" style="background:var(--gris2)"></div><span style="color:var(--gris)">Sin clasificar</span></div>
+  </div>
+  <div style="font-size:.75rem;color:var(--gris);margin-bottom:10px;">1 toque = Almacenada &nbsp;·&nbsp; 2 toques = En movimiento &nbsp;·&nbsp; 3 toques = Sin clasificar</div>
+
+  <div class="tipos-grid" id="grid-conjetura"></div>
+
+  <label for="conj-razon">¿Cuál fue tu criterio para separar las dos categorías? ¿Qué característica distingue a una "almacenada" de una "en movimiento"?</label>
+  <textarea class="inp ta" id="conj-razon" data-req data-minlen="15" placeholder="Las almacenadas son… / Las de movimiento son… / Mi criterio fue…" style="min-height:65px;"></textarea>
+  <div class="err-msg" id="err-conj-razon">Explica tu criterio.</div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-mo" onclick="avanzar('s1','s-pausa1')">Ver la clasificación formal →</button>
+  </div>
+</div>
+
+<!-- ══════ PAUSA 1 · CUADERNO ══════ -->
+<div class="sec" id="s-pausa1">
+  <div class="pausa-wrap">
+    <div class="pausa-hdr">
+      <div class="pausa-ico">✏️</div>
+      <div>
+        <div class="pausa-tit">Pausa 1 · Copia en tu cuaderno</div>
+        <div class="pausa-sub">Clasificación de energía · Material para el examen del primer corte</div>
+      </div>
+    </div>
+    <div class="pausa-inst">Compara esta clasificación con la tuya. Copia la tabla y las dos definiciones en tu cuaderno. Esto es tu referencia para el examen.</div>
+
+    <div class="pausa-contenido">
+      <h4>📋 Tabla de tipos de energía</h4>
+      <table class="tabla-tipo">
+        <thead><tr><th></th><th>Tipo</th><th>Categoría</th><th>Ejemplo CDMX</th></tr></thead>
+        <tbody>
+          <tr><td class="ico">⚗️</td><td><strong>Química</strong></td><td class="cat-alm">Almacenada</td><td>Gas LP, comida, batería</td></tr>
+          <tr><td class="ico">🏔️</td><td><strong>Potencial gravitacional</strong></td><td class="cat-alm">Almacenada</td><td>Agua del tinaco en azotea</td></tr>
+          <tr><td class="ico">🌀</td><td><strong>Elástica</strong></td><td class="cat-alm">Almacenada</td><td>Resorte del torniquete del Metro</td></tr>
+          <tr><td class="ico">🚀</td><td><strong>Cinética</strong></td><td class="cat-mov">En movimiento</td><td>Microbús en marcha, bicicleta</td></tr>
+          <tr><td class="ico">🌡️</td><td><strong>Térmica</strong></td><td class="cat-mov">En movimiento</td><td>Calor del comal, café caliente</td></tr>
+          <tr><td class="ico">💡</td><td><strong>Lumínica</strong></td><td class="cat-mov">En movimiento</td><td>Luz del Sol, foco encendido</td></tr>
+          <tr><td class="ico">🔊</td><td><strong>Sonora</strong></td><td class="cat-mov">En movimiento</td><td>Bocina del camión, música</td></tr>
+          <tr><td class="ico">⚡</td><td><strong>Eléctrica</strong></td><td class="cat-mov">En movimiento</td><td>Corriente eléctrica, carga del cel</td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px;">
+        <h4>📐 Los dos movimientos de la energía (también copia esto)</h4>
+        <div class="regla-row regla-mo">
+          <span class="regla-ico">🔄</span>
+          <span><strong>Transformación:</strong> la energía <em>cambia de forma</em> dentro del mismo objeto o sistema.<br><span style="font-size:.78rem;color:#555;">Ej: en el motor del microbús, energía química → energía cinética + térmica.</span></span>
+        </div>
+        <div class="regla-row regla-az">
+          <span class="regla-ico">➡️</span>
+          <span><strong>Transferencia:</strong> la energía <em>pasa de un objeto a otro</em> sin cambiar necesariamente de forma.<br><span style="font-size:.78rem;color:#555;">Ej: el calor del comal pasa a la tortilla — sigue siendo energía térmica, pero ahora está en la tortilla.</span></span>
+        </div>
+        <div style="margin-top:10px;background:var(--r3);border-radius:8px;padding:9px 11px;font-size:.8rem;color:var(--r);">
+          <strong>🌫️ Calor disperso:</strong> al final de toda cadena siempre aparece energía térmica que se dispersa al ambiente. No desaparece — se conserva, pero ya no podemos aprovecharla fácilmente.
+        </div>
+      </div>
+    </div>
+
+    <div id="err-chk1" style="font-size:.8rem;color:#ff8a80;margin-top:6px;display:none;">⚠️ Confirma que ya copiaste en tu cuaderno.</div>
+    <div class="check-pausa" id="chk1-wrap">
+      <input type="checkbox" id="chk1" data-req data-tipo="check">
+      <label for="chk1">Ya copié la tabla y las dos definiciones en mi cuaderno ✅</label>
+    </div>
+
+    <div style="margin-top:14px;">
+      <label style="color:rgba(255,255,255,.9);font-size:.84rem;font-weight:700;">¿Coincidió tu clasificación con la formal? ¿Qué pusiste diferente?</label>
+      <textarea class="inp ta" id="refl-pausa1" data-req data-minlen="8" placeholder="Coincidió en… / Me equivoqué con… / Me sorprendió que…" style="margin-top:6px;min-height:60px;"></textarea>
+      <div class="err-msg" id="err-refl-pausa1" style="color:#ff8a80;">Escribe tu reflexión.</div>
+    </div>
+
+    <div class="btn-wrap" style="margin-top:16px;">
+      <button class="btn" style="background:white;color:var(--mo);font-weight:800;" onclick="avanzar('s-pausa1','s2')">Continuar con tu objeto →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ S2 · CADENA GUIADA (preguntas encadenadas) ══════ -->
+<div class="sec" id="s2">
+  <div class="pinfo">
+    <div class="pinfo-tag">Cadena guiada · Objeto asignado al azar</div>
+    <div class="pinfo-titulo" id="s2-titulo">Tu objeto de trabajo</div>
+  </div>
+
+  <p>Se te asignó el siguiente objeto. Lo analizarás respondiendo cuatro preguntas cortas. Cada respuesta es un <em>paso</em> de la cadena energética.</p>
+
+  <div class="objeto-card" id="obj1-card">
+    <div class="objeto-emoji" id="obj1-emoji">⚡</div>
+    <div class="objeto-nombre" id="obj1-nombre">—</div>
+    <div class="objeto-desc" id="obj1-desc">—</div>
+    <div class="objeto-pista" id="obj1-pista">—</div>
+  </div>
+
+  <div class="preg-cadena">
+
+    <div class="preg-item">
+      <div class="preg-num">Pregunta 1 · Punto de partida</div>
+      <div class="preg-texto" id="p1-texto">—</div>
+      <div class="preg-hint" id="p1-hint">—</div>
+      <select class="inp sel-inp" id="p1-resp" data-req data-tipo="sel">
+        <option value="">— elige el tipo de energía —</option>
+        <option>Química</option><option>Cinética</option><option>Térmica</option>
+        <option>Potencial gravitacional</option><option>Lumínica</option>
+        <option>Sonora</option><option>Eléctrica</option><option>Elástica</option>
+      </select>
+      <div class="err-msg" id="err-p1-resp">Elige una opción.</div>
+    </div>
+
+    <div class="preg-item">
+      <div class="preg-num">Pregunta 2 · Primera transformación</div>
+      <div class="preg-texto" id="p2-texto">—</div>
+      <div class="preg-hint" id="p2-hint">—</div>
+      <select class="inp sel-inp" id="p2-resp" data-req data-tipo="sel">
+        <option value="">— elige el tipo de energía —</option>
+        <option>Química</option><option>Cinética</option><option>Térmica</option>
+        <option>Potencial gravitacional</option><option>Lumínica</option>
+        <option>Sonora</option><option>Eléctrica</option><option>Elástica</option>
+      </select>
+      <div class="err-msg" id="err-p2-resp">Elige una opción.</div>
+    </div>
+
+    <div class="preg-item">
+      <div class="preg-num">Pregunta 3 · ¿Transformación o transferencia?</div>
+      <div class="preg-texto" id="p3-texto">—</div>
+      <div class="preg-hint" id="p3-hint">—</div>
+      <select class="inp sel-inp" id="p3-resp" data-req data-tipo="sel">
+        <option value="">— elige —</option>
+        <option>Transformación (cambia de forma)</option>
+        <option>Transferencia (pasa a otro objeto)</option>
+      </select>
+      <div class="err-msg" id="err-p3-resp">Elige una opción.</div>
+    </div>
+
+    <div class="preg-item">
+      <div class="preg-num">Pregunta 4 · El destino final</div>
+      <div class="preg-texto" id="p4-texto">—</div>
+      <div class="preg-hint" id="p4-hint">—</div>
+      <textarea class="inp ta" id="p4-resp" data-req data-minlen="15" placeholder="Al final la energía termina como… porque…" style="min-height:65px;"></textarea>
+      <div class="err-msg" id="err-p4-resp">Explica el destino final.</div>
+    </div>
+
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-mo" onclick="avanzar('s2','s3')">Construir mi propia cadena →</button>
+  </div>
+</div>
+
+<!-- ══════ S3 · CADENA PROPIA + DIBUJO ══════ -->
+<div class="sec" id="s3">
+  <div class="pinfo">
+    <div class="pinfo-tag">Producción propia · Segundo objeto asignado al azar</div>
+    <div class="pinfo-titulo">Ahora tú construyes la cadena</div>
+  </div>
+
+  <div class="objeto-card" id="obj2-card" style="border-color:var(--az);">
+    <div class="objeto-emoji" id="obj2-emoji">⚡</div>
+    <div class="objeto-nombre" id="obj2-nombre" style="color:var(--az);">—</div>
+    <div class="objeto-desc" id="obj2-desc">—</div>
+    <div class="objeto-pista" id="obj2-pista">—</div>
+  </div>
+
+  <div class="preg-cadena">
+
+    <div class="preg-item">
+      <div class="preg-num">Paso 1 · ¿Con qué "se alimenta" o funciona este objeto?</div>
+      <div class="preg-texto">¿Qué tipo de energía tiene este objeto antes de que empiece a funcionar o moverse? ¿Dónde está "guardada" esa energía?</div>
+      <select class="inp sel-inp" id="q1-resp" data-req data-tipo="sel">
+        <option value="">— elige el tipo de energía inicial —</option>
+        <option>Química</option><option>Cinética</option><option>Térmica</option>
+        <option>Potencial gravitacional</option><option>Lumínica</option>
+        <option>Sonora</option><option>Eléctrica</option><option>Elástica</option>
+      </select>
+      <div class="err-msg" id="err-q1-resp">Elige una opción.</div>
+    </div>
+
+    <div class="preg-item" style="border-left-color:var(--az);">
+      <div class="preg-num">Paso 2 · ¿Qué es lo primero que produce cuando lo usas?</div>
+      <div class="preg-texto">Cuando el objeto empieza a funcionar, ¿en qué tipo de energía se convierte la que tenía almacenada? ¿Qué ves, sientes o escuchas?</div>
+      <select class="inp sel-inp" id="q2-resp" data-req data-tipo="sel">
+        <option value="">— elige el tipo de energía que produce —</option>
+        <option>Química</option><option>Cinética</option><option>Térmica</option>
+        <option>Potencial gravitacional</option><option>Lumínica</option>
+        <option>Sonora</option><option>Eléctrica</option><option>Elástica</option>
+      </select>
+      <div class="err-msg" id="err-q2-resp">Elige una opción.</div>
+      <label for="q2-tipo" style="margin-top:10px;">¿Ese cambio es una transformación o una transferencia?</label>
+      <select class="inp sel-inp" id="q2-tipo" data-req data-tipo="sel" style="margin-top:4px;">
+        <option value="">— elige —</option>
+        <option>Transformación (cambia de forma)</option>
+        <option>Transferencia (pasa a otro objeto)</option>
+      </select>
+      <div class="err-msg" id="err-q2-tipo">Elige una opción.</div>
+    </div>
+
+    <div class="preg-item" style="border-left-color:var(--v);">
+      <div class="preg-num">Paso 3 · ¿Qué pasa con esa energía después?</div>
+      <div class="preg-texto">La energía que produce tu objeto, ¿qué le pasa luego? ¿A dónde va o en qué más se convierte?</div>
+      <textarea class="inp ta" id="q3-resp" data-req data-minlen="15" placeholder="Esa energía luego… / Va hacia… / Se convierte en…" style="min-height:65px;"></textarea>
+      <div class="err-msg" id="err-q3-resp">Describe qué pasa después.</div>
+    </div>
+
+    <div class="preg-item" style="border-left-color:var(--r);">
+      <div class="preg-num">Paso 4 · ¿Qué queda al final?</div>
+      <div class="preg-texto">Al final de todo el proceso, ¿qué forma de energía queda que ya no se puede aprovechar fácilmente? ¿Cómo se nota eso en tu objeto?</div>
+      <textarea class="inp ta" id="q4-resp" data-req data-minlen="15" placeholder="Al final queda… / Eso se nota porque… / El objeto se calienta / hace ruido / etc." style="min-height:65px;"></textarea>
+      <div class="err-msg" id="err-q4-resp">Describe el destino final.</div>
+    </div>
+
+  </div>
+
+  <div class="pill pill-az">Dibujo en cuaderno (obligatorio)</div>
+  <div class="nota-az">
+    <strong>📓 Abre tu cuaderno ahora.</strong> Con las cuatro respuestas que acabas de dar, dibuja la cadena completa de <strong id="obj2-ref">tu objeto</strong>:<br><br>
+    · Dibuja el objeto en cada paso con una etiqueta del tipo de energía.<br>
+    · Conecta los pasos con flechas. Escribe encima de cada flecha si es 🔄 transformación o ➡️ transferencia.<br>
+    · Al final dibuja una nube o "niebla" para el calor disperso.<br>
+    · Usa al menos dos colores diferentes.<br><br>
+    <strong>Este dibujo se revisa junto con tu actividad.</strong>
+  </div>
+
+  <label for="desc-dibujo">Describe brevemente lo que dibujaste (confirma que lo hiciste):</label>
+  <textarea class="inp ta" id="desc-dibujo" data-req data-minlen="15" placeholder="En mi dibujo aparece… / El primer paso lo dibujé como… / Para el calor disperso dibujé…"></textarea>
+  <div class="err-msg" id="err-desc-dibujo">Describe tu dibujo.</div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-mo" onclick="avanzar('s3','s-pausa2')">Ir al segundo apunte →</button>
+  </div>
+</div>
+
+<!-- ══════ PAUSA 2 · ESQUEMA INTEGRADOR ══════ -->
+<div class="sec" id="s-pausa2">
+  <div class="pausa-wrap pausa-wrap2">
+    <div class="pausa-hdr">
+      <div class="pausa-ico">✏️</div>
+      <div>
+        <div class="pausa-tit">Pausa 2 · Esquema integrador</div>
+        <div class="pausa-sub">Los dos movimientos de la energía · Material para el examen</div>
+      </div>
+    </div>
+    <div class="pausa-inst">Copia este esquema en tu cuaderno, debajo del dibujo de tu cadena. Es la síntesis visual del concepto central de hoy.</div>
+
+    <div class="pausa-contenido">
+      <h4>🗺️ Esquema: los dos movimientos de la energía</h4>
+      <div style="background:var(--gris3);border-radius:10px;padding:14px;font-size:.83rem;line-height:1.8;">
+        <div style="text-align:center;margin-bottom:10px;font-size:1rem;font-weight:800;">ENERGÍA</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <div style="flex:1;min-width:170px;background:var(--mo3);border:2px solid var(--mo);border-radius:9px;padding:10px 11px;">
+            <div style="font-weight:800;color:var(--mo);margin-bottom:4px;">🔄 TRANSFORMACIÓN</div>
+            <div>Cambia de <strong>forma</strong></div>
+            <div>Mismo objeto o sistema</div>
+            <div style="font-size:.76rem;color:var(--gris);margin-top:4px;">Ej: Química → Cinética en el motor</div>
+          </div>
+          <div style="flex:1;min-width:170px;background:var(--az3);border:2px solid var(--az);border-radius:9px;padding:10px 11px;">
+            <div style="font-weight:800;color:var(--az);margin-bottom:4px;">➡️ TRANSFERENCIA</div>
+            <div>Pasa de un <strong>objeto a otro</strong></div>
+            <div>Puede mantener su forma</div>
+            <div style="font-size:.76rem;color:var(--gris);margin-top:4px;">Ej: Calor del comal → tortilla</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:var(--r3);border:2px solid var(--r);border-radius:9px;padding:8px 11px;text-align:center;">
+          <span style="font-weight:800;color:var(--r);">🌫️ Calor disperso al ambiente</span><br>
+          <span style="font-size:.77rem;color:var(--r);">Aparece al final de toda cadena. La energía se conserva — solo se vuelve menos aprovechable.</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="err-chk2" style="font-size:.8rem;color:#ff8a80;margin-top:6px;display:none;">⚠️ Confirma que ya copiaste el esquema.</div>
+    <div class="check-pausa" id="chk2-wrap">
+      <input type="checkbox" id="chk2" data-req data-tipo="check">
+      <label for="chk2">Ya copié el esquema integrador en mi cuaderno ✅</label>
+    </div>
+
+    <div class="btn-wrap" style="margin-top:16px;">
+      <button class="btn" style="background:white;color:var(--az);font-weight:800;" onclick="avanzar('s-pausa2','s4')">Ir al cierre →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ S4 · CIERRE ══════ -->
+<div class="sec" id="s4">
+  <div class="pinfo">
+    <div class="pinfo-tag">Reflexión · Cierre</div>
+    <div class="pinfo-titulo">Lo que descubriste hoy</div>
+  </div>
+
+  <div class="pill pill-mo">01 · Corrige tu idea inicial</div>
+  <p>Al inicio elegiste un tipo de energía para el microbús y uno para el gas LP. Ahora que construiste cadenas completas, ¿cambiarías alguna de esas elecciones? ¿Por qué?</p>
+  <label for="c-regreso">Corrección o confirmación de tu idea inicial:</label>
+  <textarea class="inp ta" id="c-regreso" data-req data-minlen="15" placeholder="Antes pensaba… / Mi elección era correcta/incorrecta porque… / Ahora entiendo que…"></textarea>
+  <div class="err-msg" id="err-c-regreso">Escribe tu reflexión.</div>
+
+  <div class="pill pill-az">02 · La diferencia en tus propias palabras</div>
+  <p>Explica la diferencia entre <em>transformación</em> y <em>transferencia</em> usando un ejemplo que <strong>no aparezca en ningún lugar de esta actividad</strong>.</p>
+  <label for="c-diferencia">Tu ejemplo y explicación:</label>
+  <textarea class="inp ta" id="c-diferencia" data-req data-minlen="20" placeholder="La diferencia es… / Un ejemplo nuevo es…"></textarea>
+  <div class="err-msg" id="err-c-diferencia">Usa un ejemplo que no esté en la actividad.</div>
+
+  <div class="pill pill-v">03 · Para la siguiente sesión</div>
+  <div class="nota-v"><strong>Pregunta para pensar:</strong> si en todas las cadenas la energía siempre termina como calor disperso… ¿significa que la energía útil del planeta tiene un límite? ¿Podría "acabarse" algún día la energía aprovechable? Esta pregunta tiene respuesta científica que verás en S03.</div>
+  <label for="c-pregunta">¿Qué piensas tú? Solo razona, no necesitas saber la respuesta correcta:</label>
+  <textarea class="inp ta" id="c-pregunta" data-req data-minlen="15" placeholder="Creo que… / Tiene sentido que… / No creo porque…"></textarea>
+  <div class="err-msg" id="err-c-pregunta">Escribe tu razonamiento.</div>
+
+  <div class="pill pill-n">04 · Honestidad</div>
+  <label for="c-dificil">¿Qué fue lo que más te costó entender o hacer hoy?</label>
+  <textarea class="inp ta" id="c-dificil" data-req data-minlen="5" placeholder="Lo más difícil fue…" style="min-height:55px;"></textarea>
+  <div class="err-msg" id="err-c-dificil">Responde brevemente.</div>
+
+  <label for="c-clic" style="margin-top:10px;">¿En qué momento algo que no entendías "hizo clic"?</label>
+  <textarea class="inp ta" id="c-clic" data-req data-minlen="5" placeholder="Hizo clic cuando…" style="min-height:55px;"></textarea>
+  <div class="err-msg" id="err-c-clic">Responde brevemente.</div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-v" onclick="finalizar()">✅ Terminar y ver mi resumen</button>
+  </div>
+</div>
+
+<!-- ══════ FINAL · RESUMEN ══════ -->
+<div class="sec" id="s-final">
+  <div class="pinfo">
+    <div class="pinfo-tag">Resumen completo · Para revisión del docente</div>
+    <div class="pinfo-titulo">Tu actividad — Sesión 2</div>
+  </div>
+
+  <div class="pill pill-v">Resumen de respuestas</div>
+  <p style="font-size:.8rem;color:var(--gris);margin-bottom:10px;">La columna <strong style="color:var(--v);">Respuesta esperada</strong> es visible solo en este resumen final — úsala para revisar tu trabajo.</p>
+  <table class="resumen-tabla" id="tabla-resumen">
+    <thead><tr><th>Pregunta</th><th>Tu respuesta</th><th>Referencia docente</th></tr></thead>
+    <tbody id="tbody-resumen"></tbody>
+  </table>
+
+  <div class="resumen-nota">
+    <strong>Para entregar:</strong> captura de pantalla de esta página + cuaderno con Pausa 1 (tabla), Pausa 2 (esquema) y el dibujo de tu cadena propia. Ambas evidencias se revisan juntas.
+  </div>
+  <div style="margin-top:8px;font-weight:800;color:var(--n);font-size:.84rem;">🎯 El dibujo en cuaderno también se califica.</div>
+
+  <div style="margin-top:20px;background:var(--gris3);border-radius:10px;padding:14px 16px;">
+    <div class="pill pill-mo" style="margin-top:0;">¿Qué sigue?</div>
+    <p style="font-size:.86rem;line-height:1.75;">La <strong>Sesión 3</strong> cierra el Propósito Formativo 1 con la <strong>Ley de Conservación de la Energía</strong> y las unidades de medida (Joule, caloría, kWh). La pregunta que dejaste abierta hoy — sobre si la energía útil tiene un límite — será el punto de partida de esa sesión.</p>
+  </div>
+</div>
+
+</div><!-- /container -->
+<script>
+// ══════════════════════════════════════
+//  DATOS: objetos con preguntas encadenadas
+// ══════════════════════════════════════
+const OBJETOS = [
+  {
+    emoji:'🚐', nombre:'Microbús', desc:'Vehículo de transporte público con motor de diésel',
+    pista:'<strong>Pista:</strong> Este vehículo funciona con diésel — un combustible líquido. El diésel tiene energía guardada en sus moléculas antes de quemarse.',
+    p1:{texto:'¿Qué tipo de energía tiene el diésel dentro del tanque del microbús, antes de que el motor lo queme?', hint:'Piensa: ¿qué tipo de energía está "guardada" en los combustibles?', correcto:'Química'},
+    p2:{texto:'Cuando el motor quema el diésel, ¿en qué tipo de energía se convierte primero (la que hace que el camión se mueva)?', hint:'¿Qué ves o sientes cuando el microbús arranca?', correcto:'Cinética'},
+    p3:{texto:'Los frenos del microbús están calientes después de bajar una pendiente. ¿Ese calor que llegó a los frenos es una transformación o una transferencia?', hint:'¿El calor cambió de forma, o pasó de un objeto (las llantas) a otro (los frenos)?', correcto:'Transferencia (pasa a otro objeto)'},
+    p4:{texto:'Al final del recorrido, el motor y los frenos están calientes. ¿Qué pasó con toda esa energía térmica? ¿A dónde fue?', hint:'Piensa en el aire alrededor del camión.', correcto:'La energía térmica se dispersó al ambiente como calor — calienta el aire de la calle pero ya no puede hacer mover el camión.'}
+  },
+  {
+    emoji:'🔥', nombre:'Estufa de gas LP', desc:'Quemador de gas LP para cocinar, encendido manualmente',
+    pista:'<strong>Pista:</strong> Este objeto funciona con gas LP (propano/butano). El gas tiene energía guardada en sus moléculas — igual que cualquier combustible.',
+    p1:{texto:'¿Qué tipo de energía tiene el gas LP dentro del tanque, antes de abrirle la llave?', hint:'El gas LP es un combustible: su energía está en sus moléculas.', correcto:'Química'},
+    p2:{texto:'Al encender el quemador aparece una flama. ¿En qué dos tipos de energía se convirtió la energía del gas? Elige la principal (la que usamos para cocinar).', hint:'La flama es visible y calienta — ¿qué tipo de energía calienta las cosas?', correcto:'Térmica'},
+    p3:{texto:'El comal se calienta porque la flama le transfiere calor. ¿Eso es una transformación o una transferencia?', hint:'¿La energía cambió de forma, o pasó de la flama (un objeto) al comal (otro objeto)?', correcto:'Transferencia (pasa a otro objeto)'},
+    p4:{texto:'Después de cocinar, el quemador y el comal se enfrían solos. ¿A dónde fue toda esa energía térmica?', hint:'El calor nunca desaparece — ¿a dónde puede ir si no está ya en el comal?', correcto:'La energía térmica se transfirió al aire del ambiente — el cuarto se calentó un poco, pero ya no podemos usarla para cocinar.'}
+  },
+  {
+    emoji:'📱', nombre:'Celular cargándose', desc:'Smartphone conectado a un cargador de pared',
+    pista:'<strong>Pista:</strong> Cuando conectas el celular, la corriente eléctrica de la pared entra al aparato. Esa corriente viene de la planta eléctrica (CFE), que en CDMX usa gas natural.',
+    p1:{texto:'¿Qué tipo de energía llega al celular por el cable del cargador?', hint:'Piensa en lo que viaja por los cables desde el contacto de la pared.', correcto:'Eléctrica'},
+    p2:{texto:'Dentro del celular, esa energía se guarda en la batería. ¿En qué tipo de energía se convierte para poder guardarse?', hint:'La batería almacena energía — ¿qué tipo de energía almacenan siempre las baterías?', correcto:'Química'},
+    p3:{texto:'Mientras la batería se carga, el celular se calienta un poco. ¿Ese calor es resultado de una transformación o de una transferencia?', hint:'¿La energía eléctrica cambió de forma dentro del celular, o pasó a otro objeto diferente?', correcto:'Transformación (cambia de forma)'},
+    p4:{texto:'Al final, parte de la energía eléctrica que entró nunca llegó a la batería — se "perdió". ¿En qué forma quedó esa energía y cómo lo sabes?', hint:'Toca el cargador después de cargar el celular.', correcto:'Se convirtió en calor disperso (energía térmica) — por eso el cargador y el celular se sienten calientes.'}
+  },
+  {
+    emoji:'🚲', nombre:'Bicicleta en marcha', desc:'Ciclista pedaleando en Reforma o en una ciclovía',
+    pista:'<strong>Pista:</strong> La energía de la bicicleta viene del ciclista, que comió algo antes de salir. El alimento le da energía a sus músculos.',
+    p1:{texto:'¿Qué tipo de energía tienen los músculos del ciclista almacenada, antes de empezar a pedalear?', hint:'Los músculos obtienen su energía de los alimentos que digieren.', correcto:'Química'},
+    p2:{texto:'Cuando el ciclista pedalea, la bicicleta se mueve. ¿En qué tipo de energía se convirtió la energía de los músculos?', hint:'¿Qué tipo de energía tiene todo objeto que se mueve?', correcto:'Cinética'},
+    p3:{texto:'Las llantas rozan con el suelo y después de un rato los frenos y las llantas se calientan un poco. ¿Ese calor es resultado de una transformación o de una transferencia?', hint:'¿La energía cinética cambió de forma, o pasó de la llanta al suelo?', correcto:'Transformación (cambia de forma)'},
+    p4:{texto:'El ciclista llega a su destino y la bicicleta se detiene. Ya no hay movimiento. ¿Qué pasó con toda la energía cinética que tenía?', hint:'La energía nunca desaparece — cuando el movimiento se detiene por fricción, ¿en qué se convierte?', correcto:'La energía cinética se transformó en calor disperso por la fricción de las llantas con el suelo y los frenos — se disipó al ambiente.'}
+  },
+  {
+    emoji:'💡', nombre:'Foco LED encendido', desc:'Foco de bajo consumo conectado a la corriente eléctrica',
+    pista:'<strong>Pista:</strong> El foco LED recibe corriente eléctrica y la convierte en luz. Es más eficiente que un foco incandescente porque desperdicia menos energía como calor.',
+    p1:{texto:'¿Qué tipo de energía entra al foco por el cable cuando lo enciendes?', hint:'Es el mismo tipo de energía que viaja por todos los cables de tu casa.', correcto:'Eléctrica'},
+    p2:{texto:'El foco encendido produce luz. ¿En qué tipo de energía se convirtió la energía eléctrica?', hint:'La función principal de un foco es iluminar — ¿qué tipo de energía es la luz?', correcto:'Lumínica'},
+    p3:{texto:'El foco también se calienta un poco (especialmente si no es LED). ¿Ese calor que produce es resultado de una transformación o de una transferencia?', hint:'¿La energía eléctrica cambió de forma dentro del foco, o pasó a otro objeto?', correcto:'Transformación (cambia de forma)'},
+    p4:{texto:'Al final, parte de la energía eléctrica que entró al foco no se convirtió en luz sino en calor. ¿A dónde fue ese calor?', hint:'El calor del foco no se queda en el foco — ¿qué hay alrededor?', correcto:'Se dispersó al ambiente como calor — calienta el cuarto ligeramente pero ya no puede volver a ser luz.'}
+  },
+  {
+    emoji:'🏗️', nombre:'Tinaco en azotea', desc:'Depósito de agua en la parte alta de una casa de la CDMX',
+    pista:'<strong>Pista:</strong> El agua sube de la cisterna (en el suelo) hasta el tinaco (en la azotea) gracias a una bomba eléctrica. Una vez arriba, el agua queda "guardada" a cierta altura.',
+    p1:{texto:'La bomba eléctrica usa corriente para mover el agua hacia arriba. ¿Qué tipo de energía tiene el agua una vez que llegó al tinaco en la azotea?', hint:'El agua está quieta, arriba, en altura. ¿Qué tipo de energía tienen los objetos por estar en alto?', correcto:'Potencial gravitacional'},
+    p2:{texto:'Cuando abres la llave del baño, el agua baja del tinaco por las tuberías y sale con fuerza. ¿En qué tipo de energía se convirtió la energía que tenía el agua en el tinaco?', hint:'El agua ahora se está moviendo — ¿qué tipo de energía tiene todo lo que se mueve?', correcto:'Cinética'},
+    p3:{texto:'El agua caliente que sale de la regadera calienta tu cuerpo. ¿Esa energía térmica que llega a tu piel es una transformación o una transferencia?', hint:'¿La energía del agua cambió de forma, o pasó del agua (un objeto) a tu piel (otro objeto)?', correcto:'Transferencia (pasa a otro objeto)'},
+    p4:{texto:'Al final, el agua ya usada va al drenaje a temperatura ambiente. ¿Qué pasó con toda la energía que tenía cuando bajaba con fuerza?', hint:'La fricción con las paredes de las tuberías convierte el movimiento en algo.', correcto:'La energía cinética se transformó en calor disperso por la fricción con las tuberías — el agua llega al drenaje sin velocidad y un poco más caliente.'}
+  },
+  {
+    emoji:'🔊', nombre:'Bocina Bluetooth', desc:'Altavoz inalámbrico funcionando con batería cargada',
+    pista:'<strong>Pista:</strong> La bocina usa la energía guardada en su batería para reproducir música. La batería es como un "tanque" de energía química lista para usarse.',
+    p1:{texto:'¿Qué tipo de energía tiene la batería de la bocina antes de que la enciendas?', hint:'Todas las baterías guardan energía de la misma forma que el gas LP o los alimentos.', correcto:'Química'},
+    p2:{texto:'Al encender la bocina y poner música, ¿en qué tipo de energía principal se convirtió la energía de la batería?', hint:'La función principal de una bocina es que puedas escuchar música.', correcto:'Sonora'},
+    p3:{texto:'La bocina también se calienta un poco después de varios minutos de uso. ¿Ese calor es resultado de una transformación o de una transferencia?', hint:'¿La energía eléctrica cambió de forma dentro de la bocina, o pasó a otro objeto diferente?', correcto:'Transformación (cambia de forma)'},
+    p4:{texto:'Cuando la batería se acaba, la bocina se apaga. ¿A dónde fue toda la energía que tenía la batería?', hint:'Piensa en todo lo que produjo la bocina durante su uso.', correcto:'Se transformó en energía sonora (la música que escuchaste) y en calor disperso que se disipó al ambiente — nada desapareció.'}
+  },
+  {
+    emoji:'🌽', nombre:'Licuadora', desc:'Electrodoméstico para preparar agua fresca o jugos',
+    pista:'<strong>Pista:</strong> La licuadora se conecta al contacto de la pared y tiene un motor eléctrico que hace girar las cuchillas muy rápido.',
+    p1:{texto:'¿Qué tipo de energía entra a la licuadora cuando la conectas al contacto?', hint:'Es la misma que viaja por todos los cables de la casa.', correcto:'Eléctrica'},
+    p2:{texto:'El motor de la licuadora hace girar las cuchillas. ¿En qué tipo de energía se convirtió la energía eléctrica?', hint:'Las cuchillas están girando — ¿qué tipo de energía tiene todo lo que se mueve?', correcto:'Cinética'},
+    p3:{texto:'La licuadora hace mucho ruido mientras funciona. ¿Ese ruido (energía sonora) es resultado de una transformación o de una transferencia?', hint:'¿La energía del motor cambió de forma dentro de la licuadora, o pasó a otro aparato diferente?', correcto:'Transformación (cambia de forma)'},
+    p4:{texto:'Después de usarla, el motor de la licuadora está caliente. ¿A dónde fue esa energía térmica?', hint:'El calor del motor no se queda ahí para siempre — ¿qué hay alrededor de la licuadora?', correcto:'La energía térmica se transfirió al aire del ambiente — la cocina se calienta un poco y esa energía ya no puede mover las cuchillas.'}
+  }
+];
+
+const TIPOS_CONJ = [
+  {ico:'⚗️',nom:'Química',   ej:'Gas LP, batería',catCorr:'alm'},
+  {ico:'🏔️',nom:'Potencial', ej:'Agua en azotea', catCorr:'alm'},
+  {ico:'🌀',nom:'Elástica',  ej:'Resorte',        catCorr:'alm'},
+  {ico:'🚀',nom:'Cinética',  ej:'Camión en movto.',catCorr:'mov'},
+  {ico:'🌡️',nom:'Térmica',   ej:'Comal caliente', catCorr:'mov'},
+  {ico:'💡',nom:'Lumínica',  ej:'Luz del Sol',    catCorr:'mov'},
+  {ico:'🔊',nom:'Sonora',    ej:'Música, ruido',  catCorr:'mov'},
+  {ico:'⚡',nom:'Eléctrica', ej:'Corriente',      catCorr:'mov'}
+];
+
+// ══════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════
+let obj1=null, obj2=null;
+const PASOS=['s0','s1','s-pausa1','s2','s3','s-pausa2','s4','s-final'];
+let pasoActual=0;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  construirConjetura();
+  asignarObjetos();
+  actualizarProg();
+});
+
+function pickDos(arr){
+  const i=Math.floor(Math.random()*arr.length);
+  let j; do{j=Math.floor(Math.random()*arr.length);}while(j===i);
+  return [arr[i],arr[j]];
+}
+
+function asignarObjetos(){
+  [obj1,obj2]=pickDos(OBJETOS);
+  // Obj 1
+  document.getElementById('obj1-emoji').textContent=obj1.emoji;
+  document.getElementById('obj1-nombre').textContent=obj1.nombre;
+  document.getElementById('obj1-desc').textContent=obj1.desc;
+  document.getElementById('obj1-pista').innerHTML=obj1.pista;
+  document.getElementById('s2-titulo').textContent='Tu objeto: '+obj1.nombre;
+  document.getElementById('p1-texto').textContent=obj1.p1.texto;
+  document.getElementById('p1-hint').textContent=obj1.p1.hint;
+  document.getElementById('p2-texto').textContent=obj1.p2.texto;
+  document.getElementById('p2-hint').textContent=obj1.p2.hint;
+  document.getElementById('p3-texto').textContent=obj1.p3.texto;
+  document.getElementById('p3-hint').textContent=obj1.p3.hint;
+  document.getElementById('p4-texto').textContent=obj1.p4.texto;
+  document.getElementById('p4-hint').textContent=obj1.p4.hint;
+  // Obj 2
+  document.getElementById('obj2-emoji').textContent=obj2.emoji;
+  document.getElementById('obj2-nombre').textContent=obj2.nombre;
+  document.getElementById('obj2-desc').textContent=obj2.desc;
+  document.getElementById('obj2-pista').innerHTML=obj2.pista;
+  document.getElementById('obj2-ref').textContent=obj2.nombre;
+}
+
+function construirConjetura(){
+  const g=document.getElementById('grid-conjetura');
+  g.innerHTML='';
+  TIPOS_CONJ.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='tipo-card';
+    d.dataset.idx=i; d.dataset.estado='0';
+    d.innerHTML=`<div class="t-ico">${t.ico}</div><div class="t-nom">${t.nom}</div><div class="t-ej">${t.ej}</div>`;
+    d.addEventListener('click',()=>{
+      const e=(parseInt(d.dataset.estado)+1)%3;
+      d.dataset.estado=e;
+      d.classList.remove('sel-alm','sel-mov');
+      if(e===1)d.classList.add('sel-alm');
+      if(e===2)d.classList.add('sel-mov');
+    });
+    g.appendChild(d);
+  });
+}
+
+// ══════════════════════════════════════
+//  NAVEGACIÓN
+// ══════════════════════════════════════
+function avanzar(desde,hacia){
+  if(!validar(desde))return;
+  document.getElementById(desde).classList.remove('active');
+  const sig=document.getElementById(hacia);
+  sig.classList.add('active');
+  pasoActual=PASOS.indexOf(hacia);
+  actualizarProg();
+  sig.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function actualizarProg(){
+  const total=PASOS.length-1;
+  const pct=Math.round((pasoActual/total)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-txt').textContent=`Paso ${pasoActual} de ${total}`;
+}
+
+// ══════════════════════════════════════
+//  VALIDACIÓN
+// ══════════════════════════════════════
+function validar(secId){
+  const sec=document.getElementById(secId);
+  let ok=true;
+  sec.querySelectorAll('[data-req]').forEach(el=>{
+    if(el.dataset.tipo==='check'){
+      const wrap=el.closest('.check-pausa');
+      const errId=secId==='s-pausa1'?'err-chk1':'err-chk2';
+      const errDiv=document.getElementById(errId);
+      if(!el.checked){
+        if(wrap)wrap.classList.add('err-chk');
+        if(errDiv)errDiv.style.display='block';
+        ok=false;
+      }else{
+        if(wrap)wrap.classList.remove('err-chk');
+        if(errDiv)errDiv.style.display='none';
+      }
+      return;
+    }
+    if(el.dataset.tipo==='sel'){
+      const errEl=document.getElementById('err-'+el.id);
+      if(!el.value){
+        el.classList.add('err');
+        if(errEl)errEl.style.display='block';
+        ok=false;
+      }else{
+        el.classList.remove('err');
+        if(errEl)errEl.style.display='none';
+      }
+      return;
+    }
+    const val=el.value.trim();
+    const minLen=parseInt(el.dataset.minlen)||1;
+    const errEl=document.getElementById('err-'+el.id);
+    if(val.length<minLen){
+      el.classList.add('err');
+      if(errEl)errEl.style.display='block';
+      ok=false;
+    }else{
+      el.classList.remove('err');
+      if(errEl)errEl.style.display='none';
+    }
+  });
+  if(!ok){
+    const first=sec.querySelector('.err,.err-chk');
+    if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return ok;
+}
+
+// ══════════════════════════════════════
+//  RESUMEN FINAL
+// ══════════════════════════════════════
+function finalizar(){
+  if(!validar('s4'))return;
+
+  let clasTxt='';
+  document.querySelectorAll('#grid-conjetura .tipo-card').forEach(d=>{
+    const t=TIPOS_CONJ[d.dataset.idx];
+    const e=parseInt(d.dataset.estado);
+    const cat=e===1?'Almacenada':e===2?'En movimiento':'Sin clasificar';
+    clasTxt+=`${t.nom}:${cat}  `;
+  });
+
+  const rows=[
+    ['Nombre',             V('nombre'),    '—'],
+    ['Grupo',              V('grupo'),     '—'],
+    ['Objeto 1 (guiada)',  obj1.nombre,    '—'],
+    ['Objeto 2 (propia)',  obj2.nombre,    '—'],
+    ['Energía microbús',   V('act-tipo-micro'),  'Cinética'],
+    ['Energía gas LP',     V('act-tipo-gas'),    'Química'],
+    ['Diferencia micro vs gas', V('act-diferencia'), 'La cinética está en movimiento; la química está almacenada en las moléculas.'],
+    ['Clasificación conjetura', clasTxt.trim(), 'Almacenadas: Química, Potencial, Elástica · En movimiento: Cinética, Térmica, Lumínica, Sonora, Eléctrica'],
+    ['Criterio de clasificación', V('conj-razon'), 'Las almacenadas están "guardadas" y necesitan algo que las libere. Las de movimiento/tránsito ya se están manifestando o desplazando.'],
+    ['Reflexión Pausa 1',  V('refl-pausa1'), '—'],
+    ['P1 · Energía inicial obj.1', V('p1-resp'),  obj1.p1.correcto],
+    ['P2 · Primera transformación', V('p2-resp'), obj1.p2.correcto],
+    ['P3 · ¿Transf. o Transfer.?', V('p3-resp'),  obj1.p3.correcto],
+    ['P4 · Destino final',  V('p4-resp'),          obj1.p4.correcto],
+    ['Paso 1 obj.2 · Energía inicial', V('q1-resp'), obj2.p1.correcto],
+    ['Paso 2 obj.2 · Primera producción', V('q2-resp'), obj2.p2.correcto],
+    ['Paso 2 obj.2 · ¿Transf. o Transfer.?', V('q2-tipo'), obj2.p3.correcto],
+    ['Paso 3 obj.2 · Qué pasa después', V('q3-resp'), '(respuesta abierta — ver criterio de coherencia con pasos 1 y 2)'],
+    ['Paso 4 obj.2 · Destino final', V('q4-resp'), obj2.p4.correcto],
+    ['Descripción del dibujo', V('desc-dibujo'), 'Debe incluir: objeto en cada paso + tipo de energía etiquetado + flecha con tipo (transf./transfer.) + nube de calor disperso final.'],
+    ['Corrección idea inicial', V('c-regreso'), '—'],
+    ['Diferencia con ejemplo propio', V('c-diferencia'), 'Debe incluir: qué cambia (transformación) vs qué se mueve de objeto (transferencia) + ejemplo no usado en clase.'],
+    ['Razonamiento S03', V('c-pregunta'), '—'],
+    ['Lo más difícil',   V('c-dificil'), '—'],
+    ['Momento "clic"',   V('c-clic'),    '—'],
+  ];
+
+  document.getElementById('tbody-resumen').innerHTML=
+    rows.map(([k,v,esp])=>
+      `<tr><td>${k}</td><td>${v||'—'}</td><td>${esp}</td></tr>`
+    ).join('');
+
+  avanzar('s4','s-final');
+}
+
+function V(id){
+  const el=document.getElementById(id);
+  if(!el)return'—';
+  if(el.type==='checkbox')return el.checked?'✅ Sí':'❌ No';
+  return(el.value||'').trim();
+}
+</script>
+</body>
+</html>
