@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S03 · Conservación y Medición · CNEyT II · Grupo 208</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;--az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;--v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;--r:#C62828;--r3:#FFEBEE;--n:#E65100;--n2:#FB8C00;--n3:#FFF3E0;--am:#F57F17;--am3:#FFF8E1;--gris:#666;--gris2:#E0E0E0;--gris3:#F5F5F5;--dark:#1A1A2E;--radio:14px;--trans:all .25s ease;--sombra:0 4px 16px rgba(0,0,0,.13);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:linear-gradient(160deg,#1A0533 0%,#0D1B4A 60%,#0A2010 100%);min-height:100vh;padding:15px 13px;color:var(--dark);}
+.container{max-width:780px;margin:0 auto;}
+.hdr{background:white;border-radius:var(--radio);padding:20px 19px 15px;box-shadow:var(--sombra);margin-bottom:12px;animation:slideD .5s ease;}
+@keyframes slideD{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+.hdr-esc{font-size:.69rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.hdr-tit{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;color:var(--mo);letter-spacing:1.5px;line-height:1.1;}
+.hdr-sub{font-size:.83rem;color:var(--az);font-weight:600;margin-top:2px;}
+.hdr-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+.badge{font-size:.69rem;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--gris3);color:var(--gris);}
+.badge.mo{background:var(--mo3);color:var(--mo);}.badge.az{background:var(--az3);color:var(--az);}.badge.v{background:var(--v3);color:var(--v);}.badge.am{background:var(--am3);color:var(--am);}
+.hdr-meta{font-size:.72rem;color:#999;margin-top:7px;border-top:1px solid var(--gris2);padding-top:6px;line-height:1.5;}
+.prog-wrap{background:white;border-radius:var(--radio);padding:10px 16px;box-shadow:var(--sombra);margin-bottom:12px;}
+.prog-bar{height:9px;background:var(--gris2);border-radius:9px;overflow:hidden;margin-bottom:4px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--mo),var(--v2));width:0%;transition:width .5s ease;}
+.prog-txt{text-align:center;font-size:.77rem;font-weight:700;color:var(--az);}
+.chip-alumno{display:none;background:linear-gradient(135deg,var(--mo),var(--az));border-radius:var(--radio);padding:10px 15px;color:white;font-weight:700;font-size:.88rem;margin-bottom:12px;box-shadow:var(--sombra);}
+.chip-alumno span{font-size:.75rem;opacity:.8;display:block;}
+#panel-acum{display:none;background:white;border-radius:var(--radio);padding:12px 15px;box-shadow:var(--sombra);margin-bottom:12px;border-left:5px solid var(--mo);}
+.pac-titulo{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mo);margin-bottom:7px;}
+.pac-ap{font-size:.84rem;font-weight:700;color:var(--dark);margin-bottom:7px;}
+.pac-fila{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--gris2);font-size:.8rem;}
+.pac-fila:last-child{border-bottom:none;}
+.pac-lbl{color:var(--gris);font-weight:600;}
+.pac-val{font-weight:800;color:var(--dark);}
+.pac-val.ok{color:var(--v);}
+.pac-val.pend{color:var(--gris2);}
+.cod-sm{background:var(--v);color:white;border-radius:5px;padding:1px 7px;font-size:.72rem;font-weight:800;margin-left:4px;}
+.sec{background:white;border-radius:var(--radio);padding:20px 18px;box-shadow:var(--sombra);margin-bottom:12px;display:none;animation:fadeI .35s ease;}
+.sec.active{display:block;}
+@keyframes fadeI{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.ptag{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--gris);margin-bottom:2px;}
+.ptit{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--dark);letter-spacing:.8px;line-height:1.1;margin-bottom:12px;}
+.pill{display:inline-block;font-size:.69rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:20px;margin:9px 0 6px;}
+.pill-mo{background:var(--mo3);color:var(--mo);}.pill-az{background:var(--az3);color:var(--az);}.pill-v{background:var(--v3);color:var(--v);}.pill-r{background:var(--r3);color:var(--r);}.pill-n{background:var(--n3);color:var(--n);}.pill-am{background:var(--am3);color:var(--am);}
+.inp{width:100%;border:2px solid var(--gris2);border-radius:9px;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:.87rem;color:var(--dark);transition:var(--trans);background:white;}
+.inp:focus{border-color:var(--mo);outline:none;box-shadow:0 0 0 3px rgba(123,45,139,.1);}
+.inp.err{border-color:var(--r);}.inp.ok{border-color:var(--v);}
+.ta{resize:vertical;min-height:65px;}
+.inp-num{max-width:200px;text-align:center;font-size:1rem;font-weight:700;}
+label{display:block;font-size:.81rem;font-weight:700;color:var(--dark);margin:10px 0 4px;}
+.err-msg{font-size:.78rem;color:var(--r);margin-top:3px;font-weight:600;display:none;}
+#lista-dropdown{background:#fff;border:2px solid var(--az2);border-radius:10px;max-height:190px;overflow-y:auto;margin-top:4px;display:none;z-index:10;}
+.alumno-item{padding:11px 13px;cursor:pointer;border-bottom:1px solid var(--gris2);font-size:.83rem;}
+.alumno-item:hover{background:#eaf2fb;}
+.btn{display:inline-block;padding:11px 22px;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:var(--trans);}
+.btn-mo{background:var(--mo);color:white;}.btn-v{background:var(--v);color:white;}.btn-blk{display:block;width:100%;padding:13px;text-align:center;}
+.btn-wrap{text-align:center;margin-top:16px;}
+.opcion-btn{display:block;width:100%;padding:11px 14px;border:2px solid var(--gris2);border-radius:10px;background:white;font-family:'Outfit',sans-serif;font-size:.84rem;text-align:left;cursor:pointer;margin-bottom:8px;transition:var(--trans);line-height:1.5;}
+.opcion-btn:hover{border-color:var(--mo2);background:var(--mo3);}
+.opcion-btn.correcta{border-color:var(--v);background:var(--v3);pointer-events:none;}
+.opcion-btn.incorrecta{border-color:var(--r);background:var(--r3);pointer-events:none;}
+.clasif-item{background:var(--gris3);border-radius:10px;padding:12px 13px;margin-bottom:9px;border-left:4px solid var(--gris2);}
+.clasif-item.ok{border-left-color:var(--v);background:var(--v3);}
+.clasif-texto{font-size:.84rem;font-weight:600;color:var(--dark);margin-bottom:8px;line-height:1.5;}
+.clasif-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.clasif-btn{padding:6px 12px;border:2px solid var(--gris2);border-radius:20px;background:white;font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.clasif-btn.sel-v{border-color:var(--v);background:var(--v3);color:var(--v);}
+.clasif-btn.sel-r{border-color:var(--r);background:var(--r3);color:var(--r);}
+.clasif-fb{font-size:.77rem;margin-top:7px;font-weight:600;line-height:1.5;display:none;}
+.aparato-card{background:linear-gradient(135deg,var(--mo3),var(--az3));border:2.5px solid var(--mo);border-radius:12px;padding:14px 16px;margin:10px 0;}
+.ap-emoji{font-size:2rem;margin-bottom:3px;}
+.ap-nombre{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--mo);letter-spacing:1px;}
+.ap-datos{display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;}
+.ap-dato{background:white;border-radius:8px;padding:6px 10px;font-size:.8rem;font-weight:700;color:var(--dark);}
+.ap-dato span{display:block;font-size:.67rem;color:var(--gris);font-weight:400;}
+.formula-box{background:var(--dark);color:white;border-radius:10px;padding:12px 15px;margin:10px 0;font-size:.88rem;line-height:1.7;}
+.fml{font-size:1rem;font-weight:800;color:#93C5FD;letter-spacing:.5px;}
+.ej{font-size:.79rem;color:#CBD5E1;margin-top:6px;}
+.verif-wrap{margin:10px 0;}
+.verif-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;margin-top:4px;}
+.verif-row .inp-num{flex:1;min-width:120px;}
+.btn-ver{padding:10px 17px;border:none;border-radius:9px;background:var(--az);color:white;font-family:'Outfit',sans-serif;font-size:.86rem;font-weight:700;cursor:pointer;}
+.res-box{margin-top:8px;padding:10px 13px;border-radius:9px;font-size:.84rem;font-weight:600;display:none;line-height:1.55;}
+.res-ok{background:var(--v3);color:var(--v);border:2px solid var(--v);}
+.res-mal{background:var(--r3);color:var(--r);border:2px solid var(--r);}
+.codigo-badge{display:inline-block;background:var(--v);color:white;border-radius:7px;padding:4px 12px;font-size:1.05rem;font-weight:800;margin-top:5px;letter-spacing:1px;}
+.pista-btn{background:none;border:2px solid var(--n2);color:var(--n);border-radius:20px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:.77rem;font-weight:700;cursor:pointer;margin-top:8px;}
+.pista-box{background:var(--am3);border-left:4px solid var(--am);border-radius:0 9px 9px 0;padding:10px 13px;font-size:.82rem;color:#4a2c00;margin-top:6px;line-height:1.6;display:none;}
+.recibo-wrap{border:2.5px solid #006994;border-radius:12px;overflow:hidden;margin:12px 0;}
+.recibo-hdr{background:#006994;color:white;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.recibo-logo{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:2px;}
+.recibo-body{padding:12px 14px;}
+.recibo-fila{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gris2);font-size:.79rem;}
+.recibo-fila:last-child{border-bottom:none;}
+.recibo-fila.total{font-weight:800;font-size:.9rem;color:var(--mo);border-top:2.5px solid var(--mo);margin-top:5px;padding-top:8px;}
+.recibo-kwh{background:#E8F5E9;border:2px solid var(--v);border-radius:9px;padding:9px 13px;margin:8px 0;text-align:center;}
+.kwh-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--v);letter-spacing:1px;}
+.kwh-lbl{font-size:.74rem;color:var(--gris);margin-top:2px;}
+.ficha-aviso{background:linear-gradient(135deg,var(--n),var(--am));border-radius:12px;padding:16px 17px;margin:12px 0;color:white;}
+.ficha-aviso h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;margin-bottom:8px;}
+.ficha-aviso p{font-size:.84rem;line-height:1.65;}
+.ficha-sec{background:var(--gris3);border-radius:11px;padding:14px 15px;margin:10px 0;}
+.ficha-sec h4{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);margin-bottom:10px;}
+.ficha-def{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--gris2);}
+.ficha-def:last-child{border-bottom:none;}
+.ficha-ico{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+.f-nombre{font-weight:800;font-size:.87rem;color:var(--dark);}
+.f-def{font-size:.79rem;color:var(--gris);line-height:1.55;margin-top:2px;}
+.f-cdmx{font-size:.76rem;color:var(--az);font-style:italic;margin-top:3px;}
+.ficha-formula{background:var(--dark);color:white;border-radius:9px;padding:11px 14px;margin:7px 0;}
+.ficha-formula .fml{font-size:.93rem;}
+.ficha-formula .paso{font-size:.77rem;color:#CBD5E1;margin-top:5px;line-height:1.65;}
+.ficha-resultado{background:white;border:2.5px solid var(--mo);border-radius:10px;padding:12px 14px;margin:10px 0;}
+.ficha-resultado h4{font-size:.74rem;font-weight:800;text-transform:uppercase;color:var(--mo);margin-bottom:9px;}
+.fres-cadena{display:flex;align-items:flex-start;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.fres-paso{background:var(--mo3);border:2px solid var(--mo);border-radius:8px;padding:6px 9px;text-align:center;min-width:70px;}
+.fp-lbl{font-size:.65rem;color:var(--gris);font-weight:600;}
+.fp-val{font-weight:800;font-size:.86rem;color:var(--mo);}
+.fp-cod{font-size:.64rem;color:var(--v);font-weight:700;margin-top:2px;}
+.fres-flecha{font-size:.9rem;color:var(--gris);padding-top:16px;}
+.equiv-box{background:linear-gradient(135deg,var(--az3),var(--v3));border-radius:9px;padding:10px 13px;margin-top:9px;font-size:.82rem;line-height:1.7;border-left:4px solid var(--az);}
+.nota-az{background:var(--az3);border-left:4px solid var(--az);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.81rem;color:var(--az);margin:8px 0;line-height:1.55;}
+.nota-mo{background:var(--mo3);border-left:4px solid var(--mo);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.81rem;color:var(--mo);margin:8px 0;line-height:1.55;}
+.nota-v{background:var(--v3);border-left:4px solid var(--v);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.81rem;color:var(--v);margin:8px 0;line-height:1.55;}
+.nota-n{background:var(--n3);border-left:4px solid var(--n);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.81rem;color:var(--n);margin:8px 0;line-height:1.55;}
+.res-tabla{width:100%;border-collapse:collapse;font-size:.79rem;}
+.res-tabla th{background:var(--mo);color:white;padding:7px 10px;text-align:left;font-size:.7rem;text-transform:uppercase;}
+.res-tabla td{padding:7px 10px;border-bottom:1.5px solid var(--gris2);vertical-align:top;}
+.res-tabla tr td:first-child{font-weight:800;color:var(--mo);background:#faf8ff;width:30%;}
+.res-tabla tr td:nth-child(3){background:var(--v3);color:#1b5e20;font-style:italic;font-size:.75rem;width:33%;}
+.codigos-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;}
+.cod-card{border-radius:10px;padding:10px;text-align:center;}
+.cc-lbl{font-size:.71rem;font-weight:700;margin-bottom:3px;}
+.cc-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;}
+p{font-size:.85rem;line-height:1.7;margin-bottom:6px;}
+hr.div{border:none;border-top:1.5px solid var(--gris2);margin:13px 0;}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="hdr">
+  <div class="hdr-esc">CNEyT II · El poder de la energía · Prof. Adrián Cruz · Grupo 208 · 2.º Semestre</div>
+  <div class="hdr-tit">Sesión 3 · Conservación y Medición de Energía</div>
+  <div class="hdr-sub">Propósito Formativo 1 · Cierre · Ley de Conservación · Joule · Caloría · kWh</div>
+  <div class="hdr-badges">
+    <span class="badge mo">🔒 Ley de Conservación</span>
+    <span class="badge az">⚡ Joule · cal · kWh</span>
+    <span class="badge v">🧾 Recibo CFE</span>
+    <span class="badge am">🎲 Cálculos únicos por alumno</span>
+  </div>
+  <div class="hdr-meta">Actividad autónoma · Disponible hasta el lunes · Sube el resumen a Classroom cuando termines.</div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-txt" id="prog-txt">Paso 0 de 7</div>
+</div>
+<div class="chip-alumno" id="chip-alumno">
+  <span id="chip-label">—</span><span id="chip-sub">—</span>
+</div>
+<div id="panel-acum">
+  <div class="pac-titulo">⚡ Tu aparato · resultados acumulados</div>
+  <div class="pac-ap" id="pac-ap-txt">—</div>
+  <div class="pac-fila"><span class="pac-lbl">Joules (J)</span><span class="pac-val pend" id="pac-j">pendiente</span></div>
+  <div class="pac-fila"><span class="pac-lbl">Calorías (cal)</span><span class="pac-val pend" id="pac-cal">pendiente</span></div>
+  <div class="pac-fila"><span class="pac-lbl">Kilowatt-hora (kWh)</span><span class="pac-val pend" id="pac-kwh">pendiente</span></div>
+</div>
+
+<!-- S0 LOGIN -->
+<div class="sec active" id="s0">
+  <div class="ptag">Inicio · Identificación</div>
+  <div class="ptit">¿Quién eres?</div>
+  <p style="font-size:.82rem;color:#555;margin-bottom:11px;">Escribe tu <strong>primer apellido</strong> y selecciona tu nombre.</p>
+  <label for="inp-busca">Primer apellido:</label>
+  <input class="inp" id="inp-busca" autocomplete="off" placeholder="Ej: HERNANDEZ" oninput="buscarAlumno()" style="text-transform:uppercase;">
+  <div id="lista-dropdown"></div>
+  <div id="login-fb" style="display:none;margin-top:8px;font-size:.82rem;font-weight:700;color:var(--v);"></div>
+  <div class="btn-wrap" style="margin-top:14px;">
+    <button class="btn btn-mo btn-blk" id="btn-inicio" onclick="iniciarActividad()" disabled>Comenzar actividad →</button>
+  </div>
+</div>
+
+<!-- S1 CONFLICTO COGNITIVO -->
+<div class="sec" id="s1">
+  <div class="ptag">Apertura · Conflicto cognitivo</div>
+  <div class="ptit">¿Por qué se agota la batería?</div>
+  <div class="nota-mo"><strong>Recuerda lo que descubriste en S02:</strong> la energía no se destruye — siempre se transforma o transfiere. Entonces surge una pregunta incómoda...</div>
+  <div class="pill pill-mo">Pregunta 1</div>
+  <p><strong>Si la energía nunca se destruye, ¿por qué se agota la batería de tu celular?</strong></p>
+  <div id="opts-c1">
+    <button class="opcion-btn" onclick="respC(this,'A',1)">A) La energía eléctrica se destruye dentro del celular. Por eso la batería pierde carga.</button>
+    <button class="opcion-btn" onclick="respC(this,'B',1)">B) La energía química de la batería se transforma en eléctrica útil y en calor que se dispersa al ambiente. La batería ya no la tiene, pero toda esa energía sigue existiendo en el universo como calor disperso que no podemos aprovechar.</button>
+    <button class="opcion-btn" onclick="respC(this,'C',1)">C) La energía se consume y desaparece. Por eso hay que recargarla: para crear energía nueva.</button>
+  </div>
+  <div id="fb-c1" class="res-box"></div>
+  <div id="blq-c2" style="display:none;">
+    <hr class="div">
+    <div class="pill pill-az">Pregunta 2</div>
+    <p>¿Qué tienen en común la batería que se agota, el café que se enfría y el microbús que frena?</p>
+    <div id="opts-c2">
+      <button class="opcion-btn" onclick="respC(this,'A',2)">A) En los tres casos la energía útil se convirtió en calor disperso al ambiente. La cantidad total no cambió, pero ya no sirve para hacer trabajo.</button>
+      <button class="opcion-btn" onclick="respC(this,'B',2)">B) En los tres casos la energía útil se destruyó y ya no existe.</button>
+      <button class="opcion-btn" onclick="respC(this,'C',2)">C) En los tres casos la energía se transformó en energía potencial gravitacional invisible.</button>
+    </div>
+    <div id="fb-c2" class="res-box"></div>
+  </div>
+  <div class="btn-wrap" id="btn-s1-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzar('s1','s2')">Ir a la Ley de Conservación →</button>
+  </div>
+</div>
+
+<!-- S2 LEY DE CONSERVACIÓN -->
+<div class="sec" id="s2">
+  <div class="ptag">Concepto central · Ley de Conservación de la Energía</div>
+  <div class="ptit">La energía no se crea ni se destruye</div>
+  <div class="formula-box">
+    <div class="fml">Ley de Conservación de la Energía</div>
+    <div style="margin-top:6px;font-size:.85rem;line-height:1.7;">"La energía no se crea ni se destruye, solo se <strong style="color:#93C5FD;">transforma</strong> de una forma a otra o se <strong style="color:#6EE7B7;">transfiere</strong> de un objeto a otro."</div>
+    <div class="ej">→ Lo que parece que se "pierde" siempre aparece como calor disperso al final.</div>
+  </div>
+  <div class="pill pill-mo">Clasificación · ¿La energía se conservó?</div>
+  <p>Para cada situación, elige si la energía <strong>se transformó o transfirió (se conservó)</strong> o <strong>se destruyó</strong>.</p>
+  <div class="clasif-item" id="ci-1">
+    <div class="clasif-texto">1. Una pelota rueda en el suelo y se detiene por fricción. Antes tenía energía cinética. Al detenerse parece que "desapareció".</div>
+    <div class="clasif-opts"><button class="clasif-btn" onclick="clasif(1,'v')">✅ Se conservó</button><button class="clasif-btn" onclick="clasif(1,'r')">❌ Se destruyó</button></div>
+    <div class="clasif-fb" id="cf-1"></div>
+  </div>
+  <div class="clasif-item" id="ci-2">
+    <div class="clasif-texto">2. Tu cargador calienta mientras carga el celular. Entra energía eléctrica y parte se convierte en calor en el cargador.</div>
+    <div class="clasif-opts"><button class="clasif-btn" onclick="clasif(2,'v')">✅ Se conservó</button><button class="clasif-btn" onclick="clasif(2,'r')">❌ Se destruyó</button></div>
+    <div class="clasif-fb" id="cf-2"></div>
+  </div>
+  <div class="clasif-item" id="ci-3">
+    <div class="clasif-texto">3. Un café caliente se enfría hasta quedar a temperatura ambiente. El calor del café "desapareció".</div>
+    <div class="clasif-opts"><button class="clasif-btn" onclick="clasif(3,'v')">✅ Se conservó</button><button class="clasif-btn" onclick="clasif(3,'r')">❌ Se destruyó</button></div>
+    <div class="clasif-fb" id="cf-3"></div>
+  </div>
+  <div class="clasif-item" id="ci-4">
+    <div class="clasif-texto">4. La batería de un control remoto se agota. La energía química que tenía ya no está ahí.</div>
+    <div class="clasif-opts"><button class="clasif-btn" onclick="clasif(4,'v')">✅ Se conservó</button><button class="clasif-btn" onclick="clasif(4,'r')">❌ Se destruyó</button></div>
+    <div class="clasif-fb" id="cf-4"></div>
+  </div>
+  <div class="clasif-item" id="ci-5">
+    <div class="clasif-texto">5. El Sol ilumina la Tierra. Cada segundo el Sol "pierde" una cantidad enorme de energía que viaja por el espacio.</div>
+    <div class="clasif-opts"><button class="clasif-btn" onclick="clasif(5,'v')">✅ Se conservó</button><button class="clasif-btn" onclick="clasif(5,'r')">❌ Se destruyó</button></div>
+    <div class="clasif-fb" id="cf-5"></div>
+  </div>
+  <div id="fb-conservacion" class="res-box" style="margin-top:10px;"></div>
+  <div class="pill pill-az" style="margin-top:12px;">En tus palabras</div>
+  <label for="cons-palabras">Explica con tus propias palabras por qué la energía no puede crearse de la nada ni destruirse. Usa un ejemplo de tu vida cotidiana en la CDMX.</label>
+  <textarea class="inp ta" id="cons-palabras" placeholder="La energía no puede crearse ni destruirse porque… / Un ejemplo de mi colonia es…"></textarea>
+  <div class="err-msg" id="err-cons">Escribe al menos una idea completa.</div>
+  <div class="btn-wrap" id="btn-s2-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzarS2()">Calcular energía de mi aparato →</button>
+  </div>
+</div>
+
+<!-- S3a JOULES -->
+<div class="sec" id="s3a">
+  <div class="ptag">Medición · Unidad base: el Joule</div>
+  <div class="ptit">¿Cuántos Joules consume tu aparato?</div>
+  <p>Este es el aparato que te fue asignado. Con estos datos harás los tres cálculos — el panel de arriba irá guardando tus resultados para que no los pierdas.</p>
+  <div class="aparato-card">
+    <div class="ap-emoji" id="ap-emoji">⚡</div>
+    <div class="ap-nombre" id="ap-nombre">—</div>
+    <div class="ap-datos">
+      <div class="ap-dato"><span>Potencia</span><strong id="ap-watts">—</strong> W</div>
+      <div class="ap-dato"><span>Tiempo de uso</span><strong id="ap-horas">—</strong> hora(s)</div>
+    </div>
+  </div>
+  <div class="pill pill-az">¿Qué es un Joule?</div>
+  <div class="nota-az">El <strong>Joule (J)</strong> es la unidad básica de energía del Sistema Internacional. 1 Joule es la energía para levantar una manzana de 100 g un metro hacia arriba. Suena pequeño — los aparatos eléctricos consumen millones de Joules.</div>
+  <div class="formula-box">
+    <div class="fml">E (J) = Potencia (W) × Tiempo (s)</div>
+    <div class="ej">⚠️ El tiempo debe estar en SEGUNDOS, no en horas. Convierte primero: 1 hora = 3,600 s<br><br>Ejemplo con foco de 40 W encendido 2 horas:<br>Tiempo: 2 × 3,600 = 7,200 s<br>E = 40 W × 7,200 s = <strong style="color:#6EE7B7;">288,000 J</strong></div>
+  </div>
+  <div class="pill pill-mo">Tu cálculo</div>
+  <p id="s3a-enunciado">—</p>
+  <div class="verif-wrap">
+    <label for="ans-j">Tu resultado en Joules:</label>
+    <div class="verif-row">
+      <input class="inp inp-num" type="number" id="ans-j" placeholder="Ej: 288000">
+      <button class="btn-ver" onclick="verificarJ()">Verificar →</button>
+    </div>
+    <div id="res-j" class="res-box"></div>
+    <button class="pista-btn" id="pbtn-j1" style="display:none;" onclick="togglePista('pj1')">💡 Necesito una pista</button>
+    <div class="pista-box" id="pj1"></div>
+    <button class="pista-btn" id="pbtn-j2" style="display:none;" onclick="togglePista('pj2')">💡 Pista más detallada</button>
+    <div class="pista-box" id="pj2"></div>
+  </div>
+  <div class="btn-wrap" id="btn-s3a-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzar('s3a','s3b')">Convertir a calorías →</button>
+  </div>
+</div>
+
+<!-- S3b CALORÍAS -->
+<div class="sec" id="s3b">
+  <div class="ptag">Medición · Conversión: Joule → Caloría</div>
+  <div class="ptit">¿Cuántas calorías es eso?</div>
+  <div class="pill pill-az">¿Qué es una caloría?</div>
+  <div class="nota-az">La <strong>caloría (cal)</strong> es la energía para elevar 1 gramo de agua 1°C. Las etiquetas de alimentos usan kilocaloría (kcal = 1,000 cal). Relación: <strong>1 Joule = 0.239 calorías.</strong></div>
+  <div class="formula-box">
+    <div class="fml">E (cal) = E (J) × 0.239</div>
+    <div class="ej">Ejemplo con los mismos 288,000 J del foco:<br>E = 288,000 × 0.239 = <strong style="color:#6EE7B7;">68,832 cal = 68.8 kcal</strong><br>(Una tortilla tiene ~70 kcal — casi lo mismo que ese foco en 2 horas)</div>
+  </div>
+  <div class="pill pill-mo">Tu conversión</div>
+  <p id="s3b-enunciado">—</p>
+  <div class="nota-mo" id="s3b-recordatorio" style="margin-bottom:8px;"></div>
+  <div class="verif-wrap">
+    <label for="ans-cal">Tu resultado en calorías:</label>
+    <div class="verif-row">
+      <input class="inp inp-num" type="number" id="ans-cal" placeholder="Ej: 68832">
+      <button class="btn-ver" onclick="verificarCal()">Verificar →</button>
+    </div>
+    <div id="res-cal" class="res-box"></div>
+    <button class="pista-btn" id="pbtn-cal1" style="display:none;" onclick="togglePista('pcal1')">💡 Necesito una pista</button>
+    <div class="pista-box" id="pcal1"></div>
+    <button class="pista-btn" id="pbtn-cal2" style="display:none;" onclick="togglePista('pcal2')">💡 Pista más detallada</button>
+    <div class="pista-box" id="pcal2"></div>
+  </div>
+  <div class="btn-wrap" id="btn-s3b-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzar('s3b','s3c')">Convertir a kWh →</button>
+  </div>
+</div>
+
+<!-- S3c kWh -->
+<div class="sec" id="s3c">
+  <div class="ptag">Medición · Conversión: kilowatt-hora</div>
+  <div class="ptit">¿Cuántos kWh es eso?</div>
+  <div class="pill pill-az">¿Qué es un kWh?</div>
+  <div class="nota-az">El <strong>kilowatt-hora (kWh)</strong> es la unidad que usa CFE en tu recibo de luz. Da números pequeños y manejables. <strong>1 kWh = energía de un aparato de 1,000 W durante 1 hora.</strong></div>
+  <div class="formula-box">
+    <div class="fml">E (kWh) = Potencia (kW) × Tiempo (h)</div>
+    <div class="ej">Nota: 1 kW = 1,000 W → divide watts entre 1,000 para obtener kW.<br>Aquí el tiempo SÍ va en horas (no en segundos).<br><br>Ejemplo con el mismo foco de 40 W por 2 horas:<br>Potencia en kW: 40 ÷ 1,000 = 0.04 kW<br>E = 0.04 kW × 2 h = <strong style="color:#6EE7B7;">0.08 kWh</strong> (así aparece en el recibo)</div>
+  </div>
+  <div class="pill pill-mo">Tu conversión</div>
+  <p id="s3c-enunciado">—</p>
+  <div class="nota-mo" id="s3c-recordatorio" style="margin-bottom:8px;"></div>
+  <div class="verif-wrap">
+    <label for="ans-kwh">Tu resultado en kWh (usa punto decimal, no coma):</label>
+    <div class="verif-row">
+      <input class="inp inp-num" type="number" step="0.001" id="ans-kwh" placeholder="Ej: 0.08">
+      <button class="btn-ver" onclick="verificarKwh()">Verificar →</button>
+    </div>
+    <div id="res-kwh" class="res-box"></div>
+    <button class="pista-btn" id="pbtn-kwh1" style="display:none;" onclick="togglePista('pkwh1')">💡 Necesito una pista</button>
+    <div class="pista-box" id="pkwh1"></div>
+    <button class="pista-btn" id="pbtn-kwh2" style="display:none;" onclick="togglePista('pkwh2')">💡 Pista más detallada</button>
+    <div class="pista-box" id="pkwh2"></div>
+  </div>
+  <div class="btn-wrap" id="btn-s3c-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzar('s3c','s4')">Analizar el recibo de CFE →</button>
+  </div>
+</div>
+
+<!-- S4 RECIBO CFE -->
+<div class="sec" id="s4">
+  <div class="ptag">Aplicación · Recibo de luz CFE</div>
+  <div class="ptit">La energía en tu casa</div>
+  <p>Recibo representativo de una familia de la CDMX. El consumo es único para tu actividad.</p>
+  <div class="recibo-wrap">
+    <div class="recibo-hdr">
+      <div class="recibo-logo">CFE</div>
+      <div><div style="font-weight:700;font-size:.85rem;">Comisión Federal de Electricidad</div>
+      <div style="font-size:.74rem;opacity:.9;">Recibo de Energía Eléctrica · Servicio Doméstico</div></div>
+    </div>
+    <div class="recibo-body">
+      <div class="recibo-fila"><span>Período</span><span>Enero – Febrero 2025</span></div>
+      <div class="recibo-fila"><span>Días del período</span><span>61 días</span></div>
+      <div class="recibo-fila"><span>Tarifa</span><span id="rec-tarifa">—</span></div>
+      <div class="recibo-fila"><span>Lectura anterior</span><span><span id="rec-ant">—</span> kWh</span></div>
+      <div class="recibo-fila"><span>Lectura actual</span><span><span id="rec-act">—</span> kWh</span></div>
+      <div class="recibo-kwh"><div class="kwh-num" id="rec-kwh">—</div><div class="kwh-lbl">kWh consumidos en el bimestre</div></div>
+      <div class="recibo-fila"><span>Cargo fijo</span><span>$42.35</span></div>
+      <div class="recibo-fila"><span>Energía consumida</span><span id="rec-cargo">—</span></div>
+      <div class="recibo-fila total"><span>TOTAL A PAGAR</span><span id="rec-total">—</span></div>
+    </div>
+  </div>
+  <div class="pill pill-mo">Pregunta 1 · Lectura del recibo</div>
+  <p id="s4-p1-texto">—</p>
+  <div class="verif-wrap">
+    <label for="ans-rec">kWh promedio por día (redondea a 2 decimales):</label>
+    <div class="verif-row">
+      <input class="inp inp-num" type="number" step="0.01" id="ans-rec" placeholder="Ej: 2.95">
+      <button class="btn-ver" onclick="verificarRecibo()">Verificar →</button>
+    </div>
+    <div id="res-rec" class="res-box"></div>
+    <button class="pista-btn" id="pbtn-rec1" style="display:none;" onclick="togglePista('prec1')">💡 Necesito una pista</button>
+    <div class="pista-box" id="prec1">Un bimestre tiene <strong>61 días</strong>. Divide el total de kWh entre 61.</div>
+    <button class="pista-btn" id="pbtn-rec2" style="display:none;" onclick="togglePista('prec2')">💡 Pista más detallada</button>
+    <div class="pista-box" id="prec2"></div>
+  </div>
+  <hr class="div">
+  <div class="pill pill-az">Pregunta 2 · Compara tu aparato con el recibo</div>
+  <p id="s4-p2-texto">—</p>
+  <textarea class="inp ta" id="ans-rec2" placeholder="Mi aparato consume… / Si lo usara todos los días 61 días sería… / Comparado con el recibo, eso representa…"></textarea>
+  <div class="err-msg" id="err-rec2">Escribe tu comparación.</div>
+  <div class="btn-wrap" id="btn-s4-wrap" style="display:none;">
+    <button class="btn btn-mo" onclick="avanzarS4()">Ver mi ficha de estudio →</button>
+  </div>
+</div>
+
+<!-- FICHA DE ESTUDIO -->
+<div class="sec" id="s-ficha">
+  <div class="ptag">Ficha de estudio · Para copiar en cuaderno</div>
+  <div class="ptit">Tu material de estudio personalizado</div>
+  <div class="ficha-aviso">
+    <h3>✏️ Ahora toca copiar en tu cuaderno</h3>
+    <p>Esta ficha incluye las definiciones, fórmulas y <strong>tus propios resultados como ejemplo resuelto</strong>. Cópiala completa en tu cuaderno. En la próxima clase presencial el Prof. Cruz revisa el cuaderno — forma parte de tu calificación. No basta con capturar pantalla.</p>
+  </div>
+  <div class="ficha-sec">
+    <h4>📐 Las tres unidades de medición de energía</h4>
+    <div class="ficha-def">
+      <div class="ficha-ico">⚡</div>
+      <div><div class="f-nombre">Joule (J) — unidad base del Sistema Internacional</div>
+      <div class="f-def">Energía para levantar una manzana de 100 g un metro hacia arriba. Los aparatos eléctricos consumen millones de Joules.</div>
+      <div class="f-cdmx">Ejemplo CDMX: el microbús que frena libera millones de Joules como calor en sus frenos.</div></div>
+    </div>
+    <div class="ficha-def">
+      <div class="ficha-ico">🌡️</div>
+      <div><div class="f-nombre">Caloría (cal) — unidad térmica</div>
+      <div class="f-def">Energía para elevar 1 gramo de agua 1°C. Las etiquetas de alimentos usan kcal (= 1,000 cal). Relación: 1 J = 0.239 cal · 1 cal = 4.18 J.</div>
+      <div class="f-cdmx">Ejemplo CDMX: una tortilla de maíz tiene ~70 kcal. Un tamal, ~250 kcal.</div></div>
+    </div>
+    <div class="ficha-def">
+      <div class="ficha-ico">🧾</div>
+      <div><div class="f-nombre">Kilowatt-hora (kWh) — unidad del recibo de luz</div>
+      <div class="f-def">Energía de un aparato de 1,000 W funcionando 1 hora. Es la unidad que cobra CFE. Da números pequeños y prácticos.</div>
+      <div class="f-cdmx">Ejemplo CDMX: el precio promedio por kWh en CDMX es ~$2.50. Cada kWh que usas aparece en tu recibo.</div></div>
+    </div>
+  </div>
+  <div class="ficha-sec">
+    <h4>📋 Las tres fórmulas</h4>
+    <div class="ficha-formula">
+      <div class="fml">1. E (J) = Potencia (W) × Tiempo (s)</div>
+      <div class="paso">⚠️ El tiempo DEBE estar en segundos: 1 hora = 3,600 s · Convierte primero, luego multiplica.</div>
+    </div>
+    <div class="ficha-formula">
+      <div class="fml">2. E (cal) = E (J) × 0.239</div>
+      <div class="paso">Multiplica los Joules por 0.239. Para pasar a kcal, divide entre 1,000.</div>
+    </div>
+    <div class="ficha-formula">
+      <div class="fml">3. E (kWh) = Potencia (kW) × Tiempo (h)</div>
+      <div class="paso">⚠️ Aquí el tiempo SÍ va en horas. Convierte watts a kilowatts dividiendo entre 1,000.</div>
+    </div>
+  </div>
+  <div class="ficha-resultado">
+    <h4>🎯 Mi ejemplo resuelto · <span id="ficha-ap-nombre">—</span></h4>
+    <div class="fres-cadena" id="fres-cadena"></div>
+    <div class="equiv-box" id="ficha-equiv"></div>
+  </div>
+  <div class="ficha-sec">
+    <h4>🔒 Ley de Conservación de la Energía</h4>
+    <div style="font-size:.83rem;line-height:1.75;color:var(--dark);">
+      <strong>"La energía no se crea ni se destruye, solo se transforma o se transfiere."</strong><br>
+      Lo que parece que se "pierde" siempre termina como calor disperso al ambiente.<br>
+      La energía total del universo siempre es la misma.<br><br>
+      <strong>¿Por qué se agota la batería entonces?</strong><br>
+      La energía química útil se transformó en calor disperso que ya no podemos reunir ni aprovechar. La batería ya no la tiene, pero esa energía sigue existiendo en el ambiente.
+    </div>
+  </div>
+  <div class="btn-wrap">
+    <button class="btn btn-mo" onclick="avanzar('s-ficha','s5')">Ya copié en mi cuaderno → Continuar al cierre</button>
+  </div>
+</div>
+
+<!-- S5 CIERRE -->
+<div class="sec" id="s5">
+  <div class="ptag">Cierre · Síntesis del Propósito Formativo 1</div>
+  <div class="ptit">Lo que construiste en S01, S02 y S03</div>
+  <div class="nota-v">Completaste el <strong>Propósito Formativo 1</strong> de CNEyT II. En tres sesiones pasaste de identificar tipos de energía → construir cadenas → formalizar la Ley de Conservación y medir en unidades reales.</div>
+  <div class="pill pill-mo">01 · Conecta las tres sesiones</div>
+  <label for="c-hilo">En S01 viste distintas formas de energía. En S02 construiste cadenas y notaste que siempre terminan en calor disperso. En S03 formalizaste eso. ¿Cómo se conectan esas tres ideas? Exprésalo en 2-3 oraciones.</label>
+  <textarea class="inp ta" id="c-hilo" placeholder="Las tres sesiones se conectan porque… / Primero vi que… luego entendí que… y ahora puedo decir que…"></textarea>
+  <div class="err-msg" id="err-hilo">Conecta las tres sesiones.</div>
+  <div class="pill pill-az">02 · Anticipación de S04</div>
+  <div class="nota-az"><strong>Lo que viene:</strong> Si la energía siempre se conserva, ¿por qué necesitamos seguir quemando combustibles? ¿No podríamos reciclar la energía? La S04 arranca con esa pregunta.</div>
+  <label for="c-anticipa">¿Por qué crees que no podemos reciclar el calor disperso para volver a usarlo?</label>
+  <textarea class="inp ta" id="c-anticipa" placeholder="Creo que no podemos reciclar ese calor porque…"></textarea>
+  <div class="err-msg" id="err-anticipa">Escribe tu razonamiento.</div>
+  <div class="pill pill-n">03 · Honestidad</div>
+  <label for="c-dificil">¿Qué fue lo más difícil de esta sesión?</label>
+  <textarea class="inp ta" id="c-dificil" placeholder="Lo más difícil fue…" style="min-height:50px;"></textarea>
+  <div class="err-msg" id="err-dificil">Responde brevemente.</div>
+  <div class="btn-wrap">
+    <button class="btn btn-v btn-blk" onclick="finalizar()">✅ Generar resumen para Classroom</button>
+  </div>
+</div>
+
+<!-- RESUMEN FINAL -->
+<div class="sec" id="s-final">
+  <div class="ptag">Resumen · Para subir a Classroom</div>
+  <div class="ptit">Actividad S03 completada</div>
+  <div class="pill pill-v">Tus 4 códigos de verificación</div>
+  <div class="codigos-grid" id="codigos-grid"></div>
+  <div class="pill pill-mo">Resumen completo</div>
+  <p style="font-size:.76rem;color:var(--gris);margin-bottom:8px;">La columna <strong style="color:var(--v);">Referencia docente</strong> solo aparece aquí.</p>
+  <table class="res-tabla">
+    <thead><tr><th>Pregunta / Cálculo</th><th>Tu respuesta</th><th>Referencia docente</th></tr></thead>
+    <tbody id="tbody-res"></tbody>
+  </table>
+  <div style="margin-top:12px;background:var(--mo3);border-radius:10px;padding:13px 15px;">
+    <strong style="color:var(--mo);font-size:.84rem;">📤 Para entregar:</strong>
+    <ol style="font-size:.81rem;color:var(--dark);margin-top:7px;padding-left:16px;line-height:1.9;">
+      <li>Captura de pantalla de esta página completa.</li>
+      <li>Súbela a <strong>Classroom → Tarea S03</strong>.</li>
+      <li>Fecha límite: <strong>lunes, todo el día</strong>.</li>
+      <li>Próxima clase presencial: <strong>cuaderno con la ficha de estudio copiada</strong>.</li>
+    </ol>
+  </div>
+  <div style="margin-top:8px;font-weight:800;color:var(--n);font-size:.82rem;">⚠️ Sin los 4 códigos la actividad no cuenta como completa.</div>
+</div>
+</div>
+
+<script>
+var ALUMNOS=[
+  {n:1,nombre:"AARON ROJAS XIMENA VALENTINA",pila:"Ximena"},
+  {n:2,nombre:"ANTONIO BENITEZ VANESSA",pila:"Vanessa"},
+  {n:3,nombre:"ARVIZU LOPEZ ANA ROSA",pila:"Ana Rosa"},
+  {n:4,nombre:"AVILES ORTIZ PALOMA IRAIS",pila:"Paloma"},
+  {n:5,nombre:"BARRERA VELAZQUEZ NATALY MAYTE",pila:"Nataly"},
+  {n:6,nombre:"BAUTISTA ANGUIANO IAN LISSANDRO",pila:"Ian"},
+  {n:7,nombre:"CASTRO PEREZ MARIA FERNANDA",pila:"María Fernanda"},
+  {n:8,nombre:"CORTEZ LUNA YARETZI",pila:"Yaretzi"},
+  {n:9,nombre:"CRUZ SARABIA CAMILA LUPITA",pila:"Camila"},
+  {n:10,nombre:"DOMINGUEZ OLMOS MONICA CITLALLI",pila:"Mónica"},
+  {n:11,nombre:"ENRIQUEZ TREJO MARIA ROMINA",pila:"Romina"},
+  {n:12,nombre:"FRANCO HERNANDEZ MIRANDA",pila:"Miranda"},
+  {n:13,nombre:"FUENTES ROSAS JOSE EDUARDO",pila:"Eduardo"},
+  {n:14,nombre:"GASPAR CRUZ YOALI",pila:"Yoali"},
+  {n:15,nombre:"GONZALEZ ANAYA EDITH ESTRELLA",pila:"Edith"},
+  {n:16,nombre:"GONZALEZ MARTINEZ SOFIA VALENTINA",pila:"Sofía"},
+  {n:17,nombre:"HERNANDEZ ESPINO ARIADNA LAILA",pila:"Ariadna"},
+  {n:18,nombre:"HERNANDEZ HERNANDEZ DIANA",pila:"Diana"},
+  {n:19,nombre:"JIMENEZ ERAZO FRANCISCO JAZIEL",pila:"Jaziel"},
+  {n:20,nombre:"JIMENEZ GONZALEZ EVELYN DANAE",pila:"Evelyn"},
+  {n:21,nombre:"MANZANO JULIAN ANA VALERIA",pila:"Ana Valeria"},
+  {n:22,nombre:"MARTINEZ CASTRO SANTIAGO",pila:"Santiago"},
+  {n:23,nombre:"MARTINEZ GUTIERREZ REGINA",pila:"Regina"},
+  {n:24,nombre:"MENDEZ HERNANDEZ NATALY GUADALUPE",pila:"Nataly G."},
+  {n:25,nombre:"MIRANDA NAVARRETE AXEL",pila:"Axel"},
+  {n:26,nombre:"MONRROY SALVADOR ANGEL",pila:"Ángel"},
+  {n:27,nombre:"MORALES MEDINA ANA",pila:"Ana"},
+  {n:28,nombre:"MORALES SEGURA ZADKIEL CALEB",pila:"Zadkiel"},
+  {n:29,nombre:"MORENO HERNANDEZ SIENKAN AARON",pila:"Sienkan"},
+  {n:30,nombre:"OJEDA NAVARRETE ROBERTO",pila:"Roberto"},
+  {n:31,nombre:"PACHECO ALANIS REGINA",pila:"Regina P."},
+  {n:32,nombre:"PEREZ FLORES ANA PAULA",pila:"Ana Paula"},
+  {n:33,nombre:"RANGEL RESENDIZ AMAIRANI",pila:"Amairani"},
+  {n:34,nombre:"ROMERO ALVAREZ DONOVAN",pila:"Donovan"},
+  {n:35,nombre:"ROSALES MEJIA SANDRA",pila:"Sandra"},
+  {n:36,nombre:"SANCHEZ SARABIA ROMINA SOFIA",pila:"Romina S."},
+  {n:37,nombre:"SEGURA HERNANDEZ CRISTIAN ALEXANDER",pila:"Cristian"},
+  {n:38,nombre:"SILVA VILLARREAL JESUS DAVID",pila:"David"},
+  {n:39,nombre:"TREJO ROJAS MATHIAS ISRAEL",pila:"Mathias"},
+  {n:40,nombre:"VAZQUEZ MORALES DIEGO ERICK",pila:"Diego"},
+  {n:41,nombre:"ZERPA HERNANDEZ FREINNER JOVANNY",pila:"Freinner"}
+];
+var APARATOS=[
+  {nombre:"ventilador de techo",watts:80,emoji:"🌀"},
+  {nombre:"televisión LED 32 pulgadas",watts:60,emoji:"📺"},
+  {nombre:"computadora portátil",watts:65,emoji:"💻"},
+  {nombre:"5 focos LED encendidos",watts:50,emoji:"💡"},
+  {nombre:"radio con bocinas",watts:40,emoji:"🔊"},
+  {nombre:"cargador de celular",watts:15,emoji:"🔌"},
+  {nombre:"lámpara de escritorio",watts:45,emoji:"🪔"},
+  {nombre:"ventilador de mesa",watts:35,emoji:"💨"},
+  {nombre:"calefactor eléctrico",watts:150,emoji:"🌡️"},
+  {nombre:"consola o reproductor",watts:100,emoji:"🎮"}
+];
+var HORAS=[1,2,3,4,5,6];
+function sr(s){var x=Math.sin(s*127.1+311.7)*43758.5;return x-Math.floor(x);}
+function cod(val,n,salt){var v=Math.round(val);return((v*31+n*97+salt*53)%9000+9000)%9000+1000;}
+function generarDatos(n){
+  if(n===0){return{ap:{nombre:"televisión LED 60W",watts:60,emoji:"📺"},h:4,eJ:864000,eCal:206496,eKwh:0.24,eKwhInt:240,kwhRec:180,kwhDia:180/61,kwhDiaInt:295,n:0,codJ:1053,codCal:3482,codKwh:8599,codRec:1357};}
+  var ap=APARATOS[Math.floor(sr(n*3+1)*APARATOS.length)];
+  var h=HORAS[Math.floor(sr(n*7+2)*HORAS.length)];
+  var eJ=ap.watts*h*3600;
+  var eCal=Math.round(eJ*0.239);
+  var eKwh=parseFloat((ap.watts/1000*h).toFixed(3));
+  var eKwhInt=Math.round(eKwh*1000);
+  var kwhRec=150+Math.floor(sr(n*11+5)*200);
+  var kwhDia=kwhRec/61;
+  var kwhDiaInt=Math.round(kwhDia*100);
+  return{ap:ap,h:h,eJ:eJ,eCal:eCal,eKwh:eKwh,eKwhInt:eKwhInt,kwhRec:kwhRec,kwhDia:kwhDia,kwhDiaInt:kwhDiaInt,n:n,codJ:cod(eJ,n,1),codCal:cod(eCal,n,2),codKwh:cod(eKwhInt,n,3),codRec:cod(kwhDiaInt,n,4)};
+}
+var PASOS=["s0","s1","s2","s3a","s3b","s3c","s4","s-ficha","s5","s-final"];
+var pasoActual=0,alumno=null,datos=null;
+var intentosJ=0,intentosCal=0,intentosKwh=0,intentosRec=0;
+var codsOk={j:false,cal:false,kwh:false,rec:false};
+var clasifOk=[false,false,false,false,false];
+
+function buscarAlumno(){
+  var q=document.getElementById("inp-busca").value.trim().toUpperCase();
+  var dd=document.getElementById("lista-dropdown");
+  var btn=document.getElementById("btn-inicio");
+  var fb=document.getElementById("login-fb");
+  dd.innerHTML="";dd.style.display="none";btn.disabled=true;fb.style.display="none";
+  if(!q)return;
+  if(q==="890"){alumno={n:0,nombre:"PROF. ADRIÁN CRUZ",pila:"Prof. Cruz"};fb.textContent="✅ Modo docente — Prof. Cruz";fb.style.display="block";btn.disabled=false;return;}
+  var matches=ALUMNOS.filter(function(a){return a.nombre.indexOf(q)===0;});
+  if(matches.length===0){fb.textContent="No se encontró ese apellido. Escribe el primer apellido exacto.";fb.style.color="var(--r)";fb.style.display="block";return;}
+  dd.style.display="block";
+  matches.forEach(function(a){
+    var d=document.createElement("div");d.className="alumno-item";d.textContent=a.nombre;
+    d.onclick=function(){document.getElementById("inp-busca").value=a.nombre;dd.style.display="none";alumno=a;btn.disabled=false;};
+    dd.appendChild(d);
+  });
+}
+
+function iniciarActividad(){
+  if(!alumno)return;
+  datos=generarDatos(alumno.n);
+  document.getElementById("chip-label").textContent="👤 "+alumno.nombre;
+  document.getElementById("chip-sub").textContent="No. Lista: "+(alumno.n===0?"DOCENTE":alumno.n)+" · Grupo 208 · CNEyT II";
+  document.getElementById("chip-alumno").style.display="block";
+  document.getElementById("pac-ap-txt").textContent=datos.ap.emoji+" "+datos.ap.nombre+" · "+datos.ap.watts+"W · "+datos.h+"h";
+  document.getElementById("panel-acum").style.display="block";
+  document.getElementById("ap-emoji").textContent=datos.ap.emoji;
+  document.getElementById("ap-nombre").textContent=datos.ap.nombre;
+  document.getElementById("ap-watts").textContent=datos.ap.watts;
+  document.getElementById("ap-horas").textContent=datos.h;
+  var hs=datos.h>1?"s":"";
+  document.getElementById("s3a-enunciado").innerHTML="Si tu <strong>"+datos.ap.nombre+"</strong> ("+datos.ap.watts+" W) estuviera encendido <strong>"+datos.h+" hora"+hs+"</strong>, ¿cuántos Joules consumiría?";
+  document.getElementById("s3b-enunciado").innerHTML="Convierte los <strong>"+datos.eJ.toLocaleString()+" J</strong> que calculaste a calorías.";
+  document.getElementById("s3b-recordatorio").innerHTML="Recuerda: tu aparato es <strong>"+datos.ap.nombre+"</strong> y calculaste <strong>"+datos.eJ.toLocaleString()+" J</strong>.";
+  document.getElementById("s3c-enunciado").innerHTML="¿Cuántos kWh consume tu <strong>"+datos.ap.nombre+"</strong> en "+datos.h+" hora"+hs+"?";
+  document.getElementById("s3c-recordatorio").innerHTML="Recuerda: <strong>"+datos.ap.nombre+"</strong> · "+datos.ap.watts+" W · "+datos.h+" hora"+hs+" · Joules calculados: <strong>"+datos.eJ.toLocaleString()+" J</strong>.";
+  document.getElementById("pj1").innerHTML="La fórmula es E(J) = Potencia(W) × Tiempo(s). El tiempo debe estar en <strong>segundos</strong>. Convierte primero: "+datos.h+" hora"+hs+" × 3,600 = ¿cuántos segundos?";
+  document.getElementById("pj2").innerHTML="Paso a paso:<br>1. Tiempo en s: "+datos.h+" × 3,600 = <strong>"+(datos.h*3600).toLocaleString()+" s</strong><br>2. E = "+datos.ap.watts+" × "+(datos.h*3600).toLocaleString()+" = [tu resultado] J";
+  document.getElementById("pcal1").innerHTML="Multiplica los Joules que calculaste por <strong>0.239</strong>. Eso los convierte a calorías.";
+  document.getElementById("pcal2").innerHTML="E(cal) = "+datos.eJ.toLocaleString()+" × 0.239 = [tu resultado] cal";
+  document.getElementById("pkwh1").innerHTML="Divide los watts entre 1,000 para obtener kilowatts. Luego multiplica por las horas (aquí SÍ van horas).";
+  document.getElementById("pkwh2").innerHTML="E(kWh) = ("+datos.ap.watts+" ÷ 1,000) × "+datos.h+" = "+(datos.ap.watts/1000)+" × "+datos.h+" = [tu resultado] kWh";
+  var kwhRec=datos.kwhRec;
+  var lecAnt=Math.floor(1000+sr(alumno.n*5+3)*4000);
+  document.getElementById("rec-tarifa").textContent=kwhRec>250?"DAC (alto consumo)":"1C (doméstico base)";
+  document.getElementById("rec-ant").textContent=lecAnt.toLocaleString();
+  document.getElementById("rec-act").textContent=(lecAnt+kwhRec).toLocaleString();
+  document.getElementById("rec-kwh").textContent=kwhRec;
+  document.getElementById("rec-cargo").textContent="$"+(kwhRec*2.45).toFixed(2);
+  document.getElementById("rec-total").textContent="$"+(kwhRec*2.45+42.35).toFixed(2);
+  document.getElementById("prec2").innerHTML="kWh por día = "+kwhRec+" ÷ 61 = [tu resultado]";
+  document.getElementById("s4-p1-texto").innerHTML="Esta familia consumió <strong>"+kwhRec+" kWh</strong> en 61 días. ¿Cuántos kWh consumió en promedio por día? (Redondea a 2 decimales)";
+  document.getElementById("s4-p2-texto").innerHTML="Tu <strong>"+datos.ap.nombre+"</strong> consume <strong>"+datos.eKwh.toFixed(3)+" kWh</strong> en "+datos.h+" hora"+hs+". Si lo usaras así todos los días durante 61 días, ¿cuántos kWh agregaría al recibo? ¿Qué porcentaje del recibo total ("+kwhRec+" kWh) representaría?";
+  avanzar("s0","s1");
+}
+
+function avanzar(desde,hacia){
+  document.getElementById(desde).classList.remove("active");
+  var sig=document.getElementById(hacia);sig.classList.add("active");
+  pasoActual=PASOS.indexOf(hacia);
+  var total=PASOS.length-1;
+  document.getElementById("prog-fill").style.width=Math.round(pasoActual/total*100)+"%";
+  document.getElementById("prog-txt").textContent="Paso "+pasoActual+" de "+total;
+  sig.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function togglePista(id){var el=document.getElementById(id);el.style.display=el.style.display==="block"?"none":"block";}
+function mostrarPistas(i,id1,id2){if(i>=1)document.getElementById(id1).style.display="inline-block";if(i>=2)document.getElementById(id2).style.display="inline-block";}
+function actualizarPanel(campo,valor,codigoVal){
+  var el=document.getElementById("pac-"+campo);
+  el.classList.remove("pend");el.classList.add("ok");
+  el.innerHTML=valor+' <span class="cod-sm">'+codigoVal+"</span>";
+}
+
+var FB_C=["","La energía química de la batería no desaparece — se convierte en eléctrica útil y en calor que calienta el ambiente. Ese calor sigue existiendo, pero ya no podemos aprovecharlo.","Exacto. En los tres casos la energía útil terminó como calor disperso al ambiente. La cantidad total no cambió."];
+function respC(btn,letra,num){
+  var correcto=(num===1&&letra==="B")||(num===2&&letra==="A");
+  var fb=document.getElementById("fb-c"+num);
+  var opts=document.getElementById("opts-c"+num);
+  Array.from(opts.querySelectorAll(".opcion-btn")).forEach(function(b){b.disabled=true;b.style.opacity="0.6";});
+  btn.style.opacity="1";fb.style.display="block";
+  if(correcto){
+    btn.className="opcion-btn correcta";fb.className="res-box res-ok";fb.textContent="✅ Correcto. "+FB_C[num];
+    if(num===1){setTimeout(function(){document.getElementById("blq-c2").style.display="block";},600);}
+    if(num===2){setTimeout(function(){document.getElementById("btn-s1-wrap").style.display="block";},600);}
+  }else{
+    btn.className="opcion-btn incorrecta";fb.className="res-box res-mal";
+    fb.textContent="❌ Recuerda que la energía no puede destruirse — eso violaría la Ley de Conservación. Intenta de nuevo.";
+    setTimeout(function(){Array.from(opts.querySelectorAll(".opcion-btn")).forEach(function(b){if(!b.classList.contains("incorrecta")&&!b.classList.contains("correcta")){b.disabled=false;b.style.opacity="1";}});},1600);
+  }
+}
+
+var FB_CL=["La energía cinética se transformó en calor por la fricción con el suelo.","La energía eléctrica no utilizada se transformó en calor en los cables del cargador.","El calor del café se transfirió al aire que lo rodea — el cuarto se calentó un poco.","La energía química se transformó en señal infrarroja útil y en calor disperso.","La energía solar viaja como radiación por el espacio — no se destruye."];
+function clasif(n,resp){
+  var ci=document.getElementById("ci-"+n);
+  var fb=document.getElementById("cf-"+n);
+  var btns=ci.querySelectorAll(".clasif-btn");
+  btns.forEach(function(b){b.disabled=true;});
+  fb.style.display="block";
+  if(resp==="v"){
+    ci.classList.add("ok");btns[0].classList.add("sel-v");
+    fb.style.color="var(--v)";fb.textContent="✅ "+FB_CL[n-1];
+    clasifOk[n-1]=true;
+    if(clasifOk.every(function(x){return x;})){
+      var ft=document.getElementById("fb-conservacion");
+      ft.className="res-box res-ok";ft.textContent="✅ Perfecto. En los 5 casos la energía se conservó — solo cambió de forma o pasó a otro objeto.";ft.style.display="block";
+      document.getElementById("btn-s2-wrap").style.display="block";
+    }
+  }else{
+    btns[1].classList.add("sel-r");fb.style.color="var(--r)";
+    fb.textContent="❌ La energía no se destruyó. "+FB_CL[n-1]+" Intenta de nuevo.";
+    setTimeout(function(){btns.forEach(function(b){b.disabled=false;b.classList.remove("sel-r","sel-v");});fb.style.display="none";},1800);
+  }
+}
+
+function avanzarS2(){
+  var t=document.getElementById("cons-palabras").value.trim();
+  var e=document.getElementById("err-cons");
+  if(t.length<15){e.style.display="block";document.getElementById("cons-palabras").classList.add("err");return;}
+  e.style.display="none";document.getElementById("cons-palabras").classList.remove("err");
+  avanzar("s2","s3a");
+}
+
+function verificarJ(){
+  var val=parseFloat(document.getElementById("ans-j").value);
+  var res=document.getElementById("res-j");var inp=document.getElementById("ans-j");
+  if(isNaN(val)){res.className="res-box res-mal";res.textContent="Escribe un número.";res.style.display="block";return;}
+  intentosJ++;
+  if(Math.abs(val-datos.eJ)/datos.eJ<=0.03){
+    inp.className="inp inp-num ok";res.className="res-box res-ok";
+    res.innerHTML="✅ ¡Correcto! E = "+datos.eJ.toLocaleString()+" J<br>Código: <span class='codigo-badge'>"+datos.codJ+"</span>";res.style.display="block";
+    codsOk.j=true;actualizarPanel("j",datos.eJ.toLocaleString()+" J",datos.codJ);
+    document.getElementById("btn-s3a-wrap").style.display="block";
+  }else{
+    inp.className="inp inp-num err";res.className="res-box res-mal";
+    var hint=val<datos.eJ*0.1?"El resultado es muy pequeño. ¿Convertiste horas a segundos?":val>datos.eJ*10?"El resultado es muy grande. Revisa las unidades.":"Revisa el procedimiento paso a paso.";
+    res.innerHTML="❌ No es correcto todavía. "+hint+" (intento "+intentosJ+")";res.style.display="block";
+    mostrarPistas(intentosJ,"pbtn-j1","pbtn-j2");
+    if(intentosJ>=3){res.innerHTML+="<br><small>Respuesta: "+datos.eJ.toLocaleString()+" J (sin código — revisa con la pista).</small>";document.getElementById("btn-s3a-wrap").style.display="block";}
+  }
+}
+
+function verificarCal(){
+  var val=parseFloat(document.getElementById("ans-cal").value);
+  var res=document.getElementById("res-cal");var inp=document.getElementById("ans-cal");
+  if(isNaN(val)){res.className="res-box res-mal";res.textContent="Escribe un número.";res.style.display="block";return;}
+  intentosCal++;
+  if(Math.abs(val-datos.eCal)/datos.eCal<=0.05){
+    inp.className="inp inp-num ok";res.className="res-box res-ok";
+    res.innerHTML="✅ ¡Correcto! E = "+datos.eCal.toLocaleString()+" cal<br>Código: <span class='codigo-badge'>"+datos.codCal+"</span>";res.style.display="block";
+    codsOk.cal=true;actualizarPanel("cal",datos.eCal.toLocaleString()+" cal",datos.codCal);
+    document.getElementById("btn-s3b-wrap").style.display="block";
+  }else{
+    inp.className="inp inp-num err";res.className="res-box res-mal";
+    res.innerHTML="❌ Revisa. ¿Multiplicaste los Joules por 0.239? (intento "+intentosCal+")";res.style.display="block";
+    mostrarPistas(intentosCal,"pbtn-cal1","pbtn-cal2");
+    if(intentosCal>=3){res.innerHTML+="<br><small>Respuesta: "+datos.eCal.toLocaleString()+" cal (sin código).</small>";document.getElementById("btn-s3b-wrap").style.display="block";}
+  }
+}
+
+function verificarKwh(){
+  var val=parseFloat(document.getElementById("ans-kwh").value);
+  var res=document.getElementById("res-kwh");var inp=document.getElementById("ans-kwh");
+  if(isNaN(val)){res.className="res-box res-mal";res.textContent="Escribe un número.";res.style.display="block";return;}
+  intentosKwh++;
+  if(Math.abs(val-datos.eKwh)<=datos.eKwh*0.04+0.005){
+    inp.className="inp inp-num ok";res.className="res-box res-ok";
+    res.innerHTML="✅ ¡Correcto! E = "+datos.eKwh.toFixed(3)+" kWh<br>Código: <span class='codigo-badge'>"+datos.codKwh+"</span>";res.style.display="block";
+    codsOk.kwh=true;actualizarPanel("kwh",datos.eKwh.toFixed(3)+" kWh",datos.codKwh);
+    document.getElementById("btn-s3c-wrap").style.display="block";
+  }else{
+    inp.className="inp inp-num err";res.className="res-box res-mal";
+    res.innerHTML="❌ Recuerda dividir watts entre 1,000 antes de multiplicar. (intento "+intentosKwh+")";res.style.display="block";
+    mostrarPistas(intentosKwh,"pbtn-kwh1","pbtn-kwh2");
+    if(intentosKwh>=3){res.innerHTML+="<br><small>Respuesta: "+datos.eKwh.toFixed(3)+" kWh (sin código).</small>";document.getElementById("btn-s3c-wrap").style.display="block";}
+  }
+}
+
+function verificarRecibo(){
+  var val=parseFloat(document.getElementById("ans-rec").value);
+  var res=document.getElementById("res-rec");
+  if(isNaN(val)){res.className="res-box res-mal";res.textContent="Escribe un número.";res.style.display="block";return;}
+  intentosRec++;
+  if(Math.abs(val-datos.kwhDia)/datos.kwhDia<=0.04){
+    document.getElementById("ans-rec").className="inp inp-num ok";res.className="res-box res-ok";
+    res.innerHTML="✅ Correcto: "+datos.kwhDia.toFixed(2)+" kWh/día<br>Código: <span class='codigo-badge'>"+datos.codRec+"</span>";res.style.display="block";
+    codsOk.rec=true;document.getElementById("btn-s4-wrap").style.display="block";
+  }else{
+    res.className="res-box res-mal";res.innerHTML="❌ ¿Dividiste entre 61 días? (intento "+intentosRec+")";res.style.display="block";
+    mostrarPistas(intentosRec,"pbtn-rec1","pbtn-rec2");
+    if(intentosRec>=3){res.innerHTML+="<br><small>Respuesta: "+datos.kwhDia.toFixed(2)+" kWh/día (sin código).</small>";document.getElementById("btn-s4-wrap").style.display="block";}
+  }
+}
+
+function avanzarS4(){
+  var r2=document.getElementById("ans-rec2").value.trim();
+  var er2=document.getElementById("err-rec2");
+  if(r2.length<15){er2.style.display="block";document.getElementById("ans-rec2").classList.add("err");return;}
+  er2.style.display="none";document.getElementById("ans-rec2").classList.remove("err");
+  construirFicha();avanzar("s4","s-ficha");
+}
+
+function construirFicha(){
+  document.getElementById("ficha-ap-nombre").textContent=datos.ap.emoji+" "+datos.ap.nombre+" ("+datos.ap.watts+"W · "+datos.h+"h)";
+  var kwhBim=(datos.eKwh*61).toFixed(2);
+  var pct=((datos.eKwh*61)/datos.kwhRec*100).toFixed(1);
+  var cadena=[
+    {lbl:"Potencia",val:datos.ap.watts+" W",cod:null},
+    {lbl:"Tiempo",val:datos.h+"h = "+(datos.h*3600).toLocaleString()+"s",cod:null},
+    {lbl:"Joules",val:datos.eJ.toLocaleString()+" J",cod:codsOk.j?datos.codJ:null},
+    {lbl:"Calorías",val:datos.eCal.toLocaleString()+" cal",cod:codsOk.cal?datos.codCal:null},
+    {lbl:"kWh",val:datos.eKwh.toFixed(3)+" kWh",cod:codsOk.kwh?datos.codKwh:null}
+  ];
+  var h2="";
+  for(var i=0;i<cadena.length;i++){
+    if(i>0)h2+='<span class="fres-flecha">→</span>';
+    h2+='<div class="fres-paso"><div class="fp-lbl">'+cadena[i].lbl+'</div><div class="fp-val">'+cadena[i].val+'</div>';
+    if(cadena[i].cod)h2+='<div class="fp-cod">✅ '+cadena[i].cod+'</div>';
+    h2+='</div>';
+  }
+  document.getElementById("fres-cadena").innerHTML=h2;
+  document.getElementById("ficha-equiv").innerHTML=
+    "<strong>¿Qué significa esto en la vida real?</strong><br>"+
+    "Tu "+datos.ap.nombre+" en "+datos.h+"h gastó <strong>"+datos.eKwh.toFixed(3)+" kWh</strong>.<br>"+
+    "Si lo usaras así todos los días, en 61 días consumiría <strong>"+kwhBim+" kWh</strong> — "+
+    "el <strong>"+pct+"%</strong> del recibo de la familia de ejemplo ("+datos.kwhRec+" kWh).<br>"+
+    "En pesos CFE: ~$"+(datos.eKwh*2.45).toFixed(2)+" por esa sesión de "+datos.h+"h.";
+}
+
+function finalizar(){
+  var campos=[{id:"c-hilo",err:"err-hilo",min:20},{id:"c-anticipa",err:"err-anticipa",min:15},{id:"c-dificil",err:"err-dificil",min:4}];
+  var ok=true;
+  campos.forEach(function(c){
+    var el=document.getElementById(c.id);var er=document.getElementById(c.err);
+    if(!el.value||el.value.trim().length<c.min){er.style.display="block";el.classList.add("err");ok=false;}
+    else{er.style.display="none";el.classList.remove("err");}
+  });
+  if(!ok){document.querySelector(".err").scrollIntoView({behavior:"smooth",block:"center"});return;}
+  var cods=[
+    {lbl:"⚡ Joules",c:codsOk.j?datos.codJ:"—",ok:codsOk.j},
+    {lbl:"🌡️ Calorías",c:codsOk.cal?datos.codCal:"—",ok:codsOk.cal},
+    {lbl:"🔌 kWh",c:codsOk.kwh?datos.codKwh:"—",ok:codsOk.kwh},
+    {lbl:"🧾 Recibo",c:codsOk.rec?datos.codRec:"—",ok:codsOk.rec}
+  ];
+  document.getElementById("codigos-grid").innerHTML=cods.map(function(c){
+    var bg=c.ok?"var(--v3)":"var(--r3)";var cl=c.ok?"var(--v)":"var(--r)";
+    return '<div class="cod-card" style="background:'+bg+';border:2px solid '+cl+';"><div class="cc-lbl" style="color:'+cl+';">'+c.lbl+'</div><div class="cc-num" style="color:'+cl+';">'+c.c+'</div></div>';
+  }).join("");
+  var kwhBim=(datos.eKwh*61).toFixed(2);
+  var pct=((datos.eKwh*61)/datos.kwhRec*100).toFixed(1);
+  var rows=[
+    ["Nombre",alumno.nombre,"—"],
+    ["No. Lista",alumno.n===0?"DOCENTE":alumno.n,"—"],
+    ["Aparato asignado",datos.ap.emoji+" "+datos.ap.nombre+" ("+datos.ap.watts+"W, "+datos.h+"h)","—"],
+    ["¿Por qué se agota la batería?",V("fb-c1"),"E. química → eléctrica útil + calor disperso. La batería ya no la tiene, pero existe en el ambiente."],
+    ["¿Qué comparten los 3 casos?",V("fb-c2"),"En los 3 casos la E. útil terminó como calor disperso. La cantidad total no cambió."],
+    ["E en Joules",V("ans-j")+" J · código: "+(codsOk.j?datos.codJ:"sin código"),datos.eJ.toLocaleString()+" J"],
+    ["E en calorías",V("ans-cal")+" cal · código: "+(codsOk.cal?datos.codCal:"sin código"),datos.eCal.toLocaleString()+" cal"],
+    ["E en kWh",V("ans-kwh")+" kWh · código: "+(codsOk.kwh?datos.codKwh:"sin código"),datos.eKwh.toFixed(3)+" kWh"],
+    ["kWh/día del recibo",V("ans-rec")+" · código: "+(codsOk.rec?datos.codRec:"sin código"),datos.kwhDia.toFixed(2)+" kWh/día"],
+    ["Comparación aparato-recibo",V("ans-rec2"),"Debe mencionar: "+kwhBim+" kWh en 61 días = "+pct+"% del recibo."],
+    ["Explica conservación",V("cons-palabras"),"Debe incluir: no desaparece, se transforma o transfiere, termina como calor disperso."],
+    ["Conexión S01-S02-S03",V("c-hilo"),"Debe conectar: tipos de energía → cadenas (siempre terminan en calor) → Ley de Conservación + medición."],
+    ["¿Por qué no reciclar calor?",V("c-anticipa"),"El calor disperso está distribuido en el ambiente a baja temperatura — reunirlo requeriría más energía de la que obtendrías. (Esto es entropía — PF7.)"],
+    ["Lo más difícil",V("c-dificil"),"—"]
+  ];
+  document.getElementById("tbody-res").innerHTML=rows.map(function(r){return "<tr><td>"+r[0]+"</td><td>"+(r[1]||"—")+"</td><td>"+r[2]+"</td></tr>";}).join("");
+  avanzar("s5","s-final");
+}
+
+function V(id){
+  var el=document.getElementById(id);
+  if(!el)return"—";
+  if(el.className&&el.className.indexOf("res-box")>-1){return el.textContent?el.textContent.replace("✅ Correcto. ","").replace("✅ Exacto. ","").substring(0,120):"—";}
+  return(el.value||"").trim()||"—";
+}
+/* REFERENCIA DOCENTE 890: TV 60W·4h → J:864000(1053) cal:206496(3482) kWh:0.24(8599) Recibo:180kWh/61=2.95(1357) */
+</script>
+</body>
+</html>
