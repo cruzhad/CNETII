@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>S05 · Movimiento y Velocidad · CNEyT II · G208</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;
+  --az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;
+  --v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;
+  --r:#C62828;--r3:#FFEBEE;
+  --n:#E65100;--n3:#FFF3E0;
+  --am:#F57F17;--am3:#FFF8E1;
+  --dark:#1A1A2E;--gris:#666;--gris2:#DDD;--gris3:#F5F5F5;
+  --rad:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#EEF2FF;color:var(--dark);padding-bottom:40px;}
+
+/* HEADER FIJO */
+.hdr-fix{position:sticky;top:0;z-index:100;background:var(--dark);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.hdr-left .tag{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.45);}
+.hdr-left .tit{font-size:.95rem;font-weight:800;color:white;line-height:1.2;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.chip-alumno{background:var(--mo);color:white;font-size:.72rem;font-weight:800;padding:5px 11px;border-radius:20px;display:none;}
+.chip-sesion{font-size:.68rem;color:rgba(255,255,255,.5);font-weight:600;}
+
+/* BARRA PROGRESO */
+.prog-bar{height:4px;background:rgba(255,255,255,.1);}
+.prog-fill{height:4px;background:var(--mo2);transition:width .5s ease;width:0%;}
+
+/* NUEVOS ESTILOS */
+
+/* SECCIONES */
+.wrap{max-width:600px;margin:0 auto;padding:0 10px;}
+.section{display:none;animation:fadeIn .3s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* TARJETAS */
+.card{background:white;border-radius:var(--rad);padding:18px 16px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.card-tag{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);margin-bottom:3px;}
+.card-tit{font-size:1.1rem;font-weight:800;color:var(--mo);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--mo3);}
+.card-tit.az{color:var(--az);border-bottom-color:var(--az3);}
+.card-tit.v{color:var(--v);border-bottom-color:var(--v3);}
+.card-tit.n{color:var(--n);border-bottom-color:var(--n3);}
+.card-tit.dark{color:var(--dark);border-bottom-color:var(--gris2);}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:white;border-radius:14px;padding:28px 22px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.12);}
+.login-logo{text-align:center;margin-bottom:18px;}
+.login-logo .ic{font-size:2.4rem;}
+.login-logo h2{font-size:1.2rem;font-weight:900;color:var(--az);margin-top:5px;}
+.login-logo p{font-size:.78rem;color:var(--gris);margin-top:3px;}
+.login-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);margin-bottom:5px;display:block;}
+.login-select,.login-input{width:100%;padding:10px 12px;border:2px solid var(--gris2);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;color:var(--dark);margin-bottom:12px;background:white;}
+.login-select:focus,.login-input:focus{outline:none;border-color:var(--az);}
+.login-btn{width:100%;background:var(--az);color:white;border:none;padding:13px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;letter-spacing:.3px;}
+.login-btn:hover{background:var(--az2);}
+.login-err{background:var(--r3);color:var(--r);font-size:.78rem;padding:7px 11px;border-radius:6px;margin-top:8px;display:none;font-weight:600;}
+
+/* PREGUNTAS */
+.preg{margin-bottom:14px;}
+.preg-lbl{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);margin-bottom:4px;}
+.preg-txt{font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:7px;line-height:1.55;}
+.preg-txt.contexto{background:var(--az3);border-left:4px solid var(--az);padding:10px 12px;border-radius:0 7px 7px 0;font-weight:400;font-size:.84rem;line-height:1.6;}
+textarea,.inp-resp{width:100%;border:2px solid var(--gris2);border-radius:7px;padding:9px 11px;font-family:'Outfit',sans-serif;font-size:.84rem;color:var(--dark);resize:vertical;}
+textarea:focus,.inp-resp:focus{outline:none;border-color:var(--mo);}
+.inp-resp{height:38px;resize:none;}
+
+/* OPCIONES MC */
+.mc-opts{display:flex;flex-direction:column;gap:7px;margin-top:6px;}
+.mc-btn{background:var(--gris3);border:2px solid var(--gris2);border-radius:8px;padding:10px 13px;text-align:left;font-family:'Outfit',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:.15s;color:var(--dark);}
+.mc-btn:hover{background:var(--az3);border-color:var(--az);}
+.mc-btn.correcta{background:var(--v3);border-color:var(--v);color:var(--v);pointer-events:none;}
+.mc-btn.incorrecta{background:var(--r3);border-color:var(--r);color:var(--r);pointer-events:none;}
+.mc-fb{font-size:.8rem;padding:8px 11px;border-radius:7px;margin-top:6px;line-height:1.55;display:none;}
+.mc-fb.v{background:var(--v3);color:#1B5E20;}
+.mc-fb.r{background:var(--r3);color:#B71C1C;}
+
+/* SIMULACIÓN */
+.sim-card{background:var(--az3);border:2px solid var(--az);border-radius:var(--rad);padding:14px;margin-bottom:12px;}
+.sim-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.sim-badge{font-size:.7rem;font-weight:900;padding:4px 10px;border-radius:12px;background:var(--az);color:white;text-transform:uppercase;letter-spacing:.4px;}
+.sim-fuerza{font-size:1.05rem;font-weight:800;color:var(--az);}
+.sim-datos{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.sim-dato{background:white;border-radius:7px;padding:7px 10px;}
+.sim-dato .sd-lbl{font-size:.63rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.3px;}
+.sim-dato .sd-val{font-size:.95rem;font-weight:800;color:var(--dark);}
+canvas{display:block;width:100%;border-radius:7px;background:white;border:1.5px solid var(--gris2);}
+.sim-btn{width:100%;background:var(--az);color:white;border:none;padding:11px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;margin-top:8px;letter-spacing:.3px;}
+.sim-btn:disabled{background:var(--gris2);color:var(--gris);cursor:default;}
+.sim-result{display:none;background:white;border:2px solid var(--v);border-radius:8px;padding:11px 14px;margin-top:8px;}
+.sim-result .sr-tit{font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--v);letter-spacing:.4px;margin-bottom:6px;}
+.sim-result .sr-vals{display:flex;gap:14px;flex-wrap:wrap;}
+.sim-result .sr-item{font-size:.88rem;font-weight:700;}
+.sim-result .sr-item span{color:var(--az);font-size:1rem;font-weight:900;}
+
+/* SLIDER */
+.slider-wrap{margin-bottom:10px;}
+.slider-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.slider-lbl span{font-size:.8rem;font-weight:700;color:var(--gris);}
+.fuerza-disp{font-size:1.2rem;font-weight:900;color:var(--az);}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--gris2);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--az);cursor:pointer;border:3px solid white;box-shadow:0 2px 5px rgba(0,0,0,.2);}
+.slider-escala{display:flex;justify-content:space-between;font-size:.65rem;color:var(--gris);margin-top:3px;}
+
+/* VERIFICACIÓN */
+.verif-box{background:var(--gris3);border-radius:8px;padding:11px 13px;margin-top:10px;}
+.verif-box .vb-lbl{font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:6px;}
+.verif-row{display:flex;gap:7px;align-items:center;}
+.verif-inp{flex:1;height:38px;border:2px solid var(--gris2);border-radius:7px;padding:0 11px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;color:var(--dark);}
+.verif-inp:focus{outline:none;border-color:var(--az);}
+.verif-btn{background:var(--az);color:white;border:none;padding:0 14px;height:38px;border-radius:7px;font-family:'Outfit',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;white-space:nowrap;}
+.verif-btn:disabled{background:var(--gris2);color:var(--gris);cursor:default;}
+.verif-fb{font-size:.78rem;margin-top:7px;padding:7px 10px;border-radius:6px;display:none;line-height:1.5;}
+.verif-fb.ok{background:var(--v3);color:#1B5E20;}
+.verif-fb.err{background:var(--r3);color:var(--r);}
+.verif-fb.hint{background:var(--n3);color:var(--n);}
+
+
+/* FICHA */
+.ficha{background:linear-gradient(135deg,#0D1B4A 0%,#1A0533 100%);border-radius:var(--rad);padding:18px 16px;color:white;}
+.ficha h3{font-size:1rem;font-weight:900;color:#93C5FD;letter-spacing:.5px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:8px;}
+.ficha-bloque{background:rgba(255,255,255,.07);border-radius:8px;padding:11px 13px;margin-bottom:9px;}
+.ficha-bloque h4{font-size:.68rem;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,.5);letter-spacing:.4px;margin-bottom:5px;}
+.ficha-bloque p{font-size:.84rem;color:rgba(255,255,255,.9);line-height:1.65;}
+.ficha-formula{font-size:1.05rem;font-weight:800;color:#93C5FD;display:block;margin-top:4px;}
+.ficha-tu-caso{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:8px;padding:12px 14px;margin-top:8px;}
+.ficha-tu-caso h4{font-size:.68rem;font-weight:800;text-transform:uppercase;color:#FCD34D;margin-bottom:8px;letter-spacing:.4px;}
+.ftc-row{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+.ftc-row:last-child{border-bottom:none;}
+.ftc-lbl{color:rgba(255,255,255,.6);}
+.ftc-val{font-weight:800;color:white;}
+.ficha-check{margin-top:14px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);padding:11px 13px;border-radius:8px;}
+.ficha-check input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--v2);}
+.ficha-check label{font-size:.82rem;color:rgba(255,255,255,.85);cursor:pointer;line-height:1.5;}
+
+/* DIBUJO INSTRUCCIÓN */
+.dibujo-inst{background:var(--am3);border:2px dashed var(--am);border-radius:8px;padding:13px 14px;margin:10px 0;}
+.dibujo-inst h4{font-size:.7rem;font-weight:900;text-transform:uppercase;color:var(--am);letter-spacing:.4px;margin-bottom:8px;}
+.dibujo-inst p{font-size:.83rem;color:#4a2c00;line-height:1.65;margin-bottom:5px;}
+.dibujo-inst .paso{background:rgba(245,127,23,.12);border-radius:6px;padding:7px 10px;margin-top:6px;font-size:.82rem;color:#4a2c00;}
+.dibujo-inst .paso strong{color:var(--n);}
+.dibujo-inst .fig{background:white;border-radius:6px;padding:10px;margin-top:8px;font-family:monospace;font-size:.72rem;line-height:1.8;color:var(--dark);white-space:pre;}
+.puntos-tabla{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px;}
+.puntos-tabla th{background:var(--am);color:white;padding:5px 9px;text-align:center;font-size:.7rem;font-weight:800;}
+.puntos-tabla td{border:1.5px solid var(--gris2);padding:5px 9px;text-align:center;font-weight:700;}
+
+/* QUIZ */
+.quiz-num{display:inline-block;background:var(--mo);color:white;width:26px;height:26px;border-radius:50%;font-size:.8rem;font-weight:900;line-height:26px;text-align:center;margin-right:7px;flex-shrink:0;}
+.quiz-preg{display:flex;align-items:flex-start;gap:0;margin-bottom:16px;}
+.quiz-body{flex:1;}
+
+/* RESUMEN FINAL */
+.resumen-tabla{width:100%;border-collapse:collapse;font-size:.8rem;}
+.resumen-tabla th{background:var(--mo);color:white;padding:7px 10px;text-align:left;font-size:.68rem;text-transform:uppercase;}
+.resumen-tabla td{padding:7px 10px;border-bottom:1.5px solid var(--gris2);}
+.resumen-tabla td.lbl{font-weight:700;color:var(--mo);background:#faf8ff;}
+.cod-grande{font-size:1.2rem;font-weight:900;color:var(--az);letter-spacing:1px;}
+.cod-na{color:var(--gris);font-size:.75rem;}
+
+/* BOTONES NAVEGACIÓN */
+.nav-btn{background:var(--mo);color:white;border:none;padding:13px 24px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:800;cursor:pointer;display:none;width:100%;margin-top:14px;letter-spacing:.3px;}
+.nav-btn:hover{background:var(--mo2);}
+.nav-btn.az{background:var(--az);}
+.nav-btn.az:hover{background:var(--az2);}
+
+/* ALERTA INSTRUCCION */
+.alerta{background:var(--mo3);border-left:5px solid var(--mo);border-radius:0 8px 8px 0;padding:11px 13px;margin-bottom:12px;font-size:.83rem;color:var(--dark);line-height:1.6;}
+.alerta strong{color:var(--mo);}
+.alerta-cuad{background:var(--am3);border-left:5px solid var(--am);border-radius:0 8px 8px 0;padding:11px 13px;margin-bottom:12px;font-size:.83rem;color:#3d1a00;line-height:1.6;}
+.alerta-cuad strong{color:var(--n);}
+
+/* UTILIDADES */
+.mt8{margin-top:8px;} .mt12{margin-top:12px;} .mt16{margin-top:16px;}
+.txt-s{font-size:.78rem;color:var(--gris);line-height:1.6;}
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.badge{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:12px;}
+.badge.az{background:var(--az3);color:var(--az);}
+.badge.mo{background:var(--mo3);color:var(--mo);}
+.badge.v{background:var(--v3);color:var(--v);}
+
+.sep{border:none;border-top:1.5px solid var(--gris2);margin:14px 0;}
+/* SKIP BUTTON (solo docente) */
+.skip-btn{display:none;background:transparent;border:2px dashed #888;color:#888;
+  padding:8px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.78rem;
+  font-weight:700;cursor:pointer;width:100%;margin-top:8px;letter-spacing:.3px;}
+.skip-btn:hover{background:#f0f0f0;}
+.teacher-mode .skip-btn{display:block;}
+.teacher-only{display:none;}
+.teacher-mode .teacher-only{display:block;}
+
+/* RESUMEN VISUAL */
+.grade-box{text-align:center;padding:22px 16px;border-radius:12px;margin-bottom:14px;}
+.grade-num{font-size:4.5rem;font-weight:900;line-height:1;}
+.grade-label{font-size:.9rem;font-weight:700;margin-top:6px;}
+.grade-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.grade-item{background:rgba(255,255,255,.2);border-radius:8px;padding:8px 6px;text-align:center;}
+.grade-item .gi-num{font-size:1.2rem;font-weight:900;}
+.grade-item .gi-lbl{font-size:.65rem;font-weight:700;opacity:.8;margin-top:2px;}
+
+/* RESPUESTAS ESCRITAS */
+.resp-item{border:1.5px solid var(--gris2);border-radius:8px;overflow:hidden;margin-bottom:8px;}
+.resp-hdr{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 11px;background:var(--gris3);}
+.resp-hdr-lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.3px;}
+.resp-badge{font-size:1rem;}
+.resp-text{padding:9px 11px;font-size:.82rem;color:var(--dark);line-height:1.6;
+  background:white;min-height:36px;}
+.resp-text.vacia{color:#aaa;font-style:italic;}
+.resp-min{font-size:.67rem;color:var(--gris);padding:3px 11px 6px;background:white;}
+.resp-expected{background:#E8F5E9;border-top:1.5px solid #A5D6A7;
+  padding:8px 11px;font-size:.8rem;color:#1B5E20;line-height:1.6;}
+.resp-expected strong{display:block;font-size:.65rem;text-transform:uppercase;
+  letter-spacing:.3px;margin-bottom:3px;color:#2E7D32;}
+
+/* CÁLCULOS RESUMEN */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.calc-item{border-radius:8px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;}
+.calc-item.ok{background:var(--v3);border:1.5px solid #A5D6A7;}
+.calc-item.ok2{background:#FFF8E1;border:1.5px solid #FFE082;}
+.calc-item.err{background:var(--r3);border:1.5px solid #FFCDD2;}
+.calc-lbl{font-size:.72rem;font-weight:700;color:var(--dark);}
+.calc-ico{font-size:1.1rem;}
+
+/* SIM DOCENTE */
+.sim-docente{background:linear-gradient(135deg,#1A0533,#0D1B4A);
+  border-radius:10px;padding:14px 16px;margin-top:14px;}
+.sim-docente h3{color:#93C5FD;font-size:.8rem;font-weight:900;text-transform:uppercase;
+  letter-spacing:.4px;margin-bottom:10px;}
+.sim-docente-btns{display:flex;flex-direction:column;gap:8px;}
+.sim-doc-btn{color:white;border:none;padding:11px 14px;border-radius:8px;
+  font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;
+  text-align:left;letter-spacing:.2px;}
+.sim-doc-btn.az{background:var(--az);}
+.sim-doc-btn.mo{background:var(--mo);}
+.sim-doc-btn.v{background:var(--v);}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER FIJO -->
+<div class="hdr-fix">
+  <div class="hdr-left">
+    <div class="tag">CNEyT II · Grupo 208 · CEB 4/2 · Prof. Adrián Cruz</div>
+    <div class="tit">Sesión 5 · Movimiento y Velocidad</div>
+  </div>
+  <div class="hdr-right">
+    <span class="chip-sesion">PF2</span>
+    <span class="chip-alumno" id="chip-nombre">—</span>
+  </div>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="s-login" class="section active">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="ic">🧲</div>
+        <h2>Sesión 5 · Movimiento y Velocidad</h2>
+        <p>CNEyT II · Grupo 208 · Propósito Formativo 2</p>
+      </div>
+      <label class="login-label" for="sel-alumno">Tu nombre &mdash; lista ordenada por <span style="color:var(--az);">APELLIDO PATERNO</span></label>
+      <p style="font-size:.74rem;color:var(--gris);margin-bottom:8px;line-height:1.5;">Busca tu <strong>primer apellido</strong>. Tu nombre aparecer&aacute; junto a tu resumen de resultados al final.</p>
+      <select class="login-select" id="sel-alumno">
+        <option value="">— elige tu nombre —</option>
+      </select>
+      <label class="login-label" for="cod-acceso">Código de acceso (solo docente)</label>
+      <input class="login-input" type="text" id="cod-acceso" placeholder="dejar en blanco si eres alumno" autocomplete="off">
+      <button class="login-btn" onclick="doLogin()">Comenzar actividad →</button>
+      <div class="login-err" id="login-err">Selecciona tu nombre de la lista para continuar.</div>
+      <div class="sim-docente teacher-only">
+        <h3>🎓 Panel del docente</h3>
+        <div class="sim-docente-btns">
+          <button class="sim-doc-btn az" onclick="simularResultados()">🔬 Simular resumen de alumno</button>
+          <button class="sim-doc-btn mo" onclick="doLogin()">Entrar al modo docente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BLOQUE 0 — APERTURA CON EL PROFESOR ═══ -->
+<div id="s-b0" class="section">
+<div class="wrap">
+  <div style="height:14px;"></div>
+
+  <div class="card">
+    <div class="card-tag">Bloque 0 · Con el profesor</div>
+    <div class="card-tit">Apertura — ¿Qué es la velocidad?</div>
+
+    <div class="alerta"><strong>📌 Instrucción:</strong> Completa este bloque mientras el profesor explica. Escribe con tus propias palabras — no hay respuesta incorrecta todavía.</div>
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 0.1 · Situación CDMX</div>
+      <div class="preg-txt contexto">
+        El microbús que va de Insurgentes a División del Norte tarda <strong>8 minutos</strong>. Un Uber hace la misma ruta en <strong>5 minutos</strong>. ¿Cuál va más rápido? ¿Cómo lo sabes si no estás midiendo nada con instrumentos?
+      </div>
+      <textarea onpaste="return false;" id="r-b0-1" rows="3" placeholder="Escribe tu respuesta aquí..."></textarea>
+    </div>
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 0.2 · Opción múltiple</div>
+      <div class="preg-txt">Para decir que algo "va más rápido", ¿qué información mínima necesitas?</div>
+      <div class="mc-opts">
+        <button class="mc-btn" onclick="mc('b02',this,'r')">Solo el tiempo que tardó</button>
+        <button class="mc-btn" onclick="mc('b02',this,'r')">Solo la distancia recorrida</button>
+        <button class="mc-btn" onclick="mc('b02',this,'c')">La distancia y el tiempo — para compararlos</button>
+        <button class="mc-btn" onclick="mc('b02',this,'r')">La fuerza que se aplicó</button>
+      </div>
+      <div class="mc-fb v" id="fb-b02">✅ Exacto. La velocidad siempre relaciona <strong>espacio recorrido</strong> con <strong>tiempo empleado</strong>. Sin los dos datos juntos, no puedes comparar qué fue más rápido.</div>
+      <div class="mc-fb r" id="fb-b02e">❌ No es suficiente con uno solo. Si solo sabes el tiempo pero no la distancia, no puedes comparar velocidades. Necesitas los dos.</div>
+    </div>
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 0.3 · Predicción</div>
+      <div class="preg-txt">En esta sesión vas a empujar un cajón con una fuerza y medir cuánto tarda en cruzar 10 metros. <strong>Antes de hacerlo:</strong> si aplicas el doble de fuerza al mismo cajón, ¿qué crees que pasará con el tiempo? ¿Con la velocidad?</div>
+      <textarea onpaste="return false;" id="r-b0-3" rows="3" placeholder="Escribe tu predicción antes del experimento..."></textarea>
+    </div>
+
+    <button class="nav-btn" id="btn-b0" onclick="unlock('s-b1',1)" style="display:block;">Continuar a la simulación →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b1',1)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 1 — SIMULACIÓN ═══ -->
+<div id="s-b1" class="section">
+<div class="wrap">
+
+  <div class="card">
+    <div class="card-tag">Bloque 1 · Experimento</div>
+    <div class="card-tit az">Simulación — 3 Experimentos con el cajón</div>
+
+    <div class="alerta"><strong>📌 Qué harás:</strong> Realizarás 3 experimentos. En cada uno aplicarás una fuerza al cajón de 5 kg y medirás cuánto tiempo tarda en cruzar 10 metros. <strong>Anota el tiempo de cada run — lo necesitarás en el Bloque 2.</strong></div>
+
+    <!-- RUN 1 -->
+    <div class="sim-card" id="run1-card">
+      <div class="sim-hdr">
+        <span class="sim-badge">Run 1</span>
+        <span class="sim-fuerza" id="r1-fdisp">F = 100 N <span style="font-size:.72rem;color:var(--gris);font-weight:600;">(fuerza anunciada)</span></span>
+      </div>
+      <div class="sim-datos">
+        <div class="sim-dato"><div class="sd-lbl">Masa del cajón</div><div class="sd-val">5 kg</div></div>
+        <div class="sim-dato"><div class="sd-lbl">Distancia</div><div class="sd-val">10 m</div></div>
+      </div>
+      <canvas id="c-r1" height="110"></canvas>
+      <button class="sim-btn" id="btn-r1" onclick="startSim(0)">▶ Iniciar simulación Run 1</button>
+      <div class="sim-result" id="res-r1">
+        <div class="sr-tit">✅ Run 1 completado — anota este tiempo</div>
+        <div class="sr-vals">
+          <div class="sr-item">F = <span>100 N</span></div>
+          <div class="sr-item">t = <span id="t-r1">—</span> s</div>
+          <div class="sr-item">d = <span>10 m</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 2 -->
+    <div class="sim-card" id="run2-card" style="opacity:.5;pointer-events:none;">
+      <div class="sim-hdr">
+        <span class="sim-badge">Run 2</span>
+        <span class="sim-fuerza">Tu fuerza elegida</span>
+      </div>
+      <div class="alerta-cuad" style="margin-bottom:10px;"><strong>📓 Antes de correr:</strong> Elige tu fuerza con el deslizador. Anota el valor en tu cuaderno — lo usarás en el Bloque 5 (problema de transferencia).</div>
+      <div class="slider-wrap">
+        <div class="slider-lbl">
+          <span>50 N (menos)</span>
+          <span class="fuerza-disp" id="fdisp-r2">200 N</span>
+          <span>500 N (más)</span>
+        </div>
+        <input type="range" id="slider-r2" min="50" max="500" step="10" value="200" oninput="updateSlider()">
+        <div class="slider-escala"><span>50</span><span>150</span><span>250</span><span>350</span><span>500</span></div>
+      </div>
+      <div class="sim-datos">
+        <div class="sim-dato"><div class="sd-lbl">Tu fuerza</div><div class="sd-val" id="sd-fr2">200 N</div></div>
+        <div class="sim-dato"><div class="sd-lbl">Distancia</div><div class="sd-val">10 m</div></div>
+      </div>
+      <canvas id="c-r2" height="110"></canvas>
+      <button class="sim-btn" id="btn-r2" onclick="startSim(1)">▶ Iniciar simulación Run 2</button>
+      <div class="sim-result" id="res-r2">
+        <div class="sr-tit">✅ Run 2 completado — anota este tiempo</div>
+        <div class="sr-vals">
+          <div class="sr-item">F = <span id="rf-r2">—</span> N</div>
+          <div class="sr-item">t = <span id="t-r2">—</span> s</div>
+          <div class="sr-item">d = <span>10 m</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 3 -->
+    <div class="sim-card" id="run3-card" style="opacity:.5;pointer-events:none;">
+      <div class="sim-hdr">
+        <span class="sim-badge">Run 3</span>
+        <span class="sim-fuerza" id="r3-fdisp">F = doble de Run 2</span>
+      </div>
+      <div class="alerta" style="margin-bottom:10px;"><strong>📌 El doble de tu fuerza del Run 2 se aplica automáticamente.</strong> Predice antes de correr: ¿tardará más o menos que el Run 2?</div>
+      <div class="sim-datos">
+        <div class="sim-dato"><div class="sd-lbl">Fuerza doble</div><div class="sd-val" id="sd-fr3">— N</div></div>
+        <div class="sim-dato"><div class="sd-lbl">Distancia</div><div class="sd-val">10 m</div></div>
+      </div>
+      <canvas id="c-r3" height="110"></canvas>
+      <button class="sim-btn" id="btn-r3" onclick="startSim(2)">▶ Iniciar simulación Run 3</button>
+      <div class="sim-result" id="res-r3">
+        <div class="sr-tit">✅ Run 3 completado — anota este tiempo</div>
+        <div class="sr-vals">
+          <div class="sr-item">F = <span id="rf-r3">—</span> N</div>
+          <div class="sr-item">t = <span id="t-r3">—</span> s</div>
+          <div class="sr-item">d = <span>10 m</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-btn az" id="btn-b1" onclick="unlock('s-b2',2)">Continuar a los cálculos →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b2',2)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ BLOQUE 2 — VELOCIDAD ═══ -->
+<div id="s-b2" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 2 · Cálculo</div>
+    <div class="card-tit">Velocidad media: v = d ÷ t</div>
+
+    <div class="alerta"><strong>📌 Fórmula de velocidad media:</strong><br><span style="font-size:1.1rem;font-weight:900;display:block;margin:8px 0 4px;">v&nbsp;=&nbsp;<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">d</span><span style="padding:0 4px;font-size:.95em;">t</span></span></span><span style="font-size:.82rem;">donde d = distancia (m) y t = tiempo (s). Resultado en metros por segundo (m/s). Usa tus tiempos de los 3 experimentos.</span></div>
+
+    <!-- v Run 1 -->
+    <div class="preg">
+      <div class="preg-lbl">Cálculo 2.1 · Velocidad del Run 1</div>
+      <div class="preg-txt">Con F = 100 N &nbsp;|&nbsp; d = 10 m &nbsp;|&nbsp; t = <strong id="calc-t1">—</strong> s<br>Calcula:&nbsp; v = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">10</span><span style="padding:0 4px;font-size:.95em;"><span id="calc-t1b">—</span></span></span>= _____ m/s</div>
+      <div class="verif-box">
+        <div class="vb-lbl">Escribe tu resultado (en m/s, 2 decimales):</div>
+        <div class="verif-row">
+          <input class="verif-inp" type="number" id="inp-v1" step="0.01" placeholder="ej: 9.85">
+          <button class="verif-btn" id="vbtn-v1" onclick="checkV(0)">Verificar</button>
+        </div>
+        <div class="verif-fb" id="vfb-v1"></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- v Run 2 -->
+    <div class="preg">
+      <div class="preg-lbl">Cálculo 2.2 · Velocidad del Run 2</div>
+      <div class="preg-txt">Con F = <strong id="calc-f2">—</strong> N &nbsp;|&nbsp; d = 10 m &nbsp;|&nbsp; t = <strong id="calc-t2">—</strong> s<br>Calcula:&nbsp; v = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">10</span><span style="padding:0 4px;font-size:.95em;"><span id="calc-t2b">—</span></span></span>= _____ m/s</div>
+      <div class="verif-box">
+        <div class="vb-lbl">Escribe tu resultado (en m/s, 2 decimales):</div>
+        <div class="verif-row">
+          <input class="verif-inp" type="number" id="inp-v2" step="0.01" placeholder="ej: 12.40">
+          <button class="verif-btn" id="vbtn-v2" onclick="checkV(1)">Verificar</button>
+        </div>
+        <div class="verif-fb" id="vfb-v2"></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- v Run 3 -->
+    <div class="preg">
+      <div class="preg-lbl">Cálculo 2.3 · Velocidad del Run 3</div>
+      <div class="preg-txt">Con F = <strong id="calc-f3">—</strong> N &nbsp;|&nbsp; d = 10 m &nbsp;|&nbsp; t = <strong id="calc-t3">—</strong> s<br>Calcula:&nbsp; v = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">10</span><span style="padding:0 4px;font-size:.95em;"><span id="calc-t3b">—</span></span></span>= _____ m/s</div>
+      <div class="verif-box">
+        <div class="vb-lbl">Escribe tu resultado (en m/s, 2 decimales):</div>
+        <div class="verif-row">
+          <input class="verif-inp" type="number" id="inp-v3" step="0.01" placeholder="ej: 17.54">
+          <button class="verif-btn" id="vbtn-v3" onclick="checkV(2)">Verificar</button>
+        </div>
+        <div class="verif-fb" id="vfb-v3"></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 2.4 · Patrón observado</div>
+      <div class="preg-txt">Compara tus tres velocidades. ¿Qué relación observas entre la fuerza aplicada y la velocidad obtenida? ¿A mayor fuerza, qué pasa con la velocidad?</div>
+      <textarea onpaste="return false;" id="r-b2-4" rows="3" placeholder="Describe el patrón que observas..."></textarea>
+    </div>
+
+    <button class="nav-btn az" id="btn-b2" onclick="unlock('s-b3',3)">Continuar a la gráfica →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b3',3)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 3 — GRÁFICA ═══ -->
+<div id="s-b3" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 3 · Representación</div>
+    <div class="card-tit n">Gráfica posición-tiempo · en tu cuaderno</div>
+
+    <div style="background:#BF360C;color:white;padding:10px 14px;border-radius:8px 8px 0 0;font-size:.78rem;font-weight:900;letter-spacing:.4px;text-transform:uppercase;">✏️  ACCIÓN — TRABAJA EN TU CUADERNO AHORA</div>
+    <div class="alerta-cuad" style="border-radius:0 0 8px 8px;margin-bottom:0;">
+      <strong>📓 Este bloque se hace en tu cuaderno.</strong> Lee todos los pasos <em>antes de dibujar</em>. Regresa a la pantalla para responder las preguntas cuando termines.
+    </div>
+
+    <div class="dibujo-inst">
+      <h4>📐 Pasos para trazar tu gráfica en el cuaderno</h4>
+      <p><strong>¿Qué vas a graficar?</strong> El movimiento de tu cajón durante el Run 2 — cómo avanza su posición segundo a segundo.</p>
+
+      <div class="paso"><strong>Paso 1 — Dibuja los ejes:</strong><br>
+      Eje horizontal (→): Tiempo <em>t</em> en segundos. Usa la escala: <strong>2 cm = 0.2 s</strong><br>
+      Eje vertical (↑): Posición <em>d</em> en metros. Usa la escala: <strong>1 cm = 1 m</strong> (escala de 0 a 10)</div>
+
+      <div class="paso"><strong>Paso 2 — Marca tus 5 puntos:</strong><br>
+      Los puntos de abajo muestran cómo avanza tu cajón en distintos momentos del Run 2.<br>
+      <em>(aparecen cuando terminas los cálculos del Bloque 2)</em></div>
+
+      <table class="puntos-tabla" id="tabla-puntos">
+        <thead><tr><th>Punto</th><th>t (s)</th><th>d (m)</th><th>Significado</th></tr></thead>
+        <tbody id="tbody-puntos"></tbody>
+      </table>
+
+      <div class="paso"><strong>Paso 3 — Traza la curva:</strong><br>
+      Une los 5 puntos con una <strong>curva suave</strong> (no línea recta — el cajón va acelerando).</div>
+
+      <div class="paso"><strong>Paso 4 — Traza también una línea recta:</strong><br>
+      Dibuja una línea recta desde el punto (0, 0) hasta el punto (<span id="t-r2-graf">—</span> s, 10 m).<br>
+      Esta línea representaría <em>velocidad constante</em>.</div>
+
+      <pre class="fig">
+        d (m)
+        10 |                              * ← tu punto final
+         8 |                        *
+         6 |                   *
+         4 |              *
+         2 |         *
+         0 |____________________________→ t (s)
+           0       (agrega tu escala aquí)</pre>
+    </div>
+
+    <div class="preg mt12">
+      <div class="preg-lbl">Pregunta 3.1 · Análisis</div>
+      <div class="preg-txt">¿Tu curva es igual a la línea recta que trazaste? ¿En qué parte del recorrido el cajón va más despacio? ¿En qué parte va más rápido?</div>
+      <textarea onpaste="return false;" id="r-b3-1" rows="3" placeholder="Describe lo que ves en tu gráfica..."></textarea>
+    </div>
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 3.2 · Conexión con el tema anterior</div>
+      <div class="preg-txt">En el tema anterior estudiaste que una fuerza <em>cambia</em> el estado de movimiento de un objeto. ¿Eso explica por qué la gráfica es curva y no recta? Justifica.</div>
+      <textarea id="r-b3-2" rows="3" placeholder="Conecta con lo que estudiaste sobre fuerzas..." onpaste="return false;"></textarea>
+    </div>
+
+    <button class="nav-btn az" id="btn-b3" onclick="unlock('s-b4',4)">Continuar a la ficha de estudio →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b4',4)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 4 — FICHA DE ESTUDIO ═══ -->
+<div id="s-b4" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 4 · Ficha</div>
+    <div class="card-tit">Apuntes para el examen</div>
+
+    <div style="background:#BF360C;color:white;padding:10px 14px;border-radius:8px 8px 0 0;font-size:.78rem;font-weight:900;letter-spacing:.4px;text-transform:uppercase;">✏️  ACCIÓN — COPIA ESTA FICHA EN TU CUADERNO</div>
+    <div class="alerta-cuad" style="border-radius:0 0 8px 8px;margin-bottom:12px;"><strong>📓</strong> Copia la ficha completa incluyendo la sección <strong>"Tu caso"</strong> con tus datos reales. En la siguiente clase presencial se revisa el cuaderno. <strong>Captura de pantalla no es suficiente.</strong></div>
+
+    <div class="ficha" id="ficha-contenido">
+      <h3>FICHA DE ESTUDIO · MOVIMIENTO Y VELOCIDAD · S05</h3>
+
+      <div class="ficha-bloque">
+        <h4>1. Movimiento</h4>
+        <p>El <strong>movimiento</strong> es el cambio de posición de un objeto respecto a un punto de referencia (sistema de referencia) a lo largo del tiempo. Sin un punto de referencia, no se puede describir la posición.</p>
+      </div>
+
+      <div class="ficha-bloque">
+        <h4>2. Velocidad media</h4>
+        <p>Es la razón entre la distancia recorrida y el tiempo empleado.</p>
+        <span class="ficha-formula" style="font-size:1.25rem;display:flex;align-items:center;gap:6px;margin:8px 0;">v &nbsp;= &nbsp;<span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;"><span style="border-bottom:2px solid #93C5FD;padding:0 6px;">d</span><span style="padding:0 6px;">t</span></span></span>
+        <p style="margin-top:6px;">Unidad SI: <strong>m/s</strong> &nbsp;|&nbsp; Uso cotidiano: <strong>km/h</strong></p>
+        <p style="margin-top:5px;font-size:.82rem;color:rgba(255,255,255,.8);"><strong>¿Cómo se convierte?</strong> 1 m/s equivale a recorrer 1 metro cada segundo. En 1 hora (3600 s) recorrerías 3600 m = 3.6 km. Por eso: <strong>1 m/s = 3.6 km/h</strong>.<br>Para convertir: multiplica los m/s × 3.6 para obtener km/h.</p>
+        <p style="margin-top:5px;font-size:.78rem;color:rgba(255,255,255,.6);">Ejemplo: v = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">10 m</span><span style="padding:0 4px;font-size:.95em;">2 s</span></span>= 5 m/s = 5 × 3.6 = 18 km/h</p>
+      </div>
+
+      <div class="ficha-bloque">
+        <h4>3. Energía cinética (Ec)</h4>
+        <p>Es la energía que tiene un objeto por estar en movimiento. Depende de la masa y del <strong>cuadrado</strong> de la velocidad.</p>
+        <span style="display:flex;align-items:center;gap:6px;margin:8px 0;font-size:1.2rem;font-weight:900;color:#93C5FD;">Ec &nbsp;= &nbsp;<span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;"><span style="border-bottom:2px solid #93C5FD;padding:0 6px;">1</span><span style="padding:0 6px;">2</span></span>&nbsp;× m × v²</span>
+        <p style="margin-top:6px;">Unidad: <strong>Joules (J)</strong>. Si duplicas la velocidad, la energía cinética se <strong>cuadruplica</strong> (porque v va al cuadrado).</p>
+      </div>
+
+      <div class="ficha-bloque">
+        <h4>4. Relación fuerza → movimiento → energía</h4>
+        <p>Una fuerza aplicada a un objeto lo acelera. A mayor fuerza → mayor aceleración → mayor velocidad → mayor energía cinética. La energía cinética aumenta con el cuadrado de la velocidad: duplicar la velocidad cuadruplica la Ec.</p>
+      </div>
+
+      <div class="ficha-tu-caso" id="ficha-tu-caso">
+        <h4>⚡ TU CASO — datos de tu experimento</h4>
+        <div id="ftc-rows"><!-- filled by JS --></div>
+      </div>
+    </div>
+
+    <div class="mt12">
+      <div class="ficha-check">
+        <input type="checkbox" id="check-ficha" onchange="checkFicha()">
+        <label for="check-ficha">Copié esta ficha en mi cuaderno con mis propios datos en la sección "Tu caso"</label>
+      </div>
+    </div>
+
+    <button class="nav-btn az" id="btn-b4" onclick="unlock('s-b5',5)">Continuar al problema de transferencia →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b5',5)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 5 — TRANSFERENCIA ═══ -->
+<div id="s-b5" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 5 · Problema de transferencia</div>
+    <div class="card-tit v">¿Y si cambia la masa?</div>
+
+    <div class="alerta"><strong>📌 Sin simulación:</strong> Ahora calculas con lápiz y papel. La fórmula y los pasos son los mismos — solo cambia la masa. Si entiendes, puedes resolverlo.</div>
+
+    <div class="preg">
+      <div class="preg-lbl">Situación</div>
+      <div class="preg-txt contexto" id="sit-transf">
+        Ahora el cajón pesa <strong>8 kg</strong> (masa diferente). Se aplica la misma fuerza que usaste en tu Run 2: <strong><span id="f-transf-disp">—</span> N</strong>. La distancia sigue siendo <strong>10 m</strong>, partiendo del reposo.<br><br>
+        <strong>Paso 1:</strong> Calcula la aceleración &nbsp; a = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">F</span><span style="padding:0 4px;font-size:.95em;">m</span></span><br>
+        <strong>Paso 2:</strong> Calcula el tiempo &nbsp; t = √(<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">2 × d</span><span style="padding:0 4px;font-size:.95em;">a</span></span>)<br>
+        <strong>Paso 3:</strong> Calcula la velocidad &nbsp; v = <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;font-size:.95em;">d</span><span style="padding:0 4px;font-size:.95em;">t</span></span>
+      </div>
+    </div>
+
+    <div class="preg">
+      <div class="preg-lbl">Respuesta 5.1 · Velocidad del cajón de 8 kg</div>
+      <div class="preg-txt">¿Cuál es la velocidad media del cajón de 8 kg? (en m/s, 2 decimales)</div>
+      <div class="verif-box">
+        <div class="vb-lbl">Tu resultado v = _____ m/s:</div>
+        <div class="verif-row">
+          <input class="verif-inp" type="number" id="inp-vt" step="0.01" placeholder="ej: 8.66">
+          <button class="verif-btn" id="vbtn-vt" onclick="checkTransf()">Verificar</button>
+        </div>
+        <div class="verif-fb" id="vfb-vt"></div>
+      </div>
+    </div>
+
+    <div class="preg">
+      <div class="preg-lbl">Pregunta 5.2 · Comparación conceptual</div>
+      <div class="preg-txt">El cajón de 8 kg (con la misma fuerza) ¿fue más rápido o más lento que tu cajón de 5 kg del Run 2? ¿Por qué crees que la masa afecta la velocidad?</div>
+      <textarea onpaste="return false;" id="r-b5-2" rows="3" placeholder="Compara y explica con tus palabras..."></textarea>
+    </div>
+
+    <button class="nav-btn az" id="btn-b5" onclick="unlock('s-b6',6)">Continuar al quiz →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b6',6)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 6 — QUIZ ═══ -->
+<div id="s-b6" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 6 · Quiz</div>
+    <div class="card-tit">Evalúa lo que aprendiste</div>
+
+    <div class="alerta"><strong>📌 Instrucción:</strong> Resuelve solo/a. No uses la simulación — aplica lo que entendiste. Las preguntas abiertas serán revisadas por el profesor en clase.</div>
+
+    <!-- Q1 MC -->
+    <div class="quiz-preg">
+      <span class="quiz-num">1</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Opción múltiple</div>
+        <div class="preg-txt">Un objeto recorre 30 m en 5 s y otro recorre 20 m en 3 s. ¿Cuál tiene mayor velocidad media?</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mc('q1',this,'r')">El primero, porque recorrió más distancia</button>
+          <button class="mc-btn" onclick="mc('q1',this,'c')">El segundo: v=6.67 m/s vs v=6 m/s del primero</button>
+          <button class="mc-btn" onclick="mc('q1',this,'r')">Son iguales porque ambos se movieron</button>
+          <button class="mc-btn" onclick="mc('q1',this,'r')">El primero: más distancia siempre significa más velocidad</button>
+        </div>
+        <div class="mc-fb v" id="fb-q1">✅ Correcto. v₁ = 30÷5 = 6 m/s. v₂ = 20÷3 = 6.67 m/s. La distancia sola no determina la velocidad — necesitas dividir entre el tiempo.</div>
+        <div class="mc-fb r" id="fb-q1e">❌ Revisa. Calcula v = d÷t para cada uno: el primero es 30÷5 = 6 m/s. El segundo es 20÷3 = 6.67 m/s. El segundo es más rápido aunque recorrió menos distancia.</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Q2 MC -->
+    <div class="quiz-preg">
+      <span class="quiz-num">2</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Opción múltiple</div>
+        <div class="preg-txt">Si duplicas la velocidad de un objeto (y la masa no cambia), ¿qué le pasa a su energía cinética Ec = (1/2)mv²?</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mc('q2',this,'r')">Se duplica también</button>
+          <button class="mc-btn" onclick="mc('q2',this,'r')">Se triplica</button>
+          <button class="mc-btn" onclick="mc('q2',this,'c')">Se cuadruplica — porque v va al cuadrado</button>
+          <button class="mc-btn" onclick="mc('q2',this,'r')">No cambia — solo cambia la distancia</button>
+        </div>
+        <div class="mc-fb v" id="fb-q2">✅ Exacto. Si v se duplica → v² se cuadruplica → Ec se cuadruplica. Por eso a velocidades altas (en carretera o en el Metro) un choque es mucho más devastador.</div>
+        <div class="mc-fb r" id="fb-q2e">❌ Recuerda que v va al cuadrado en la fórmula. Si v → 2v, entonces v² → 4v². La Ec se cuadruplica, no solo se duplica.</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Q3 Cálculo numérico -->
+    <div class="quiz-preg">
+      <span class="quiz-num">3</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Cálculo</div>
+        <div class="preg-txt contexto">
+          Un cajón de <strong>8 kg</strong> recibe una fuerza de <strong>80 N</strong> y recorre <strong>10 m</strong> partiendo del reposo.<br>
+          a = F÷m = 80÷8 = 10 m/s²<br>
+          t = √(2×10÷10) = √2 ≈ 1.414 s<br>
+          <strong>Calcula: v = d÷t = 10÷1.414 = _____ m/s</strong>
+        </div>
+        <div class="verif-box">
+          <div class="vb-lbl">Tu resultado v = _____ m/s (2 decimales):</div>
+          <div class="verif-row">
+            <input class="verif-inp" type="number" id="inp-q3" step="0.01" placeholder="tu resultado en m/s">
+            <button class="verif-btn" id="vbtn-q3" onclick="checkQ3()">Verificar</button>
+          </div>
+          <div class="verif-fb" id="vfb-q3"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Q4 Ec -->
+    <div class="quiz-preg">
+      <span class="quiz-num">4</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Cálculo — Energía cinética</div>
+        <div class="preg-txt">Con los datos del cajón anterior (m = 8 kg, v que calculaste en la pregunta 3):<br><span style="display:flex;align-items:center;gap:5px;font-weight:800;font-size:.95rem;margin:7px 0;">Ec &nbsp;= &nbsp;<span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;"><span style="border-bottom:2px solid currentColor;padding:0 4px;">1</span><span style="padding:0 4px;">2</span></span>&nbsp;× 8 × v²</span></div>
+        <div class="verif-box">
+          <div class="vb-lbl">Tu resultado Ec = _____ J:</div>
+          <div class="verif-row">
+            <input class="verif-inp" type="number" id="inp-q4" step="0.1" placeholder="tu resultado en Joules">
+            <button class="verif-btn" id="vbtn-q4" onclick="checkQ4()">Verificar</button>
+          </div>
+          <div class="verif-fb" id="vfb-q4"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Q5 Dibujo -->
+    <div class="quiz-preg">
+      <span class="quiz-num">5</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Esquema en cuaderno</div>
+        <div style="background:#BF360C;color:white;padding:10px 14px;border-radius:8px 8px 0 0;font-size:.78rem;font-weight:900;letter-spacing:.4px;text-transform:uppercase;">✏️  ACCIÓN — DIBUJA EN TU CUADERNO</div>
+        <div class="alerta-cuad" style="border-radius:0 0 8px 8px;">
+          <strong>📓 Dibuja en tu cuaderno:</strong> Un cajón en reposo sobre una superficie plana. Traza tres flechas con sus nombres:<br><br>
+          &nbsp;&nbsp;→ &nbsp;<strong>Fuerza aplicada</strong> (horizontal, apuntando hacia adelante)<br>
+          &nbsp;&nbsp;↓ &nbsp;<strong>Peso / gravedad</strong> (vertical hacia abajo)<br>
+          &nbsp;&nbsp;↑ &nbsp;<strong>Normal</strong> (el piso empujando hacia arriba)<br><br>
+          Escribe el nombre de cada flecha junto a ella.
+        </div>
+        <div class="preg-txt" style="margin-top:8px;">Después de dibujar, responde: ¿Por qué el cajón no se hunde en el piso aunque la gravedad lo jala hacia abajo?</div>
+        <textarea onpaste="return false;" id="r-q5" rows="3" placeholder="Explica con lo que observaste en la simulación..."></textarea>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Q6 Abierta -->
+    <div class="quiz-preg">
+      <span class="quiz-num">6</span>
+      <div class="quiz-body">
+        <div class="preg-lbl">Explicación personal</div>
+        <div class="preg-txt">Explica con tus propias palabras, usando un ejemplo de la CDMX (no del cajón): ¿qué es la velocidad y por qué es importante conocerla? Puedes mencionar el Metro, el tráfico, una bicicleta, lo que quieras.</div>
+        <textarea onpaste="return false;" id="r-q6" rows="4" placeholder="Usa un ejemplo de tu vida cotidiana en la CDMX..."></textarea>
+      </div>
+    </div>
+
+    <button class="nav-btn az" id="btn-b6" onclick="unlock('s-b7',7)">Ver resumen final →</button>
+    <button class="skip-btn" onclick="skipBloque('s-b7',7)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ BLOQUE 7 — SÍNTESIS ═══ -->
+<div id="s-b7" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Bloque 7 · Síntesis</div>
+    <div class="card-tit v">Para cerrar — con tus propias palabras</div>
+
+    <div class="alerta"><strong>📌 Instrucción:</strong> Responde con tus palabras basándote en lo que hiciste hoy. No copies — usa al menos la cantidad de caracteres indicada.</div>
+
+    <div class="preg">
+      <div class="preg-lbl">Reflexión final — con tus propias palabras</div>
+      <div class="preg-txt">Completa estas dos ideas usando ejemplos del experimento que hiciste hoy:</div>
+      <div class="preg-txt" style="font-size:.8rem;color:var(--gris);margin-bottom:5px;">📝 Mínimo 40 caracteres cada una</div>
+      <textarea onpaste="return false;" id="r-b7-1" rows="2" placeholder="La velocidad es..." oninput="checkB7Done()"></textarea>
+      <span id="cnt-b7-1" style="font-size:.68rem;color:var(--gris);display:block;text-align:right;margin:-6px 0 8px;"></span>
+      <textarea onpaste="return false;" id="r-b7-2" rows="2" placeholder="Cuando una fuerza actúa sobre un objeto, su velocidad cambia porque..." oninput="checkB7Done()"></textarea>
+      <span id="cnt-b7-2" style="font-size:.68rem;color:var(--gris);display:block;text-align:right;margin:-6px 0 8px;"></span>
+    </div>
+
+    <div class="preg mt12">
+      <div class="preg-lbl">Para pensar → próximo tema</div>
+      <div class="preg-txt contexto">Tu cajón de 5 kg llegó a <span id="v-r2-ant">—</span> m/s. Si el mismo cajón de 5 kg fuera al <strong>doble de esa velocidad</strong>, ¿cuántas veces más energía cinética tendría? ¿Por qué no es "el doble" de energía?</div>
+      <div class="preg-txt" style="font-size:.8rem;color:var(--gris);margin-bottom:5px;">📝 Mínimo 50 caracteres</div>
+      <textarea onpaste="return false;" id="r-b7-ant" rows="3" placeholder="Creo que tendría ___ veces más energía porque..." oninput="checkB7Done()"></textarea>
+      <span id="cnt-b7-ant" style="font-size:.68rem;color:var(--gris);display:block;text-align:right;margin:-6px 0 8px;"></span>
+    </div>
+
+    <button class="nav-btn az" id="btn-b7" onclick="unlock('s-resumen',8)">Ver mi resumen de resultados →</button>
+    <button class="skip-btn" onclick="skipBloque('s-resumen',8)">↷ Avanzar sin resolver (docente)</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ RESUMEN FINAL ═══ -->
+<div id="s-resumen" class="section">
+<div class="wrap">
+  <div class="card">
+    <div class="card-tag">Resumen Final</div>
+    <div id="res-nombre-box" style="background:linear-gradient(135deg,#1B5E20,#2E7D32);border-radius:9px;padding:13px 16px;margin-bottom:12px;">
+      <div style="font-size:.62rem;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,.55);letter-spacing:.5px;margin-bottom:4px;">Resultados de:</div>
+      <div id="resumen-nombre" style="font-size:1.15rem;font-weight:900;color:white;letter-spacing:.3px;">—</div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.6);margin-top:3px;">CNEyT II · G208 · S05 · Movimiento y Velocidad</div>
+    </div>
+
+    <!-- CALIFICACIÓN -->
+    <div class="grade-box" id="grade-box">
+      <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;opacity:.7;margin-bottom:6px;">Calificación estimada</div>
+      <div class="grade-num" id="grade-num">—</div>
+      <div class="grade-label" id="grade-label">calculando...</div>
+      <div class="grade-breakdown">
+        <div class="grade-item"><div class="gi-num" id="gb-escrito">—</div><div class="gi-lbl">Respuestas escritas</div></div>
+        <div class="grade-item"><div class="gi-num" id="gb-calc">—</div><div class="gi-lbl">Cálculos</div></div>
+        <div class="grade-item"><div class="gi-num" id="gb-ficha">—</div><div class="gi-lbl">Ficha copiada</div></div>
+      </div>
+    </div>
+
+    <!-- CÁLCULOS -->
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:8px;">Verificaciones numéricas</div>
+    <div class="calc-grid" id="calc-grid"></div>
+
+    <hr class="sep">
+
+    <!-- RESPUESTAS ESCRITAS -->
+    <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:8px;">Respuestas escritas</div>
+    <div id="resps-container"></div>
+
+    <!-- CLAVE DE CLASE -->
+    <div class="mt16" style="background:var(--am3);border-radius:8px;padding:12px 14px;">
+      <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:var(--am);letter-spacing:.4px;margin-bottom:5px;">🔑 Clave de clase</div>
+      <div style="font-size:.82rem;color:#4a2c00;line-height:1.6;">El profesor anuncia esta clave al terminar el Bloque 3. Sin ella la actividad está incompleta.</div>
+      <input type="text" id="clave-display" maxlength="9"
+        style="margin-top:8px;font-size:1.3rem;font-weight:900;color:var(--n);letter-spacing:3px;background:white;border:2px solid var(--am);border-radius:7px;padding:8px 14px;width:100%;font-family:Outfit,sans-serif;text-align:center;" placeholder="_ _ _ _   _ _ _ _">
+    </div>
+
+    <button onclick="finalizar()" style="margin-top:14px;width:100%;background:var(--v);color:white;border:none;padding:14px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:900;cursor:pointer;letter-spacing:.3px;">✅ Finalizar y guardar evidencia</button>
+    <div id="fin-msg" style="display:none;margin-top:10px;background:var(--v3);border-radius:8px;padding:12px 14px;font-size:.85rem;color:#1B5E20;font-weight:700;line-height:1.6;">
+      ¡Actividad completada! Toma captura de pantalla de esta página y súbela a Classroom como evidencia.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<script>
+// ══════════════════════════════════════════════
+//  CONSTANTES Y DATOS
+// ══════════════════════════════════════════════
+var DIST = 10;
+var MASA = 5;
+var MASA_T = 8;
+var F_R1 = 100;
+var V_QUIZ = 10 / Math.sqrt(2); // ~7.071
+var EC_QUIZ = 200;
+
+var ALUMNOS = [
+  '1 - AARON ROJAS Ximena Valentina',
+  '2 - ANTONIO BENITEZ Vanessa',
+  '3 - ARVIZU LOPEZ Ana Rosa',
+  '4 - AVILES ORTIZ Paloma Irais',
+  '5 - BARRERA VELAZQUEZ Nataly Mayte',
+  '6 - BAUTISTA ANGUIANO Ian Lissandro',
+  '7 - CASTRO PEREZ Maria Fernanda',
+  '8 - CORTEZ LUNA Yaretzi',
+  '9 - CRUZ SARABIA Camila Lupita',
+  '10 - DOMINGUEZ OLMOS Monica Citlalli',
+  '11 - ENRIQUEZ TREJO Maria Romina',
+  '12 - FRANCO HERNANDEZ Miranda',
+  '13 - FUENTES ROSAS Jose Eduardo',
+  '14 - GASPAR CRUZ Yoali',
+  '15 - GONZALEZ ANAYA Edith Estrella',
+  '16 - GONZALEZ MARTINEZ Sofia Valentina',
+  '17 - HERNANDEZ ESPINO Ariadna Laila',
+  '18 - HERNANDEZ HERNANDEZ Diana',
+  '19 - JIMENEZ ERAZO Francisco Jaziel',
+  '20 - JIMENEZ GONZALEZ Evelyn Danae',
+  '21 - MANZANO JULIAN Ana Valeria',
+  '22 - MARTINEZ CASTRO Santiago',
+  '23 - MARTINEZ GUTIERREZ Regina',
+  '24 - MENDEZ HERNANDEZ Nataly Guadalupe',
+  '25 - MIRANDA NAVARRETE Axel',
+  '26 - MONRROY SALVADOR Angel',
+  '27 - MORALES MEDINA Ana',
+  '28 - MORALES SEGURA Zadkiel Caleb',
+  '29 - MORENO HERNANDEZ Sienkan Aaron',
+  '30 - OJEDA NAVARRETE Roberto',
+  '31 - PACHECO ALANIS Regina',
+  '32 - PEREZ FLORES Ana Paula',
+  '33 - RANGEL RESENDIZ Amairani',
+  '34 - ROMERO ALVAREZ Donovan',
+  '35 - ROSALES MEJIA Sandra',
+  '36 - SANCHEZ SARABIA Romina Sofia',
+  '37 - SEGURA HERNANDEZ Cristian Alexander',
+  '38 - SILVA VILLARREAL Jesus David',
+  '39 - TREJO ROJAS Mathias Israel',
+  '40 - VAZQUEZ MORALES Diego Erick',
+  '41 - ZERPA HERNANDEZ Freinner Jovanny',
+  '42 - INVITADO 1',
+  '43 - INVITADO 2',
+  '44 - INVITADO 3'
+];
+
+// ── Estado global ──
+var n = -1;
+var nombre = '';
+var fR2 = 200;
+var fR3 = 400;
+var tR1 = 0, tR2 = 0, tR3 = 0;
+var vR1 = 0, vR2 = 0, vR3 = 0;
+var ecR2 = 0;
+var vT = 0;
+var animRunning = false;
+var animId = null;
+var runsOk = [false, false, false];
+
+var intentos = {v1:0,v2:0,v3:0,vt:0,q3:0,q4:0};
+var primerIntento = {};
+
+// ── PRNG ──
+function sr(s) {
+  var x = Math.sin(s * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// ── Tiempo con variacion por semilla ──
+function calcT(F) {
+  var t = Math.sqrt(2 * DIST * MASA / F);
+  var v = 1 + 0.03 * (sr(n * 17 + 3) - 0.5);
+  return parseFloat((t * v).toFixed(3));
+}
+
+
+// ── Dentro de rango ──
+function enRango(inp, exp, tol) {
+  tol = tol || 0.04;
+  if (exp === 0) return Math.abs(inp) < 0.01;
+  return Math.abs(inp - exp) / Math.abs(exp) <= tol;
+}
+
+// ── Progreso ──
+function setProg(p) {
+  document.getElementById('prog-fill').style.width = (p * 100 / 8) + '%';
+}
+
+// ══════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════
+(function buildDropdown() {
+  var sel = document.getElementById('sel-alumno');
+  ALUMNOS.forEach(function(a, i) {
+    var opt = document.createElement('option');
+    opt.value = i + 1;
+    opt.textContent = a;
+    sel.appendChild(opt);
+  });
+})();
+
+function doLogin() {
+  var cod_acc = document.getElementById('cod-acceso').value.trim();
+  var sel = document.getElementById('sel-alumno');
+  var err = document.getElementById('login-err');
+
+  if (cod_acc === '890') {
+    n = 0;
+    nombre = 'Prof. Adrian Cruz';
+    fR2 = 250;
+  } else {
+    var idx = parseInt(sel.value);
+    if (!idx || idx < 1 || idx > 41) {
+      err.style.display = 'block';
+      return;
+    }
+    n = idx;
+    nombre = ALUMNOS[n - 1].replace(/^\d+ - /, '');
+    fR2 = 100 + Math.floor(sr(n * 7 + 2) * 8) * 50; // 100-500 in steps of 50, unique per student
+    // But we want them to choose, so just set a default for now
+    fR2 = 200; // default, they'll move the slider
+  }
+
+  err.style.display = 'none';
+
+  // Teacher mode
+  if (cod_acc === '890') {
+    document.body.classList.add('teacher-mode');
+  }
+
+  // Update UI
+  document.getElementById('chip-nombre').textContent = nombre;
+  document.getElementById('chip-nombre').style.display = 'inline-block';
+
+  unlock('s-b0', 0);
+}
+
+// ══════════════════════════════════════════════
+//  NAVEGACION
+// ══════════════════════════════════════════════
+function unlock(secId, paso) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(secId).classList.add('active');
+  setProg(paso);
+  window.scrollTo(0, 0);
+
+  if (paso >= 1) {
+    }
+
+  // Populate data when entering sections
+  if (secId === 's-b2') populateB2();
+  if (secId === 's-b3') populateB3();
+  if (secId === 's-b4') populateFicha();
+  if (secId === 's-b5') populateB5();
+  if (secId === 's-b7') populateResumen();
+}
+
+// ══════════════════════════════════════════════
+//  MC LOGIC
+// ══════════════════════════════════════════════
+function mc(id, btn, tipo) {
+  var opts = btn.parentElement.querySelectorAll('.mc-btn');
+  opts.forEach(function(o) { o.disabled = true; });
+  btn.classList.add(tipo === 'c' ? 'correcta' : 'incorrecta');
+
+  var fbOk = document.getElementById('fb-' + id);
+  var fbErr = document.getElementById('fb-' + id + 'e');
+
+  if (tipo === 'c') {
+    if (fbOk) { fbOk.style.display = 'block'; }
+    if (id === 'b02') checkB0Unlock();
+  } else {
+    if (fbErr) { fbErr.style.display = 'block'; }
+    // Re-enable after 2s for retry
+    setTimeout(function() {
+      opts.forEach(function(o) { o.disabled = false; o.classList.remove('incorrecta'); });
+      if (fbErr) fbErr.style.display = 'none';
+    }, 2500);
+  }
+}
+
+function checkB0Unlock() {
+  document.getElementById('btn-b0').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════
+//  SLIDER
+// ══════════════════════════════════════════════
+function updateSlider() {
+  var f = parseInt(document.getElementById('slider-r2').value);
+  fR2 = f;
+  fR3 = f * 2;
+  document.getElementById('fdisp-r2').textContent = f + ' N';
+  document.getElementById('sd-fr2').textContent = f + ' N';
+  document.getElementById('r3-fdisp').textContent = 'F = ' + fR3 + ' N (doble del Run 2)';
+  document.getElementById('sd-fr3').textContent = fR3 + ' N';
+}
+
+// ══════════════════════════════════════════════
+//  SIMULACION
+// ══════════════════════════════════════════════
+function startSim(runIdx) {
+  if (animRunning) return;
+
+  var forces = [F_R1, fR2, fR3];
+  var F = forces[runIdx];
+  var canvasId = 'c-r' + (runIdx + 1);
+  var btnId = 'btn-r' + (runIdx + 1);
+  var resId = 'res-r' + (runIdx + 1);
+
+  if (runIdx === 1) {
+    // Lock slider
+    document.getElementById('slider-r2').disabled = true;
+    fR3 = fR2 * 2;
+    document.getElementById('r3-fdisp').textContent = 'F = ' + fR3 + ' N (doble de tu Run 2)';
+    document.getElementById('sd-fr3').textContent = fR3 + ' N';
+  }
+
+  document.getElementById(btnId).disabled = true;
+  document.getElementById(btnId).textContent = 'Simulando...';
+
+  var canvas = document.getElementById(canvasId);
+  var parent = canvas.parentElement;
+  canvas.width = Math.max(parent.clientWidth - 4, 200);
+  canvas.height = 110;
+
+  var W = canvas.width;
+  var ctx = canvas.getContext('2d');
+  var PAD = 52;
+  var TW = W - 2 * PAD;
+  var TY = 58;
+
+  var t_total = calcT(F);
+  animRunning = true;
+  var t0 = null;
+
+  function frame(ts) {
+    if (!t0) t0 = ts;
+    var elapsed = (ts - t0) / 1000;
+    var prog = Math.min(elapsed / t_total, 1);
+
+    ctx.clearRect(0, 0, W, 110);
+
+    // Background
+    ctx.fillStyle = '#EEF4FF';
+    ctx.fillRect(0, 0, W, 110);
+
+    // Track base
+    ctx.fillStyle = '#CCC';
+    ctx.fillRect(PAD, TY + 14, TW, 4);
+
+    // Track surface
+    ctx.fillStyle = '#E8EFF8';
+    ctx.fillRect(PAD, TY, TW, 14);
+
+    // Start marker (green)
+    ctx.fillStyle = '#2E7D32';
+    ctx.fillRect(PAD - 2, TY - 12, 3, 28);
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#2E7D32';
+    ctx.fillText('0 m', PAD, TY - 14);
+
+    // End marker (red)
+    ctx.fillStyle = '#C62828';
+    ctx.fillRect(PAD + TW, TY - 12, 3, 28);
+    ctx.fillStyle = '#C62828';
+    ctx.fillText('10 m', PAD + TW, TY - 14);
+
+    // Object (box)
+    var bx = PAD + prog * TW - 14;
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillRect(bx + 3, TY + 8, 28, 8);
+    // Box body
+    ctx.fillStyle = '#1565C0';
+    ctx.fillRect(bx, TY, 28, 16);
+    // Box highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillRect(bx, TY, 28, 5);
+
+    // Force arrow (only when box not near end)
+    if (prog < 0.82) {
+      ctx.strokeStyle = '#E65100';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(bx - 14, TY + 8);
+      ctx.lineTo(bx - 2, TY + 8);
+      ctx.stroke();
+      ctx.fillStyle = '#E65100';
+      ctx.beginPath();
+      ctx.moveTo(bx - 2, TY + 3);
+      ctx.lineTo(bx + 9, TY + 8);
+      ctx.lineTo(bx - 2, TY + 13);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // F label
+    if (prog < 0.5) {
+      ctx.fillStyle = '#E65100';
+      ctx.font = 'bold 10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('F=' + F + 'N', bx - 8, TY - 2);
+    }
+
+    // Time and distance counters
+    ctx.fillStyle = '#1A1A2E';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('d = ' + (prog * DIST).toFixed(1) + ' m', 5, 104);
+    ctx.textAlign = 'right';
+    var t_show = Math.min(elapsed, t_total);
+    ctx.fillText('t = ' + t_show.toFixed(2) + ' s', W - 5, 104);
+
+    if (prog < 1) {
+      animId = requestAnimationFrame(frame);
+    } else {
+      animRunning = false;
+      // Store result
+      if (runIdx === 0) { tR1 = t_total; vR1 = DIST / tR1; }
+      else if (runIdx === 1) { tR2 = t_total; vR2 = DIST / tR2; }
+      else { tR3 = t_total; vR3 = DIST / tR3; }
+
+      // Show result
+      var res = document.getElementById(resId);
+      res.style.display = 'block';
+      if (runIdx === 0) {
+        document.getElementById('t-r1').textContent = t_total.toFixed(3);
+      } else if (runIdx === 1) {
+        document.getElementById('rf-r2').textContent = fR2;
+        document.getElementById('t-r2').textContent = t_total.toFixed(3);
+        // Enable run 3
+        var r3 = document.getElementById('run3-card');
+        r3.style.opacity = '1';
+        r3.style.pointerEvents = 'auto';
+      } else {
+        document.getElementById('rf-r3').textContent = fR3;
+        document.getElementById('t-r3').textContent = t_total.toFixed(3);
+      }
+
+      runsOk[runIdx] = true;
+      if (runIdx === 0) {
+        var r2 = document.getElementById('run2-card');
+        r2.style.opacity = '1';
+        r2.style.pointerEvents = 'auto';
+      }
+      if (runsOk[0] && runsOk[1] && runsOk[2]) {
+        ecR2 = 0.5 * MASA * vR2 * vR2;
+        // Compute transfer
+        var a_t = fR2 / MASA_T;
+        var t_t = Math.sqrt(2 * DIST / a_t);
+        vT = DIST / t_t;
+        document.getElementById('btn-b1').style.display = 'block';
+      }
+    }
+  }
+
+  animId = requestAnimationFrame(frame);
+}
+
+
+
+// ══════════════════════════════════════════════
+//  BLOQUE 2 — VELOCIDADES
+// ══════════════════════════════════════════════
+function populateB2() {
+  document.getElementById('calc-t1').textContent = tR1.toFixed(3);
+  document.getElementById('calc-t1b').textContent = tR1.toFixed(3);
+  document.getElementById('calc-f2').textContent = fR2;
+  document.getElementById('calc-t2').textContent = tR2.toFixed(3);
+  document.getElementById('calc-t2b').textContent = tR2.toFixed(3);
+  document.getElementById('calc-f3').textContent = fR3;
+  document.getElementById('calc-t3').textContent = tR3.toFixed(3);
+  document.getElementById('calc-t3b').textContent = tR3.toFixed(3);
+}
+
+function checkV(runIdx) {
+  var ids = ['v1','v2','v3'];
+  var id = ids[runIdx];
+  var expected = [vR1, vR2, vR3][runIdx];
+  var salts = [1, 2, 3];
+  var salt = salts[runIdx];
+
+  var inp = parseFloat(document.getElementById('inp-' + id).value);
+  var fb = document.getElementById('vfb-' + id);
+  intentos[id] = (intentos[id] || 0) + 1;
+
+  if (isNaN(inp)) {
+    fb.className = 'verif-fb err';
+    fb.textContent = 'Escribe un numero valido.';
+    fb.style.display = 'block';
+    return;
+  }
+
+  if (enRango(inp, expected, 0.04)) {
+    fb.className = 'verif-fb ok';
+    fb.textContent = '✅ Correcto. v = ' + inp.toFixed(2) + ' m/s = ' + (inp * 3.6).toFixed(1) + ' km/h';
+    fb.style.display = 'block';
+    document.getElementById('vbtn-' + id).disabled = true;
+    document.getElementById('inp-' + id).disabled = true;
+    primerIntento[id] = (intentos[id] === 1);
+
+    if (runIdx === 1) {
+      ecR2 = 0.5 * MASA * inp * inp;
+    }
+
+    checkB2Done();
+  } else {
+    if (intentos[id] >= 3) {
+      fb.className = 'verif-fb hint';
+      fb.textContent = 'Respuesta correcta: v = ' + expected.toFixed(2) + ' m/s. Procedimiento: v = 10 / ' + [tR1,tR2,tR3][runIdx].toFixed(3) + ' = ' + expected.toFixed(2) + ' m/s. Sin codigo.';
+      fb.style.display = 'block';
+      document.getElementById('vbtn-' + id).disabled = true;
+      checkB2Done();
+    } else {
+      var hint = '';
+      if (intentos[id] === 1) hint = 'Pista: v = 10 / t. Divide 10 entre el tiempo que midiste.';
+      else hint = 'Pista 2: t = ' + [tR1,tR2,tR3][runIdx].toFixed(3) + ' s. v = 10 / ' + [tR1,tR2,tR3][runIdx].toFixed(3);
+      fb.className = 'verif-fb err';
+      fb.textContent = 'Valor incorrecto. ' + hint;
+      fb.style.display = 'block';
+    }
+  }
+}
+
+function checkB2Done() {
+  var allDone = true;
+  ['v1','v2','v3'].forEach(function(id) {
+    if (!document.getElementById('vbtn-' + id).disabled) allDone = false;
+  });
+  if (allDone) {
+    document.getElementById('btn-b2').style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  BLOQUE 3 — GRAFICA
+// ══════════════════════════════════════════════
+function populateB3() {
+  document.getElementById('t-r2-graf').textContent = tR2.toFixed(3);
+
+  // Compute 5 points for the parabolic trajectory of Run 2
+  var a = fR2 / MASA; // acceleration
+  var tbody = document.getElementById('tbody-puntos');
+  tbody.innerHTML = '';
+  var fracs = [0, 0.25, 0.5, 0.75, 1.0];
+  var labels = ['Inicio','t/4','t/2','3t/4','Final'];
+  fracs.forEach(function(f, i) {
+    var t_i = tR2 * f;
+    var d_i = 0.5 * a * t_i * t_i;
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td style="font-weight:700;">' + labels[i] + '</td>'
+      + '<td>' + t_i.toFixed(3) + '</td>'
+      + '<td>' + d_i.toFixed(2) + '</td>'
+      + '<td style="font-size:.72rem;color:var(--gris);">' + (i===0?'objeto en reposo':i===4?'llega a 10 m':'en movimiento') + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('btn-b3').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════
+//  BLOQUE 4 — FICHA
+// ══════════════════════════════════════════════
+function populateFicha() {
+  var rows = [
+    ['Run 1: F=100N', 't=' + tR1.toFixed(3) + 's | v=' + vR1.toFixed(2) + 'm/s = ' + (vR1*3.6).toFixed(1) + 'km/h'],
+    ['Run 2: F=' + fR2 + 'N', 't=' + tR2.toFixed(3) + 's | v=' + vR2.toFixed(2) + 'm/s = ' + (vR2*3.6).toFixed(1) + 'km/h'],
+    ['Run 3: F=' + fR3 + 'N', 't=' + tR3.toFixed(3) + 's | v=' + vR3.toFixed(2) + 'm/s = ' + (vR3*3.6).toFixed(1) + 'km/h'],
+    ['Ec Run 2 (5kg)', 'Ec = (1/2) x 5 x ' + vR2.toFixed(2) + '^2 = ' + (0.5*MASA*vR2*vR2).toFixed(1) + ' J'],
+    ['Velocidad Run 2', (vR2*3.6).toFixed(1) + ' km/h ' + velAnalogy(vR2)]
+  ];
+
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="ftc-row"><span class="ftc-lbl">' + r[0] + '</span><span class="ftc-val">' + r[1] + '</span></div>';
+  });
+  document.getElementById('ftc-rows').innerHTML = html;
+
+  // Set anticipation value
+  document.getElementById('v-r2-ant').textContent = vR2.toFixed(2);
+}
+
+function velAnalogy(v) {
+  var kmh = v * 3.6;
+  if (kmh < 20) return '(mas lento que una bicicleta en CDMX)';
+  if (kmh < 40) return '(similar al microbús en hora pico)';
+  if (kmh < 60) return '(como el metro entre estaciones)';
+  return '(mas rapido que el trafico en el Periferico)';
+}
+
+function checkFicha() {
+  if (document.getElementById('check-ficha').checked) {
+    document.getElementById('btn-b4').style.display = 'block';
+  } else {
+    document.getElementById('btn-b4').style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  BLOQUE 5 — TRANSFERENCIA
+// ══════════════════════════════════════════════
+function populateB5() {
+  document.getElementById('f-transf-disp').textContent = fR2;
+
+  // Exact physics, no seed variation for transfer
+  var a_t = fR2 / MASA_T;
+  var t_t = Math.sqrt(2 * DIST / a_t);
+  vT = DIST / t_t;
+
+}
+
+function checkTransf() {
+  var a_t = fR2 / MASA_T;
+  var t_t = Math.sqrt(2 * DIST / a_t);
+  vT = DIST / t_t;
+
+  var inp = parseFloat(document.getElementById('inp-vt').value);
+  var fb = document.getElementById('vfb-vt');
+  intentos.vt = (intentos.vt || 0) + 1;
+
+  if (isNaN(inp)) {
+    fb.className = 'verif-fb err'; fb.textContent = 'Escribe un numero.'; fb.style.display = 'block'; return;
+  }
+
+  if (enRango(inp, vT, 0.05)) {
+    fb.className = 'verif-fb ok';
+    fb.textContent = '✅ Correcto. v = ' + inp.toFixed(2) + ' m/s. El cajón mas pesado fue mas lento porque la misma fuerza produce menos aceleración en más masa.';
+    fb.style.display = 'block';
+    document.getElementById('vbtn-vt').disabled = true;
+    document.getElementById('inp-vt').disabled = true;
+    primerIntento['vt'] = (intentos.vt === 1);
+    document.getElementById('btn-b5').style.display = 'block';
+  } else {
+    if (intentos.vt >= 3) {
+      fb.className = 'verif-fb hint';
+      fb.textContent = 'Respuesta: v = ' + vT.toFixed(2) + ' m/s. a=' + (fR2/MASA_T).toFixed(1) + ' m/s^2, t=sqrt(2x10/' + (fR2/MASA_T).toFixed(1) + ')=' + t_t.toFixed(3) + 's, v=10/' + t_t.toFixed(3) + '. Sin codigo.';
+      fb.style.display = 'block';
+      document.getElementById('vbtn-vt').disabled = true;
+      document.getElementById('btn-b5').style.display = 'block';
+    } else {
+      var hint = intentos.vt === 1
+        ? 'Pista: primero calcula a = ' + fR2 + ' / 8 = ' + (fR2/MASA_T).toFixed(1) + ' m/s^2. Luego t = sqrt(2x10/a).'
+        : 'Pista 2: t = sqrt(2x10/' + (fR2/MASA_T).toFixed(1) + ') = ' + t_t.toFixed(3) + ' s. Ahora calcula v = 10/t.';
+      fb.className = 'verif-fb err'; fb.textContent = 'Incorrecto. ' + hint; fb.style.display = 'block';
+    }
+  }
+}
+
+// ══════════════════════════════════════════════
+//  BLOQUE 6 — QUIZ
+// ══════════════════════════════════════════════
+function checkQ3() {
+  var inp = parseFloat(document.getElementById('inp-q3').value);
+  var fb = document.getElementById('vfb-q3');
+  intentos.q3 = (intentos.q3 || 0) + 1;
+
+  if (isNaN(inp)) { fb.className='verif-fb err'; fb.textContent='Escribe un numero.'; fb.style.display='block'; return; }
+
+  if (enRango(inp, V_QUIZ, 0.04)) {
+    fb.className = 'verif-fb ok';
+    fb.textContent = '✅ Correcto. v = 10/√2 = ' + V_QUIZ.toFixed(2) + ' m/s.';
+    fb.style.display = 'block';
+    document.getElementById('vbtn-q3').disabled = true;
+    document.getElementById('inp-q3').disabled = true;
+    primerIntento['q3'] = (intentos.q3 === 1);
+  } else {
+    if (intentos.q3 >= 3) {
+      fb.className = 'verif-fb hint';
+      fb.textContent = 'Respuesta: v = ' + V_QUIZ.toFixed(2) + ' m/s. t=sqrt(2)=1.414s, v=10/1.414=7.07 m/s. Sin codigo.';
+      fb.style.display = 'block';
+      document.getElementById('vbtn-q3').disabled = true;
+    } else {
+      fb.className = 'verif-fb err';
+      fb.textContent = intentos.q3 === 1 ? 'Revisa. Paso 1: a = 80 / 8. Paso 2: t = raiz(2 x 10 / a). Paso 3: v = 10 / t.' : 'Pista 2: calcula t = raiz(2 x 10 / 10). Luego v = 10 / t.';
+      fb.style.display = 'block';
+    }
+  }
+  checkB6Done();
+}
+
+function checkQ4() {
+  var inp = parseFloat(document.getElementById('inp-q4').value);
+  var fb = document.getElementById('vfb-q4');
+  intentos.q4 = (intentos.q4 || 0) + 1;
+
+  if (isNaN(inp)) { fb.className='verif-fb err'; fb.textContent='Escribe un numero.'; fb.style.display='block'; return; }
+
+  if (enRango(inp, EC_QUIZ, 0.05)) {
+    fb.className = 'verif-fb ok';
+    fb.textContent = '✅ Correcto. Ec = ½ × 8 × v² = 200 J.';
+    fb.style.display = 'block';
+    document.getElementById('vbtn-q4').disabled = true;
+    document.getElementById('inp-q4').disabled = true;
+    primerIntento['q4'] = (intentos.q4 === 1);
+  } else {
+    if (intentos.q4 >= 3) {
+      fb.className = 'verif-fb hint';
+      fb.textContent = 'Respuesta: Ec = (1/2) x 8 x (7.07)^2 = 4 x 50 = 200 J. Sin codigo.';
+      fb.style.display = 'block';
+      document.getElementById('vbtn-q4').disabled = true;
+    } else {
+      fb.className = 'verif-fb err';
+      fb.textContent = intentos.q4 === 1 ? 'Revisa la formula: Ec = (1/2) x 8 x v^2. Sustituye m=8 y la v que calculaste en la pregunta anterior.' : 'Pista: sustituye tus valores en Ec = 0.5 x 8 x v^2. El resultado es un numero entero.';
+      fb.style.display = 'block';
+    }
+  }
+  checkB6Done();
+}
+
+function checkB6Done() {
+  var r5 = document.getElementById('r-q5').value.trim().length >= 50;
+  var r6 = document.getElementById('r-q6').value.trim().length >= 80;
+  if (r5 && r6) {
+    document.getElementById('btn-b6').style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  CONFIGURACIÓN COHERENCIA Y MÍNIMOS
+// ══════════════════════════════════════════════
+var TEXT_CONFIG = [
+  {id:'r-b0-1',  min:60,  lbl:'B0.1 Microbús vs Uber',
+   keys:['distancia','tiempo','ruta','rápido','tardó','tarda','minutos','mismo','más'],
+   expected:'El Uber va más rápido porque tardó menos tiempo en recorrer la misma distancia. La velocidad depende de distancia y tiempo juntos.'},
+  {id:'r-b0-3',  min:50,  lbl:'B0.3 Predicción doble fuerza',
+   keys:['fuerza','velocidad','tiempo','más','doble','rápido','menos','mayor'],
+   expected:'Con el doble de fuerza el cajón debería moverse más rápido y tardar menos tiempo en cruzar los 10 metros.'},
+  {id:'r-b2-4',  min:60,  lbl:'B2.4 Patrón F vs v',
+   keys:['fuerza','velocidad','mayor','aumenta','más','rápido','relación','proporcional','sube'],
+   expected:'A mayor fuerza, mayor velocidad. La relación es directa: al aumentar la fuerza el objeto llega más rápido a la misma distancia.'},
+  {id:'r-b3-1',  min:60,  lbl:'B3.1 Análisis gráfica',
+   keys:['curva','recta','rápido','lento','inicio','final','velocidad','pendiente','aumenta','empezó'],
+   expected:'La curva no es recta porque el cajón va acelerando: al principio es lento y al final va más rápido. La línea recta representaría velocidad constante.'},
+  {id:'r-b3-2',  min:60,  lbl:'B3.2 Fuerza y gráfica curva',
+   keys:['fuerza','cambia','movimiento','aceleración','velocidad','porque','acelera','aumenta'],
+   expected:'Sí. La fuerza cambia el movimiento: lo acelera. Por eso la gráfica es curva — la velocidad no es constante sino que va aumentando.'},
+  {id:'r-b5-2',  min:60,  lbl:'B5.2 Comparación de masas',
+   keys:['masa','pesado','lento','fuerza','aceleración','mayor','más','menor','pesada'],
+   expected:'El cajón de 8 kg fue más lento porque la misma fuerza produce menos aceleración en un objeto más pesado (a = F/m: si m aumenta, a disminuye).'},
+  {id:'r-q5',    min:50,  lbl:'Q5 Diagrama de fuerzas',
+   keys:['piso','normal','peso','gravedad','equilibrio','igual','arriba','empuja','fuerza'],
+   expected:'El piso ejerce una fuerza hacia arriba llamada fuerza normal que es igual al peso. Las dos fuerzas se equilibran y el cajón no se hunde.'},
+  {id:'r-q6',    min:80,  lbl:'Q6 Ejemplo CDMX',
+   keys:['metro','microbús','bici','coche','tráfico','velocidad','tiempo','distancia','rapidez','transporte','periferico','bus'],
+   expected:'Ejemplo: en el Metro, la distancia entre estaciones es fija, pero si tarda menos en recorrerla va más rápido. La velocidad mide qué tanto recorre cada segundo.'},
+  {id:'r-b7-1',  min:40,  lbl:'Síntesis velocidad',
+   keys:['distancia','tiempo','rapidez','mide','recorre','razón','relación','entre'],
+   expected:'La velocidad es la distancia recorrida dividida entre el tiempo empleado. Mide qué tan rápido cambia la posición.'},
+  {id:'r-b7-2',  min:50,  lbl:'Síntesis fuerza-movimiento',
+   keys:['fuerza','velocidad','energía','cambia','produce','movimiento','mayor','acelera','aumenta'],
+   expected:'Cuando una fuerza actúa, el objeto se acelera: cambia su velocidad. A más fuerza, más velocidad y más energía cinética.'},
+  {id:'r-b7-ant',min:50,  lbl:'Anticipación energía cinética',
+   keys:['energía','cuadrado','cuadruplica','veces','doble','cuatro','4','porque','v²'],
+   expected:'Tendría 4 veces más energía porque la velocidad está al cuadrado: si v se duplica, v² se cuadruplica, y Ec también.'}
+];
+
+function checkCoherence(cfg, val) {
+  var v = val.toLowerCase();
+  return cfg.keys.some(function(k){ return v.includes(k); });
+}
+
+// ══════════════════════════════════════════════
+//  COUNTER LIVE POR TEXTAREA
+// ══════════════════════════════════════════════
+function setupCounters() {
+  TEXT_CONFIG.forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    var cnt = document.getElementById('cnt-' + cfg.id.replace('r-',''));
+    if (!el || !cnt) return;
+    // add counter span if not exists
+    function update() {
+      var len = el.value.trim().length;
+      var ok = len >= cfg.min;
+      cnt.textContent = len + ' / ' + cfg.min + ' mín';
+      cnt.style.color = ok ? 'var(--v)' : (len > cfg.min * 0.6 ? 'var(--am)' : 'var(--r)');
+    }
+    el.addEventListener('input', update);
+    update();
+  });
+}
+
+// Add counter spans to textareas that don't have them
+function addCounterSpans() {
+  TEXT_CONFIG.forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    if (!el) return;
+    var cntId = 'cnt-' + cfg.id.replace('r-','');
+    if (!document.getElementById(cntId)) {
+      var span = document.createElement('span');
+      span.id = cntId;
+      span.style.cssText = 'font-size:.68rem;color:var(--gris);display:block;text-align:right;margin:-4px 0 8px;';
+      el.parentNode.insertBefore(span, el.nextSibling);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+//  CALIFICACIÓN AUTOMÁTICA
+// ══════════════════════════════════════════════
+function calcGrade() {
+  // Written responses: 6 pts
+  var escritoPts = 0;
+  var perQ = 6 / TEXT_CONFIG.length;
+  var respDetails = [];
+
+  TEXT_CONFIG.forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    var val = el ? el.value.trim() : '';
+    var len = val.length;
+    var hasMin = len >= cfg.min;
+    var hasKey = hasMin && checkCoherence(cfg, val);
+    var pts = 0;
+    var badge = '❌';
+    if (hasMin && hasKey)  { pts = perQ;       badge = '✅'; }
+    else if (hasMin)        { pts = perQ * 0.5; badge = '⚠️'; }
+    escritoPts += pts;
+    respDetails.push({cfg:cfg, val:val, len:len, hasMin:hasMin, hasKey:hasKey, badge:badge});
+  });
+
+  // Calculations: 3 pts
+  var calcItems = [
+    {lbl:'v · Run 1 (100N)', id:'vbtn-v1', key:'v1', pts:0.5},
+    {lbl:'v · Run 2 (tu F)',  id:'vbtn-v2', key:'v2', pts:0.5},
+    {lbl:'v · Run 3 (2F)',    id:'vbtn-v3', key:'v3', pts:0.5},
+    {lbl:'v · Transferencia', id:'vbtn-vt', key:'vt', pts:0.75},
+    {lbl:'v · Quiz Q3',       id:'vbtn-q3', key:'q3', pts:0.5},
+    {lbl:'Ec · Quiz Q4',      id:'vbtn-q4', key:'q4', pts:0.25}
+  ];
+  var calcPts = 0;
+  calcItems.forEach(function(ci) {
+    var btn = document.getElementById(ci.id);
+    var done = btn && btn.disabled;
+    var first = primerIntento[ci.key] === true;
+    if (done && first)        { calcPts += ci.pts; ci.ok = 'ok'; }
+    else if (done && !first)  { calcPts += ci.pts * 0.5; ci.ok = 'ok2'; }
+    else                      { ci.ok = 'err'; }
+  });
+
+  // Ficha: 1 pt
+  var fichaPts = document.getElementById('check-ficha') &&
+                 document.getElementById('check-ficha').checked ? 1 : 0;
+
+  var total = Math.min(10, parseFloat((escritoPts + calcPts + fichaPts).toFixed(1)));
+  return {total, escritoPts, calcPts, fichaPts, respDetails, calcItems};
+}
+
+// ══════════════════════════════════════════════
+//  POBLAR RESUMEN
+// ══════════════════════════════════════════════
+function populateResumen() {
+  document.getElementById('resumen-nombre').textContent = nombre;
+  document.getElementById('v-r2-ant').textContent = vR2.toFixed(2);
+
+  var g = calcGrade();
+  var total = g.total;
+
+  // Grade box color
+  var col = total >= 7 ? 'linear-gradient(135deg,#1B5E20,#388E3C)' :
+            total >= 5 ? 'linear-gradient(135deg,#E65100,#F57C00)' :
+                         'linear-gradient(135deg,#B71C1C,#C62828)';
+  var gbox = document.getElementById('grade-box');
+  gbox.style.background = col;
+  gbox.style.color = 'white';
+  document.getElementById('grade-num').textContent = total.toFixed(1);
+  document.getElementById('grade-num').style.color = 'white';
+  document.getElementById('grade-label').textContent =
+    total >= 9 ? '🌟 Excelente' :
+    total >= 7 ? '✅ Aprobado' :
+    total >= 5 ? '⚠️ En proceso' : '❌ Necesita refuerzo';
+  document.getElementById('grade-label').style.color = 'rgba(255,255,255,.85)';
+
+  document.getElementById('gb-escrito').textContent = g.escritoPts.toFixed(1) + '/6';
+  document.getElementById('gb-calc').textContent    = g.calcPts.toFixed(1) + '/3';
+  document.getElementById('gb-ficha').textContent   = g.fichaPts + '/1';
+  ['gb-escrito','gb-calc','gb-ficha'].forEach(function(id){
+    document.getElementById(id).style.color='white';
+    document.getElementById(id).nextElementSibling.style.color='rgba(255,255,255,.75)';
+  });
+
+  // Calculations grid
+  var cgrid = document.getElementById('calc-grid');
+  cgrid.innerHTML = '';
+  g.calcItems.forEach(function(ci) {
+    var ico = ci.ok==='ok' ? '✅' : ci.ok==='ok2' ? '⚠️' : '❌';
+    var note = ci.ok==='ok' ? 'primer intento' : ci.ok==='ok2' ? 'varios intentos' : 'sin completar';
+    var div = document.createElement('div');
+    div.className = 'calc-item ' + ci.ok;
+    div.innerHTML = '<span class="calc-lbl">' + ci.lbl + '<br><small style="font-weight:400;font-size:.65rem;">' + note + '</small></span>'
+                  + '<span class="calc-ico">' + ico + '</span>';
+    cgrid.appendChild(div);
+  });
+
+  // Written responses
+  var rc = document.getElementById('resps-container');
+  rc.innerHTML = '';
+  var isTeacher = document.body.classList.contains('teacher-mode');
+
+  g.respDetails.forEach(function(rd) {
+    var div = document.createElement('div');
+    div.className = 'resp-item';
+    var dispTxt = rd.val.length > 0 ? rd.val : '(sin respuesta)';
+    var txtClass = rd.val.length > 0 ? '' : ' vacia';
+    var minInfo = rd.len + ' car. (mín: ' + rd.cfg.min + ')';
+    var coh = rd.hasKey ? ' · coherencia ✓' : (rd.hasMin ? ' · coherencia ✗' : '');
+    div.innerHTML =
+      '<div class="resp-hdr">'
+      + '<span class="resp-hdr-lbl">' + rd.cfg.lbl + '</span>'
+      + '<span class="resp-badge">' + rd.badge + '</span>'
+      + '</div>'
+      + '<div class="resp-text' + txtClass + '">' + dispTxt.replace(/</g,'&lt;') + '</div>'
+      + '<div class="resp-min">' + minInfo + coh + '</div>'
+      + (isTeacher
+          ? '<div class="resp-expected"><strong>💡 Respuesta esperada (docente):</strong>' + rd.cfg.expected + '</div>'
+          : '');
+    rc.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  CHECK B7 DONE
+// ══════════════════════════════════════════════
+function checkB7Done() {
+  var b71 = document.getElementById('r-b7-1').value.trim().length >= 40;
+  var b72 = document.getElementById('r-b7-2').value.trim().length >= 50;
+  var ant = document.getElementById('r-b7-ant').value.trim().length >= 50;
+  // Update counters
+  [
+    ['r-b7-1', 40, 'b7-1'],
+    ['r-b7-2', 50, 'b7-2'],
+    ['r-b7-ant', 50, 'b7-ant']
+  ].forEach(function(x) {
+    var el = document.getElementById(x[0]);
+    var cnt = document.getElementById('cnt-' + x[2]);
+    if (!el || !cnt) return;
+    var len = el.value.trim().length;
+    cnt.textContent = len + ' / ' + x[1] + ' mín';
+    cnt.style.color = len >= x[1] ? 'var(--v)' : (len > x[1]*0.6 ? 'var(--am)' : 'var(--r)');
+  });
+  if (b71 && b72 && ant) {
+    document.getElementById('btn-b7').style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  SKIP BLOQUE (docente)
+// ══════════════════════════════════════════════
+function skipBloque(secId, paso) {
+  // For sim: fill fR2 if not set
+  if (fR2 === 200 && !runsOk[1]) {
+    fR2 = 200; fR3 = 400;
+    tR1 = calcT(F_R1);
+    tR2 = calcT(fR2);
+    tR3 = calcT(fR3);
+    vR1 = DIST / tR1; vR2 = DIST / tR2; vR3 = DIST / tR3;
+    ecR2 = 0.5 * MASA * vR2 * vR2;
+    var a_t = fR2 / MASA_T;
+    var t_t = Math.sqrt(2 * DIST / a_t);
+    vT = DIST / t_t;
+    runsOk = [true, true, true];
+  }
+  if (secId === 's-resumen') {
+    populateResumen();
+  }
+  unlock(secId, paso);
+}
+
+// ══════════════════════════════════════════════
+//  SIMULAR RESULTADOS (docente)
+// ══════════════════════════════════════════════
+function simularResultados() {
+  // Set teacher login
+  n = 0; nombre = 'Prof. Adrián Cruz (demo)';
+  document.getElementById('chip-nombre').textContent = nombre;
+  document.getElementById('chip-nombre').style.display = 'inline-block';
+  document.body.classList.add('teacher-mode');
+
+  // Simulate physics
+  fR2 = 300; fR3 = 600;
+  tR1 = calcT(F_R1); tR2 = calcT(fR2); tR3 = calcT(fR3);
+  vR1 = DIST/tR1; vR2 = DIST/tR2; vR3 = DIST/tR3;
+  ecR2 = 0.5*MASA*vR2*vR2;
+  var a_t = fR2/MASA_T;
+  vT = DIST/Math.sqrt(2*DIST/a_t);
+  runsOk = [true,true,true];
+
+  // Fill textareas with sample answers
+  var sampleAnswers = {
+    'r-b0-1': 'El Uber va más rápido porque tardó 5 minutos y el microbús 8, pero los dos hicieron la misma ruta. El que tarda menos en la misma distancia es el más veloz.',
+    'r-b0-3': 'Creo que con el doble de fuerza el cajón se moverá más rápido y tardará menos tiempo en llegar al final de los 10 metros.',
+    'r-b2-4': 'Cuando aumenta la fuerza, la velocidad también aumenta. A mayor fuerza, el cajón llega más rápido. La relación es directa y proporcional.',
+    'r-b3-1': 'La curva no es igual a la línea recta. Al principio el cajón va más lento y al final más rápido, por eso la curva es más inclinada al final.',
+    'r-b3-2': 'Sí, la fuerza cambia el movimiento. El cajón empieza desde cero y va acelerando, por eso la gráfica es curva y no recta.',
+    'r-b5-2': 'El cajón de 8 kg fue más lento porque tiene más masa. La misma fuerza produce menos aceleración cuando el objeto es más pesado.',
+    'r-q5': 'El piso empuja hacia arriba con la fuerza normal. Esa fuerza es igual al peso y van en sentidos opuestos, así que se equilibran.',
+    'r-q6': 'En el Metro de la CDMX, la distancia entre estaciones es siempre la misma. Si el tren llega más rápido, tiene mayor velocidad. La velocidad mide cuánto recorre por segundo.',
+    'r-b7-1': 'La velocidad es la distancia recorrida dividida entre el tiempo que tardé.',
+    'r-b7-2': 'Cuando una fuerza actúa sobre un objeto, lo acelera y le da mayor velocidad. Más velocidad significa más energía cinética.',
+    'r-b7-ant': 'Tendría 4 veces más energía cinética porque la velocidad va al cuadrado en la fórmula. Si duplicas la velocidad, la energía se cuadruplica.'
+  };
+  Object.keys(sampleAnswers).forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = sampleAnswers[id];
+  });
+
+  // Mark calculations as done (first attempt)
+  ['v1','v2','v3','vt','q3','q4'].forEach(function(k){
+    primerIntento[k] = true;
+    intentos[k] = 1;
+    var btn = document.getElementById('vbtn-' + k);
+    if (btn) btn.disabled = true;
+  });
+
+  // Mark ficha
+  var fc = document.getElementById('check-ficha');
+  if (fc) fc.checked = true;
+
+  populateResumen();
+  unlock('s-resumen', 8);
+}
+
+// ══════════════════════════════════════════════
+//  FINALIZAR
+// ══════════════════════════════════════════════
+function finalizar() {
+  var clave = document.getElementById('clave-display').value.trim();
+  if (!clave) {
+    alert('Escribe la clave de clase que anunció el profesor antes de finalizar.');
+    return;
+  }
+  document.getElementById('fin-msg').style.display = 'block';
+  var btn = document.querySelector('[onclick="finalizar()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '✅ Evidencia guardada'; btn.style.background='#888'; }
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════════
+//  UNLOCK — override to call populateResumen
+// ══════════════════════════════════════════════
+var _unlock_orig = unlock;
+unlock = function(secId, paso) {
+  _unlock_orig(secId, paso);
+  if (secId === 's-resumen') {
+    populateResumen();
+  }
+  if (secId === 's-b7') {
+    document.getElementById('v-r2-ant').textContent = vR2.toFixed(2);
+  }
+};
+
+// Validar textos del quiz para habilitar btn-b6
+
+document.addEventListener('DOMContentLoaded', function() {
+  ['r-q5','r-q6'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', checkB6Done);
+  });
+  addCounterSpans();
+  setupCounters();
+});
+</script>
+</body>
+</html>
