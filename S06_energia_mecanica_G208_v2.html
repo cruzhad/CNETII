@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>S06 · Energía Mecánica · CNEyT II · G208</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;
+  --az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;
+  --v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;
+  --r:#C62828;--r3:#FFEBEE;
+  --n:#E65100;--n3:#FFF3E0;
+  --am:#F57F17;--am3:#FFF8E1;
+  --dark:#1A1A2E;--gris:#666;--gris2:#E0E0E0;--gris3:#F5F5F5;
+  --radio:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#EEF2FF;color:var(--dark);font-size:15px;overflow-x:hidden;}
+
+/* PROGRESO */
+.prog-bar{background:var(--dark);padding:7px 10px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.pd{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.pd-c{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:rgba(255,255,255,.3);font-family:'Bebas Neue';font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:.3s;}
+.pd-c.on{background:var(--mo2);border-color:var(--mo2);color:#fff;}
+.pd-c.ok{background:var(--v2);border-color:var(--v2);color:#fff;}
+.pd-l{font-size:.46rem;color:rgba(255,255,255,.22);margin-top:2px;text-align:center;max-width:40px;line-height:1.2;}
+.pd-l.on{color:var(--mo3);}
+.pd-l.ok{color:var(--v2);}
+.pln{flex:1;height:2px;background:rgba(255,255,255,.1);min-width:3px;max-width:14px;transition:.3s;}
+.pln.ok{background:var(--v2);}
+
+/* HEADER */
+.hdr{background:linear-gradient(150deg,#1A0533,#0D1B4A);padding:14px 14px 10px;color:white;}
+.hdr-tag{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:2px;}
+.hdr-tit{font-family:'Bebas Neue';font-size:1.65rem;color:#93C5FD;letter-spacing:1.5px;line-height:1.05;margin-bottom:3px;}
+.hdr-sub{font-size:.73rem;color:rgba(255,255,255,.55);line-height:1.5;}
+.hdr-prof{font-size:.63rem;color:rgba(255,255,255,.3);margin-top:3px;letter-spacing:.3px;}
+.chip-al{display:none;background:var(--mo2);color:white;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-top:6px;}
+.salida-badge{display:none;background:rgba(255,180,0,.18);border:1px solid rgba(255,180,0,.4);color:#FFD54F;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:7px;}
+
+/* BLOQUES */
+.bloque{display:none;padding:12px 12px 28px;max-width:780px;margin:0 auto;animation:fadeUp .3s ease;}
+.bloque.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:white;border-radius:var(--radio);padding:13px;margin-bottom:11px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.card.mo{border-left:4px solid var(--mo);}
+.card.az{border-left:4px solid var(--az);}
+.card.v{border-left:4px solid var(--v);}
+.card.n{border-left:4px solid var(--n);}
+.card.r{border-left:4px solid var(--r);}
+.card.am{border-left:4px solid var(--am);}
+
+.sec-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);margin-bottom:3px;}
+.sec-tit{font-family:'Bebas Neue';font-size:1.3rem;color:var(--mo);letter-spacing:.8px;margin-bottom:10px;border-bottom:2px solid var(--mo3);padding-bottom:5px;}
+.sec-tit.az{color:var(--az);border-bottom-color:var(--az3);}
+.sec-tit.v{color:var(--v);border-bottom-color:var(--v3);}
+.sec-tit.n{color:var(--n);border-bottom-color:var(--n3);}
+.sec-tit.am{color:var(--am);border-bottom-color:var(--am3);}
+
+/* NARR */
+.narr{background:linear-gradient(135deg,var(--dark),#1e2a4a);border-radius:var(--radio);padding:13px;margin-bottom:11px;color:white;}
+.narr p{font-size:.85rem;line-height:1.75;opacity:.95;}
+.narr strong{color:#93C5FD;}
+.narr em{color:#A5D6A7;font-style:normal;}
+
+/* FRAC / RAIZ */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.88em;line-height:1.2;}
+.frac .num{border-bottom:1.5px solid currentColor;padding:0 3px 1px;}
+.frac .den{padding:1px 3px 0;}
+.raiz{display:inline-flex;align-items:center;vertical-align:middle;}
+.raiz-sym{font-size:1.1em;margin-right:1px;}
+.raiz-cont{border-top:1.5px solid currentColor;padding:1px 3px 0;}
+
+/* FORMULA BOX */
+.formula-box{background:var(--dark);color:#93C5FD;border-radius:9px;padding:9px 13px;font-size:.9rem;text-align:center;margin:9px 0;line-height:2;}
+.formula-box .sub-label{font-size:.68rem;color:rgba(255,255,255,.4);display:block;margin-top:3px;}
+
+/* PROBLEMA BOX */
+.prob-box{background:#F8F4FF;border:2px solid var(--mo3);border-radius:var(--radio);padding:12px 14px;margin-bottom:10px;}
+.prob-box.az-box{background:var(--az3);border-color:#B0CCF0;}
+.prob-box.v-box{background:var(--v3);border-color:#B0D4B0;}
+.prob-num{font-family:'Bebas Neue';font-size:1rem;color:var(--mo);letter-spacing:.5px;margin-bottom:5px;}
+.prob-num.az{color:var(--az);}
+.prob-num.v{color:var(--v);}
+.cuaderno-note{background:#FFF9C4;border:1.5px dashed #F9A825;border-radius:8px;padding:7px 11px;font-size:.78rem;color:#5D4037;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+
+/* INPUTS */
+.inp-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+input[type=text]{font-family:'Outfit',sans-serif;font-size:.88rem;padding:8px 11px;border:2px solid var(--gris2);border-radius:8px;width:120px;background:white;color:var(--dark);}
+input[type=text]:focus{outline:none;border-color:var(--az);}
+.btn-verify{font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;background:var(--az);color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;}
+.btn-verify:hover{background:var(--az2);}
+.res-box{margin-top:7px;padding:7px 10px;border-radius:8px;font-size:.8rem;font-weight:600;display:none;}
+.res-box.ok{background:var(--v3);color:var(--v);display:block;}
+.res-box.err{background:var(--r3);color:var(--r);display:block;}
+.res-box.hint{background:var(--n3);color:var(--n);display:block;}
+.cod-box{background:var(--dark);color:#A5D6A7;border-radius:7px;padding:7px 11px;font-size:.86rem;font-weight:800;text-align:center;margin-top:6px;display:none;letter-spacing:1px;}
+
+/* TEXTAREA */
+textarea{font-family:'Outfit',sans-serif;font-size:.85rem;padding:9px 11px;border:2px solid var(--gris2);border-radius:8px;width:100%;resize:vertical;min-height:72px;background:white;color:var(--dark);margin-top:5px;}
+textarea:focus{outline:none;border-color:var(--az);}
+.char-counter{font-size:.68rem;font-weight:700;margin-top:3px;color:var(--r);}
+
+/* TABLA REGISTRO */
+.tabla-reg{width:100%;border-collapse:collapse;font-size:.8rem;margin:8px 0;overflow-x:auto;display:block;}
+.tabla-reg th{background:var(--dark);color:white;padding:7px 8px;text-align:center;font-size:.7rem;white-space:nowrap;}
+.tabla-reg td{padding:6px 7px;border:1.5px solid var(--gris2);vertical-align:middle;text-align:center;}
+.tabla-reg input[type=text]{width:78px;padding:5px 6px;font-size:.78rem;text-align:center;border:1.5px solid var(--gris2);border-radius:5px;}
+
+/* BOTÓN AVANZAR */
+.btn-avanzar{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--mo);color:white;border:none;padding:11px 24px;border-radius:10px;cursor:pointer;display:none;margin-top:13px;width:100%;}
+.btn-avanzar:hover{background:var(--mo2);}
+.btn-avanzar.on{display:block;}
+
+/* VALORES ALUMNO */
+.val-alumno{background:linear-gradient(135deg,var(--dark),#1e1a3a);border-radius:10px;padding:11px 13px;margin-bottom:11px;color:white;}
+.va-titulo{font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.4);margin-bottom:7px;}
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.val-item{background:rgba(255,255,255,.08);border-radius:7px;padding:7px 9px;}
+.vi-lbl{font-size:.62rem;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;margin-bottom:2px;}
+.vi-val{font-family:'Bebas Neue';font-size:1.35rem;color:#93C5FD;letter-spacing:.5px;}
+.vi-unit{font-size:.66rem;color:rgba(255,255,255,.4);margin-left:3px;}
+
+/* PASOS */
+.paso{background:white;border-radius:9px;padding:12px;margin-bottom:9px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid var(--gris2);}
+.paso.activo{border-left-color:var(--az);}
+.paso.completado{border-left-color:var(--v);}
+.paso-num{font-size:.62rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:3px;}
+.paso-tit{font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:7px;line-height:1.4;}
+
+/* SIM INLINE */
+.sim-inline-wrap{border-radius:10px;overflow:hidden;background:#0d0f14;margin-bottom:11px;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.sim-tabs-inner{display:flex;gap:4px;background:#161920;padding:5px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sim-label{font-size:.7rem;font-weight:800;padding:5px 9px;border-radius:7px;}
+.sim-panel-inner{padding:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+/* FICHA APUNTE */
+.ficha-wrap{background:white;border-radius:var(--radio);padding:14px;margin-bottom:11px;box-shadow:0 2px 10px rgba(0,0,0,.07);border-top:4px solid var(--am);}
+.ficha-sec{margin-bottom:15px;padding-bottom:13px;border-bottom:1.5px solid var(--gris2);}
+.ficha-sec:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.ficha-sec-tit{font-family:'Bebas Neue';font-size:.95rem;letter-spacing:.8px;color:var(--am);margin-bottom:7px;}
+.mapa-nodo{background:var(--gris3);border-radius:8px;padding:9px 11px;border-left:3px solid var(--gris2);margin-bottom:7px;}
+.mapa-nodo.em-nodo{border-left-color:var(--v);}
+.mapa-nodo.ec-nodo{border-left-color:var(--am);}
+.mapa-nodo.ep-nodo{border-left-color:var(--az);}
+.mapa-nodo.ef-nodo{border-left-color:var(--r);}
+.mapa-nodo-tit{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;}
+.mapa-nodo.em-nodo .mapa-nodo-tit{color:var(--v);}
+.mapa-nodo.ec-nodo .mapa-nodo-tit{color:var(--am);}
+.mapa-nodo.ep-nodo .mapa-nodo-tit{color:var(--az);}
+.mapa-nodo.ef-nodo .mapa-nodo-tit{color:var(--r);}
+
+/* DOCENTE */
+.teacher-only{display:none;}
+body.teacher-mode .teacher-only{display:block;}
+.doc-skip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;margin-top:8px;}
+.doc-answer{background:var(--v3);border-left:4px solid var(--v);border-radius:0 8px 8px 0;padding:8px 11px;margin-top:7px;font-size:.8rem;color:var(--v);display:none;}
+body.teacher-mode .doc-answer{display:block;}
+
+/* PANEL DOCENTE FLOTANTE — compacto */
+.doc-panel{display:none;position:fixed;bottom:10px;right:10px;z-index:500;background:rgba(26,26,46,.97);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.5);width:136px;}
+body.teacher-mode .doc-panel{display:block;}
+.doc-panel-tit{font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.28);margin-bottom:3px;}
+.doc-panel-lbl{font-size:.58rem;color:rgba(255,255,255,.38);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.doc-panel-btn{display:block;width:100%;font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:700;padding:4px 7px;border-radius:5px;border:none;cursor:pointer;margin-bottom:3px;text-align:left;line-height:1.3;}
+.doc-panel-btn:last-child{margin-bottom:0;}
+.doc-panel-btn.saltar{background:rgba(255,200,0,.12);color:#FFD54F;border:1px solid rgba(255,200,0,.22);}
+.doc-panel-btn.saltar:hover{background:rgba(255,200,0,.22);}
+.doc-panel-btn.resumen{background:rgba(46,125,50,.18);color:#A5D6A7;border:1px solid rgba(46,125,50,.3);}
+.doc-panel-btn.resumen:hover{background:rgba(46,125,50,.3);}
+.doc-panel-btn.grupo{background:rgba(21,101,192,.18);color:#90CAF9;border:1px solid rgba(21,101,192,.3);}
+.doc-panel-btn.grupo:hover{background:rgba(21,101,192,.3);}
+.doc-panel-btn.simular{background:rgba(156,75,181,.18);color:#CE93D8;border:1px solid rgba(156,75,181,.28);}
+.doc-panel-btn.simular:hover{background:rgba(156,75,181,.3);}
+
+/* CORNER KEY */
+.corner-key{position:fixed;bottom:6px;left:6px;z-index:600;width:16px;height:16px;opacity:.07;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;color:white;transition:opacity .2s;}
+.corner-key:hover{opacity:.35;}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:800;align-items:center;justify-content:center;}
+.modal-overlay.on{display:flex;}
+.modal-box{background:#1A1A2E;border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 18px;max-width:300px;width:90%;color:white;}
+.modal-box h3{font-family:'Bebas Neue';font-size:1.15rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:9px;}
+.modal-box p{font-size:.78rem;color:rgba(255,255,255,.6);margin-bottom:11px;}
+.modal-inp{font-family:'Outfit',sans-serif;font-size:.86rem;padding:8px 10px;border:2px solid rgba(255,255,255,.15);border-radius:8px;width:100%;background:rgba(255,255,255,.06);color:white;margin-bottom:7px;}
+.modal-inp:focus{outline:none;border-color:var(--az);}
+.modal-btn{font-family:'Bebas Neue';letter-spacing:1px;font-size:.95rem;background:var(--az);color:white;border:none;padding:8px 0;border-radius:8px;cursor:pointer;width:100%;}
+.modal-err{font-size:.74rem;color:var(--r);font-weight:700;margin-top:3px;display:none;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.35);font-size:.74rem;cursor:pointer;margin-top:5px;width:100%;text-align:center;}
+.modal-grupo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;overflow-y:auto;padding:14px;}
+.modal-grupo.on{display:block;}
+.modal-grupo-inner{background:#1A1A2E;border-radius:14px;max-width:750px;margin:0 auto;padding:16px 14px;color:white;overflow-x:auto;}
+.modal-grupo-inner h3{font-family:'Bebas Neue';font-size:1.2rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:4px;}
+.gtabla{width:100%;border-collapse:collapse;font-size:.72rem;}
+.gtabla th{background:rgba(255,255,255,.08);padding:5px 7px;text-align:left;color:rgba(255,255,255,.5);font-size:.63rem;text-transform:uppercase;}
+.gtabla td{padding:4px 7px;border-bottom:1px solid rgba(255,255,255,.06);}
+.gtabla td.num-val{font-family:'Bebas Neue';font-size:.92rem;color:#93C5FD;}
+.gtabla td.cod-val{font-family:monospace;font-size:.7rem;color:#A5D6A7;}
+.modal-cerrar{background:rgba(255,255,255,.1);border:none;color:white;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;padding:8px 18px;border-radius:8px;cursor:pointer;margin-top:12px;width:100%;}
+
+/* RESUMEN */
+.resumen-grade{text-align:center;padding:16px;border-radius:var(--radio);margin-bottom:12px;}
+.grade-num{font-family:'Bebas Neue';font-size:3.8rem;line-height:1;}
+.grade-lbl{font-size:.78rem;font-weight:700;letter-spacing:.5px;}
+.res-tabla{width:100%;border-collapse:collapse;font-size:.78rem;}
+.res-tabla th{background:var(--mo);color:white;padding:5px 8px;text-align:left;font-size:.68rem;}
+.res-tabla td{padding:5px 8px;border-bottom:1px solid var(--gris2);vertical-align:top;line-height:1.5;}
+.res-tabla tr:last-child td{border-bottom:none;}
+.badge-ok{background:var(--v3);color:var(--v);font-weight:800;padding:2px 7px;border-radius:10px;font-size:.7rem;}
+.badge-warn{background:var(--am3);color:var(--am);font-weight:800;padding:2px 7px;border-radius:10px;font-size:.7rem;}
+.badge-err{background:var(--r3);color:var(--r);font-weight:800;padding:2px 7px;border-radius:10px;font-size:.7rem;}
+.resp-esperada{background:#E8F5E9;border-left:3px solid var(--v);border-radius:0 7px 7px 0;padding:5px 9px;font-size:.74rem;color:#1B5E20;margin-top:4px;line-height:1.5;}
+
+/* COD AVANCE */
+.cod-avance-box{background:var(--am3);border:1.5px dashed var(--am);border-radius:8px;padding:8px 11px;margin-top:11px;font-size:.78rem;color:#4a2c00;}
+.cod-avance-num{font-family:'Bebas Neue';font-size:1.5rem;color:var(--am);letter-spacing:3px;}
+
+/* HINT BTN */
+.hint-btn{background:var(--n3);color:var(--n);border:none;font-family:'Outfit',sans-serif;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;margin-top:4px;display:none;}
+
+/* LOGIN */
+.login-select,.login-input{font-family:'Outfit',sans-serif;font-size:.86rem;padding:8px 10px;border:2px solid var(--gris2);border-radius:8px;width:100%;background:white;color:var(--dark);}
+.login-input{margin-top:7px;}
+.login-select:focus,.login-input:focus{outline:none;border-color:var(--az);}
+.login-btn{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--az);color:white;border:none;padding:10px 22px;border-radius:9px;cursor:pointer;width:100%;margin-top:9px;}
+.login-err{color:var(--r);font-size:.78rem;font-weight:700;margin-top:5px;display:none;}
+p.texto{font-size:.84rem;line-height:1.7;color:var(--dark);margin-bottom:7px;}
+.pregunta-lbl{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--mo);margin-bottom:3px;margin-top:9px;}
+.pregunta-lbl.az{color:var(--az);}
+.pregunta-lbl.v{color:var(--v);}
+.pregunta-lbl.n{color:var(--n);}
+.pregunta-lbl.am{color:var(--am);}
+.divider{border:none;border-top:1.5px solid var(--gris2);margin:11px 0;}
+.pill{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.3px;padding:3px 8px;border-radius:12px;text-transform:uppercase;}
+.pill.mo{background:var(--mo3);color:var(--mo);}
+.pill.az{background:var(--az3);color:var(--az);}
+.pill.v{background:var(--v3);color:var(--v);}
+
+/* PRINT */
+@media print{
+  .prog-bar,.doc-panel,.corner-key,.modal-overlay,.modal-grupo,.btn-avanzar,.doc-skip,.hint-btn,.btn-verify,.sim-inline-wrap{display:none!important;}
+  .bloque{display:none!important;}
+  #bloque-7{display:block!important;padding:10px;}
+  body{background:white;font-size:13px;}
+  .hdr{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .resumen-grade{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .resp-esperada{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .badge-ok,.badge-warn,.badge-err{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
+/* RESPONSIVE */
+@media(max-width:520px){
+  .val-grid{grid-template-columns:1fr 1fr;}
+  .inp-row{flex-direction:column;align-items:flex-start;}
+  input[type=text]{width:100%;}
+  .tabla-reg{font-size:.72rem;}
+  .tabla-reg input[type=text]{width:64px;}
+}
+</style>
+</head>
+<body>
+
+<div class="prog-bar" id="prog-bar">
+  <div class="pd"><div class="pd-c on" id="pc0">0</div><div class="pd-l on" id="pl0">Inicio</div></div>
+  <div class="pln" id="pln01"></div>
+  <div class="pd"><div class="pd-c" id="pc1">1</div><div class="pd-l" id="pl1">Apertura</div></div>
+  <div class="pln" id="pln12"></div>
+  <div class="pd"><div class="pd-c" id="pc2">2</div><div class="pd-l" id="pl2">Ec+W</div></div>
+  <div class="pln" id="pln23"></div>
+  <div class="pd"><div class="pd-c" id="pc3">3</div><div class="pd-l" id="pl3">Ep</div></div>
+  <div class="pln" id="pln34"></div>
+  <div class="pd"><div class="pd-c" id="pc4">4</div><div class="pd-l" id="pl4">Em</div></div>
+  <div class="pln" id="pln45"></div>
+  <div class="pd"><div class="pd-c" id="pc5">5</div><div class="pd-l" id="pl5">Cálculos</div></div>
+  <div class="pln" id="pln56"></div>
+  <div class="pd"><div class="pd-c" id="pc6">6</div><div class="pd-l" id="pl6">Apunte</div></div>
+  <div class="pln" id="pln67"></div>
+  <div class="pd"><div class="pd-c" id="pc7">F</div><div class="pd-l" id="pl7">Fin</div></div>
+</div>
+
+<div class="hdr">
+  <div class="hdr-tag">Ciencias Naturales Experimentales y Tecnología II · G208 · S06</div>
+  <div class="hdr-tit">Energía Mecánica</div>
+  <div class="hdr-sub">Ec · Ep · Em · Trabajo · Conservación de la energía</div>
+  <div class="hdr-prof">Prof. Adrián Cruz H. &nbsp;·&nbsp; 75 min</div>
+  <span class="chip-al" id="chip-al"></span>
+  <span class="salida-badge" id="salida-badge"></span>
+</div>
+
+<!-- BLOQUE 0: LOGIN -->
+<section class="bloque on" id="bloque-0" style="max-width:460px;">
+  <div class="card" style="margin-top:14px;">
+    <div class="sec-label">Acceso · S06</div>
+    <div class="sec-tit">Identifícate para comenzar</div>
+    <p class="texto">Selecciona tu nombre de la lista para iniciar la actividad.</p>
+    <select class="login-select" id="sel-alumno"><option value="">— Selecciona tu nombre —</option></select>
+    <input class="login-input" type="text" id="cod-retorno" placeholder="¿Tienes código de retorno? (opcional)" maxlength="10" autocomplete="off">
+    <input class="login-input" type="password" id="cod-docente" placeholder="Código docente (solo Prof. Cruz)" maxlength="6" autocomplete="off" style="margin-top:6px;font-size:.78rem;color:var(--gris);border-color:var(--gris2);">
+    <button class="login-btn" onclick="doLogin()">Comenzar →</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</section>
+
+<!-- BLOQUE 1: APERTURA -->
+<section class="bloque" id="bloque-1">
+  <div class="sec-label">Bloque 1 · ~8 min</div>
+  <div class="sec-tit">Apertura · ¿Qué sabes ya?</div>
+  <div class="narr"><p>Antes de usar las simulaciones responde con lo que ya <strong>intuyes</strong>. No hay respuestas incorrectas aquí — queremos ver tu pensamiento inicial. <em>Mínimo 65 caracteres por respuesta.</em></p></div>
+
+  <div class="card mo">
+    <div class="pregunta-lbl">Pregunta 1.1 · Predicción: autos chocando</div>
+    <p class="texto">Dos autos iguales (1000 kg). El Auto A va a 20 m/s y el Auto B va a 40 m/s (el doble de rápido). ¿Cuál causará más daño al muro al chocar? ¿Cuánto más crees que será el daño — el doble, el triple, más?</p>
+    <textarea id="ta-b1-1" onpaste="return false;" onkeydown="return acp(event)" placeholder="Mi predicción es que... porque..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b1-1-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> B causa 4× más daño. Ec depende de v² — doblar velocidad cuadruplica la energía. Respuestas válidas: "más del doble", "mucho más", "el doble de rápido hace más del doble de daño".</div>
+  </div>
+
+  <div class="card mo">
+    <div class="pregunta-lbl">Pregunta 1.2 · Predicción: objetos cayendo</div>
+    <p class="texto">Un objeto de 10 kg cae desde 5 m. Otro de 20 kg cae desde la misma altura. ¿Cuál llega con más fuerza? ¿Y si el segundo pesa igual (10 kg) pero cae desde 10 m? Explica ambos casos.</p>
+    <textarea id="ta-b1-2" onpaste="return false;" onkeydown="return acp(event)" placeholder="En el primer caso... En el segundo caso..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b1-2-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Más masa → más fuerza (doble masa = doble Ep). Más altura → más fuerza (doble altura = doble Ep). Ambas son relaciones lineales en Ep = mgh.</div>
+  </div>
+
+  <div class="card az">
+    <div class="pregunta-lbl az">Pregunta 1.3 · La rampa</div>
+    <p class="texto">Una bola baja por una rampa sin rozamiento. ¿Qué le pasa a su velocidad mientras desciende? Si se activa la fricción, ¿a dónde crees que "va a parar" la energía que el objeto pierde?</p>
+    <textarea id="ta-b1-3" onpaste="return false;" onkeydown="return acp(event)" placeholder="Sin fricción la bola... Con fricción la energía..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b1-3-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Sin fricción acelera y la Ep se convierte en Ec. Con fricción parte de la energía se convierte en calor (Ef), la velocidad final es menor.</div>
+    <button class="teacher-only doc-skip" onclick="irBloque(2)">↷ Saltar (docente)</button>
+  </div>
+  <button class="btn-avanzar" id="btn-b1" onclick="irBloque(2)">Continuar → Ec y Trabajo ▶</button>
+</section>
+
+<!-- BLOQUE 2: Ec + TRABAJO -->
+<section class="bloque" id="bloque-2">
+  <div class="sec-label">Bloque 2 · ~14 min</div>
+  <div class="sec-tit az">Ec · Energía Cinética y Trabajo</div>
+
+  <div class="card az">
+    <p class="texto"><strong>Usa la simulación de autos.</strong> Ajusta masa y velocidad y presiona <strong>Impactar</strong>. El daño al muro equivale al trabajo realizado: W = Ec = ½mv².</p>
+  </div>
+
+  <div class="sim-inline-wrap">
+    <div class="sim-tabs-inner">
+      <span class="sim-label" style="background:rgba(56,138,221,.2);color:#85B7EB;">⚡ Ec + Trabajo — Impacto de autos</span>
+    </div>
+    <div class="sim-panel-inner" id="sim-ec-container"></div>
+  </div>
+
+  <div class="card az">
+    <div class="pregunta-lbl az">Pregunta 2.1 · Velocidad duplicada</div>
+    <p class="texto">Pon ambos autos con la misma masa (1000 kg): A a 20 m/s, B a 40 m/s. Impacta. ¿Cuántas veces más energía tiene B? ¿Era eso lo que esperabas en tu predicción?</p>
+    <textarea id="ta-b2-1" onpaste="return false;" onkeydown="return acp(event)" placeholder="B tiene ___ veces más energía porque... Mi predicción fue..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b2-1-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> B tiene 4× más energía. Doblar v cuadruplica Ec porque v está elevada al cuadrado.</div>
+  </div>
+
+  <div class="card az">
+    <div class="pregunta-lbl az">Pregunta 2.2 · Masa duplicada</div>
+    <p class="texto">Misma velocidad (30 m/s): A con 1000 kg, B con 2000 kg. ¿Cuántas veces más daño? Compara: ¿qué tiene más efecto, doblar la masa o doblar la velocidad?</p>
+    <textarea id="ta-b2-2" onpaste="return false;" onkeydown="return acp(event)" placeholder="Doblar la masa produce ___ veces más daño. Doblar la velocidad produce ___ veces más. Por lo tanto..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b2-2-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Doble masa = 2× Ec. Doble velocidad = 4× Ec. La velocidad tiene mayor efecto por el cuadrado en la fórmula.</div>
+  </div>
+
+  <div class="card az">
+    <div class="pregunta-lbl az">Pregunta 2.3 · Trabajo y energía</div>
+    <p class="texto">El trabajo (W) que hace el auto sobre el muro al chocar es igual a su Ec completa. ¿Por qué tiene sentido que a mayor Ec, mayor daño (mayor trabajo) se haga sobre el muro?</p>
+    <textarea id="ta-b2-3" onpaste="return false;" onkeydown="return acp(event)" placeholder="Tiene sentido porque la energía cinética es... Al chocar esa energía se..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b2-3-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Ec es la capacidad del objeto en movimiento de hacer trabajo. Al detenerse, toda esa energía se transfiere al muro deformándolo.</div>
+  </div>
+
+  <!-- PROBLEMAS EC -->
+  <div class="cuaderno-note">📓 Copia los siguientes problemas en tu cuaderno y resuélvelos. Anota el procedimiento completo. Luego escribe la respuesta en el recuadro de la actividad.</div>
+
+  <div class="prob-box">
+    <div class="prob-num">Problema 1 · Calcular Ec</div>
+    <p class="texto"><strong>Un automóvil de 1 200 kg viaja a 25 m/s por una autopista.</strong><br>Calcula su energía cinética.<br><span style="font-size:.78rem;color:var(--gris);">Fórmula: Ec = ½ · m · v² &nbsp;·&nbsp; Dato: 1 J = 1 kg·m²/s²</span></p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p1" placeholder="Ec en J">
+      <button class="btn-verify" onclick="verificarProb(1)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p1"></div>
+    <button class="hint-btn" id="hint-p1" onclick="mostrarHintProb(1)">💡 Pista</button>
+  </div>
+
+  <div class="prob-box">
+    <div class="prob-num">Problema 2 · Despejar velocidad</div>
+    <p class="texto"><strong>Una pelota de fútbol (0.45 kg) tiene una energía cinética de 180 J.</strong><br>¿Con qué velocidad se mueve?<br><span style="font-size:.78rem;color:var(--gris);">Despeja v de: Ec = ½mv² → v = √(2·Ec/m)</span></p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p2" placeholder="v en m/s">
+      <button class="btn-verify" onclick="verificarProb(2)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p2"></div>
+    <button class="hint-btn" id="hint-p2" onclick="mostrarHintProb(2)">💡 Pista</button>
+  </div>
+
+  <div class="prob-box">
+    <div class="prob-num">Problema 3 · Despejar masa</div>
+    <p class="texto"><strong>Un objeto se mueve a 10 m/s y tiene una Ec de 2 000 J.</strong><br>¿Cuál es su masa?<br><span style="font-size:.78rem;color:var(--gris);">Despeja m de: Ec = ½mv² → m = 2·Ec/v²</span></p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p3" placeholder="m en kg">
+      <button class="btn-verify" onclick="verificarProb(3)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p3"></div>
+    <button class="hint-btn" id="hint-p3" onclick="mostrarHintProb(3)">💡 Pista</button>
+  </div>
+
+  <button class="teacher-only doc-skip" onclick="irBloque(3)">↷ Saltar (docente)</button>
+  <button class="btn-avanzar" id="btn-b2" onclick="irBloque(3)">Continuar → Ep Potencial ▶</button>
+</section>
+
+<!-- BLOQUE 3: Ep -->
+<section class="bloque" id="bloque-3">
+  <div class="sec-label">Bloque 3 · ~12 min</div>
+  <div class="sec-tit am">Ep · Energía Potencial Gravitacional</div>
+
+  <div class="card am">
+    <p class="texto"><strong>Usa la simulación de objetos cayendo.</strong> Modifica masa y altura de cada objeto y presiona <strong>Soltar</strong>. El cráter al impactar es proporcional a la Ep que tenía antes de caer.</p>
+    <div class="formula-box">Ep = m · g · h<span class="sub-label">m=masa (kg) · g=9.8 m/s² · h=altura (m) · resultado en Joules (J)</span></div>
+  </div>
+
+  <div class="sim-inline-wrap">
+    <div class="sim-tabs-inner">
+      <span class="sim-label" style="background:rgba(245,158,11,.18);color:#FAC775;">🔼 Ep — Objetos cayendo</span>
+    </div>
+    <div class="sim-panel-inner" id="sim-ep-container"></div>
+  </div>
+
+  <div class="card am">
+    <div class="pregunta-lbl am">Pregunta 3.1 · Altura vs. masa</div>
+    <p class="texto">Prueba con misma masa (10 kg): A desde 15 m, B desde 30 m. Luego misma altura (20 m): A=10 kg, B=20 kg. ¿Cuál cambio produce mayor Ep: doblar la altura o doblar la masa? ¿Por cuánto?</p>
+    <textarea id="ta-b3-1" onpaste="return false;" onkeydown="return acp(event)" placeholder="Al doblar la altura la Ep... Al doblar la masa la Ep... La diferencia entre ambos casos es que..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b3-1-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Ambos duplican la Ep (relación lineal en ambas variables). A diferencia de la velocidad en Ec, aquí los dos efectos son proporcionales.</div>
+  </div>
+
+  <div class="card am">
+    <div class="pregunta-lbl am">Pregunta 3.2 · Conversión de energía</div>
+    <p class="texto">Suelta un objeto desde altura grande. ¿En qué momento del recorrido la Ep es máxima? ¿Cuándo es mínima? ¿A qué tipo de energía se convierte mientras cae?</p>
+    <textarea id="ta-b3-2" onpaste="return false;" onkeydown="return acp(event)" placeholder="La Ep es máxima cuando... Es mínima cuando... Durante la caída se convierte en..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b3-2-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Ep máxima al inicio (altura máxima). Mínima al tocar suelo (h=0). Se convierte en Ec cinética durante la caída.</div>
+  </div>
+
+  <div class="card am">
+    <div class="pregunta-lbl am">Pregunta 3.3 · Caso "liviano alto vs pesado bajo"</div>
+    <p class="texto">Prueba: A=5 kg desde 40 m, B=30 kg desde 15 m. Antes de soltar, calcula mentalmente cuál tiene más Ep. Luego suelta. ¿Coincidió el resultado con tu cálculo?</p>
+    <textarea id="ta-b3-3" onpaste="return false;" onkeydown="return acp(event)" placeholder="Calculé que... Ep de A = ___ J, Ep de B = ___ J. El resultado de la simulación fue... porque la fórmula mgh..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b3-3-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> A=5×9.8×40=1960 J. B=30×9.8×15=4410 J. B tiene más Ep aunque esté más bajo porque su masa compensa la diferencia de altura.</div>
+  </div>
+
+  <!-- PROBLEMAS EP -->
+  <div class="cuaderno-note">📓 Copia los siguientes problemas en tu cuaderno. Resuelve con procedimiento completo y anota la respuesta en el recuadro.</div>
+
+  <div class="prob-box" style="background:var(--am3);border-color:#F0C060;">
+    <div class="prob-num am">Problema 4 · Elevador con personas</div>
+    <p class="texto"><strong>Un elevador sube a 4 personas (masa total: 280 kg) hasta el piso 8, a una altura de 24 m.</strong><br>¿Cuánta energía potencial ganan las personas al llegar al piso 8?<br><span style="font-size:.78rem;color:var(--gris);">Usa g = 9.8 m/s²</span></p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p4" placeholder="Ep en J">
+      <button class="btn-verify" onclick="verificarProb(4)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p4"></div>
+    <button class="hint-btn" id="hint-p4" onclick="mostrarHintProb(4)">💡 Pista</button>
+  </div>
+
+  <div class="prob-box" style="background:var(--am3);border-color:#F0C060;">
+    <div class="prob-num am">Problema 5 · Objeto en un edificio</div>
+    <p class="texto"><strong>Una maceta de 3.5 kg está en el balcón de un piso 5 (altura: 14 m del suelo).</strong><br>(a) ¿Cuánta Ep tiene respecto al suelo?<br>(b) Si cae, ¿en qué se convierte esa Ep al llegar al suelo (sin fricción)?</p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p5" placeholder="Ep en J">
+      <button class="btn-verify" onclick="verificarProb(5)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p5"></div>
+    <button class="hint-btn" id="hint-p5" onclick="mostrarHintProb(5)">💡 Pista</button>
+    <textarea id="ta-p5b" onpaste="return false;" onkeydown="return acp(event)" placeholder="(b) Al llegar al suelo la Ep se convierte en..." rows="2" style="margin-top:8px;"></textarea>
+    <div class="char-counter" id="ta-p5b-cc">0 / 40 caracteres mínimo</div>
+  </div>
+
+  <div class="prob-box" style="background:var(--am3);border-color:#F0C060;">
+    <div class="prob-num am">Problema 6 · ¿A qué altura?</div>
+    <p class="texto"><strong>Una persona de 60 kg tiene una Ep de 5 880 J respecto al suelo.</strong><br>¿A qué altura se encuentra?<br><span style="font-size:.78rem;color:var(--gris);">Despeja h: h = Ep / (m × g)</span></p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p6" placeholder="h en m">
+      <button class="btn-verify" onclick="verificarProb(6)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p6"></div>
+    <button class="hint-btn" id="hint-p6" onclick="mostrarHintProb(6)">💡 Pista</button>
+  </div>
+
+  <button class="teacher-only doc-skip" onclick="irBloque(4)">↷ Saltar (docente)</button>
+  <button class="btn-avanzar" id="btn-b3" onclick="irBloque(4)">Continuar → Energía Mecánica ▶</button>
+</section>
+
+<!-- BLOQUE 4: Em CONSERVACIÓN -->
+<section class="bloque" id="bloque-4">
+  <div class="sec-label">Bloque 4 · ~12 min</div>
+  <div class="sec-tit v">Em · Conservación de la Energía Mecánica</div>
+
+  <div class="card v">
+    <p class="texto"><strong>Usa la simulación de la rampa.</strong> Pon fricción en 0%. Suelta la bola. <strong>Detén la simulación en 3 momentos distintos</strong> (presiona Pausar) y registra los valores que ves en las barras.</p>
+    <div class="formula-box" style="background:var(--v);font-size:.85rem;">Em = Ec + Ep + Ef = constante (sin fricción)<span class="sub-label" style="color:rgba(255,255,255,.6);">Ec = cinética · Ep = potencial · Ef = térmica (calor)</span></div>
+  </div>
+
+  <div class="sim-inline-wrap">
+    <div class="sim-tabs-inner">
+      <span class="sim-label" style="background:rgba(52,211,153,.12);color:#6ee7b7;">∑ Em — Conservación en la rampa</span>
+    </div>
+    <div class="sim-panel-inner" id="sim-em-container"></div>
+  </div>
+
+  <!-- TABLA SIN FRICCIÓN -->
+  <div class="card v">
+    <div class="pregunta-lbl v">Registro 4.1 · Sin fricción — 3 momentos</div>
+    <p class="texto">Pon fricción = 0%. Suelta. Pausa en tres momentos distintos del recorrido. Copia los valores que ves en las barras:</p>
+    <div style="overflow-x:auto;">
+    <table class="tabla-reg">
+      <thead><tr><th>Momento</th><th>Ec (J)</th><th>Ep (J)</th><th>Ef (J)</th><th>Suma Ec+Ep+Ef</th></tr></thead>
+      <tbody>
+        <tr><td>1 (inicio)</td><td><input type="text" id="r41-ec1" placeholder="J"></td><td><input type="text" id="r41-ep1" placeholder="J"></td><td><input type="text" id="r41-ef1" placeholder="0"></td><td><input type="text" id="r41-s1" placeholder="= ?"></td></tr>
+        <tr><td>2 (medio)</td><td><input type="text" id="r41-ec2" placeholder="J"></td><td><input type="text" id="r41-ep2" placeholder="J"></td><td><input type="text" id="r41-ef2" placeholder="0"></td><td><input type="text" id="r41-s2" placeholder="= ?"></td></tr>
+        <tr><td>3 (final)</td><td><input type="text" id="r41-ec3" placeholder="J"></td><td><input type="text" id="r41-ep3" placeholder="J"></td><td><input type="text" id="r41-ef3" placeholder="0"></td><td><input type="text" id="r41-s3" placeholder="= ?"></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="pregunta-lbl v" style="margin-top:10px;">Conclusión sin fricción</div>
+    <p class="texto">Compara las tres sumas. ¿Qué observas? ¿Qué conclusión puedes obtener sobre la energía mecánica cuando no hay fricción?</p>
+    <textarea id="ta-b4-1" onpaste="return false;" onkeydown="return acp(event)" placeholder="Las tres sumas me dieron... Esto significa que la energía mecánica... Concluyo que..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b4-1-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Las sumas deben ser iguales (o casi, por redondeo). La energía mecánica se conserva: lo que pierde Ep lo gana Ec y viceversa. Ef ≈ 0 sin fricción.</div>
+  </div>
+
+  <!-- TABLA CON FRICCIÓN -->
+  <div class="card v">
+    <div class="pregunta-lbl v">Registro 4.2 · Con fricción — 3 momentos</div>
+    <p class="texto">Reinicia. Ahora activa fricción (mueve el slider, ej. 30%). Suelta. Pausa en tres momentos y registra:</p>
+    <div style="overflow-x:auto;">
+    <table class="tabla-reg">
+      <thead><tr><th>Momento</th><th>Ec (J)</th><th>Ep (J)</th><th>Ef (J)</th><th>Suma Ec+Ep+Ef</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><input type="text" id="r42-ec1" placeholder="J"></td><td><input type="text" id="r42-ep1" placeholder="J"></td><td><input type="text" id="r42-ef1" placeholder="J"></td><td><input type="text" id="r42-s1" placeholder="= ?"></td></tr>
+        <tr><td>2</td><td><input type="text" id="r42-ec2" placeholder="J"></td><td><input type="text" id="r42-ep2" placeholder="J"></td><td><input type="text" id="r42-ef2" placeholder="J"></td><td><input type="text" id="r42-s2" placeholder="= ?"></td></tr>
+        <tr><td>3</td><td><input type="text" id="r42-ec3" placeholder="J"></td><td><input type="text" id="r42-ep3" placeholder="J"></td><td><input type="text" id="r42-ef3" placeholder="J"></td><td><input type="text" id="r42-s3" placeholder="= ?"></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="pregunta-lbl v" style="margin-top:10px;">Conclusión con fricción</div>
+    <p class="texto">¿Qué le pasa a Ec + Ep ahora (sin contar Ef)? ¿Las sumas totales (Ec+Ep+Ef) siguen siendo iguales? ¿Adónde va la energía que "pierde" el movimiento?</p>
+    <textarea id="ta-b4-2" onpaste="return false;" onkeydown="return acp(event)" placeholder="Con fricción, la suma Ec+Ep... Sin embargo la suma Ec+Ep+Ef... La energía que pierde el movimiento se convierte en..." rows="3"></textarea>
+    <div class="char-counter" id="ta-b4-2-cc">0 / 65 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Ec+Ep disminuye con fricción. Pero Ec+Ep+Ef sigue siendo constante. La diferencia aparece en Ef (calor). La energía no desaparece, se transforma.</div>
+
+    <div class="cuaderno-note" style="margin-top:10px;">📓 Copia en tu cuaderno el problema siguiente y resuélvelo:</div>
+    <div class="prob-box v-box" style="margin-top:0;">
+      <div class="prob-num v">Problema 7 · Em con fricción</div>
+      <p class="texto"><strong>Una bola de 2 kg parte del reposo a 10 m de altura. La fricción genera 85 J de calor durante el descenso.</strong><br>(a) ¿Cuánta Em tiene al inicio?<br>(b) ¿Cuánta Em le queda al llegar al fondo?<br>(c) ¿A qué velocidad llega al fondo?</p>
+      <div class="inp-row">
+        <input type="text" inputmode="decimal" id="inp-p7a" placeholder="Em inicio (J)">
+        <button class="btn-verify" onclick="verificarProb('7a')">Ver (a)</button>
+      </div>
+      <div class="res-box" id="res-p7a"></div>
+      <div class="inp-row" style="margin-top:6px;">
+        <input type="text" inputmode="decimal" id="inp-p7b" placeholder="Em final (J)">
+        <button class="btn-verify" onclick="verificarProb('7b')">Ver (b)</button>
+      </div>
+      <div class="res-box" id="res-p7b"></div>
+      <div class="inp-row" style="margin-top:6px;">
+        <input type="text" inputmode="decimal" id="inp-p7c" placeholder="v en m/s">
+        <button class="btn-verify" onclick="verificarProb('7c')">Ver (c)</button>
+      </div>
+      <div class="res-box" id="res-p7c"></div>
+      <button class="hint-btn" id="hint-p7" onclick="mostrarHintProb('7')">💡 Pista</button>
+    </div>
+  </div>
+
+  <button class="teacher-only doc-skip" onclick="irBloque(5)">↷ Saltar (docente)</button>
+  <button class="btn-avanzar" id="btn-b4" onclick="irBloque(5)">Continuar → Mis cálculos ▶</button>
+</section>
+
+<!-- BLOQUE 5: CÁLCULOS PROPIOS -->
+<section class="bloque" id="bloque-5">
+  <div class="sec-label">Bloque 5 · ~12 min</div>
+  <div class="sec-tit n">Mis cálculos · Valores únicos</div>
+
+  <div class="val-alumno" id="val-alumno-b5">
+    <div class="va-titulo">Tus datos personales · Persona que baja por una rampa</div>
+    <div class="val-grid">
+      <div class="val-item"><div class="vi-lbl">Masa</div><div class="vi-val" id="b5-masa">—</div><div class="vi-unit">kg</div></div>
+      <div class="val-item"><div class="vi-lbl">Altura inicial</div><div class="vi-val" id="b5-alt">—</div><div class="vi-unit">m</div></div>
+      <div class="val-item"><div class="vi-lbl">g =</div><div class="vi-val">9.8</div><div class="vi-unit">m/s²</div></div>
+      <div class="val-item"><div class="vi-lbl">Energía térmica (fricción)</div><div class="vi-val" id="b5-et">—</div><div class="vi-unit">J</div></div>
+    </div>
+  </div>
+
+  <div class="paso activo" id="paso-1">
+    <div class="paso-num">Paso 1 de 4</div>
+    <div class="paso-tit">Calcula la <strong>Energía Potencial</strong> al inicio (cima, v=0)</div>
+    <div class="formula-box" style="font-size:.83rem;padding:7px 11px;">Ep = m × g × h</div>
+    <p class="texto" style="font-size:.81rem;">Sustituye: <span id="b5-formula-ep">Ep = ? × 9.8 × ?</span></p>
+    <div class="inp-row"><input type="text" inputmode="decimal" id="inp-ep" placeholder="Ep en J"><button class="btn-verify" onclick="verificarEp()">Verificar</button></div>
+    <div class="res-box" id="res-ep"></div>
+    <button class="hint-btn" id="hint-ep" onclick="mostrarHintEp()">💡 Pista</button>
+    <div class="cod-box" id="cod-ep"></div>
+  </div>
+
+  <div class="paso" id="paso-2" style="opacity:.4;pointer-events:none;">
+    <div class="paso-num">Paso 2 de 4</div>
+    <div class="paso-tit">Sin fricción: toda la Ep → Ec al fondo. Calcula la <strong>velocidad</strong>.</div>
+    <div class="formula-box" style="font-size:.83rem;padding:7px 11px;">v = <span class="raiz"><span class="raiz-sym">√</span><span class="raiz-cont"><span class="frac"><span class="num">2·Ec</span><span class="den">m</span></span></span></span></div>
+    <p class="texto" style="font-size:.81rem;"><span id="b5-formula-v">v = √(2 × Ep / m)</span></p>
+    <div class="inp-row"><input type="text" inputmode="decimal" id="inp-v" placeholder="v en m/s"><button class="btn-verify" onclick="verificarV()">Verificar</button></div>
+    <div class="res-box" id="res-v"></div>
+    <button class="hint-btn" id="hint-v" onclick="mostrarHintV()">💡 Pista</button>
+    <div class="cod-box" id="cod-v"></div>
+  </div>
+
+  <div class="paso" id="paso-3" style="opacity:.4;pointer-events:none;">
+    <div class="paso-num">Paso 3 de 4</div>
+    <div class="paso-tit">Con fricción: pierde <span id="b5-et2">—</span> J como calor. Calcula <strong>Em final</strong>.</div>
+    <div class="formula-box" style="font-size:.83rem;padding:7px 11px;">Em<sub>final</sub> = Ep<sub>inicial</sub> − Ef</div>
+    <div class="inp-row"><input type="text" inputmode="decimal" id="inp-emf" placeholder="Em final en J"><button class="btn-verify" onclick="verificarEmF()">Verificar</button></div>
+    <div class="res-box" id="res-emf"></div>
+    <button class="hint-btn" id="hint-emf" onclick="mostrarHintEmf()">💡 Pista</button>
+    <div class="cod-box" id="cod-emf"></div>
+  </div>
+
+  <div class="paso" id="paso-4" style="opacity:.4;pointer-events:none;">
+    <div class="paso-num">Paso 4 de 4</div>
+    <div class="paso-tit">Con Em final, calcula la <strong>velocidad final con fricción</strong>. ¿Es menor que en el paso 2?</div>
+    <p class="texto" style="font-size:.81rem;">v = <span class="raiz"><span class="raiz-sym">√</span><span class="raiz-cont"><span class="frac"><span class="num">2·Em<sub>f</sub></span><span class="den">m</span></span></span></span></p>
+    <div class="inp-row"><input type="text" inputmode="decimal" id="inp-vf" placeholder="v en m/s"><button class="btn-verify" onclick="verificarVF()">Verificar</button></div>
+    <div class="res-box" id="res-vf"></div>
+    <button class="hint-btn" id="hint-vf" onclick="mostrarHintVf()">💡 Pista</button>
+    <div class="cod-box" id="cod-vf"></div>
+  </div>
+
+  <div class="cod-avance-box" id="cod-avance-b5" style="display:none;">
+    📌 <strong>Código de avance:</strong> <span class="cod-avance-num" id="cod-avance-num">—</span>
+    <div style="font-size:.7rem;color:#4a2c00;margin-top:3px;">Anótalo en tu cuaderno por si cierras accidentalmente.</div>
+  </div>
+  <div class="doc-answer teacher-only" id="doc-vals-b5"></div>
+  <button class="teacher-only doc-skip" onclick="irBloque(6)">↷ Saltar (docente)</button>
+  <button class="btn-avanzar" id="btn-b5" onclick="irBloque(6)">Continuar → Mi apunte ▶</button>
+</section>
+
+<!-- BLOQUE 6: APUNTE -->
+<section class="bloque" id="bloque-6">
+  <div class="sec-label">Bloque 6 · ~8 min</div>
+  <div class="sec-tit am">Mi apunte · Para el cuaderno y el estudio</div>
+
+  <div class="narr">
+    <p>Esta sección es tu <strong>apunte de referencia</strong>. Lo que aquí registres quedará en tu resumen final. <em>Completa con tus propias palabras — mínimo 65 caracteres por respuesta.</em> Al terminar podrás imprimir o guardar en PDF para estudiar.</p>
+  </div>
+
+  <div class="cuaderno-note">📓 Copia las fórmulas y tus explicaciones en tu cuaderno. Este apunte te servirá para estudiar para el examen.</div>
+
+  <div class="ficha-wrap">
+    <!-- FÓRMULAS -->
+    <div class="ficha-sec">
+      <div class="ficha-sec-tit">A · Las tres fórmulas clave</div>
+      <div class="formula-box" style="margin-bottom:5px;">Ec = ½ · m · v²</div>
+      <div class="pregunta-lbl am">"v" está elevada al cuadrado — ¿qué significa eso para la energía cuando aumentas la velocidad?</div>
+      <textarea id="ta-f-ec" onpaste="return false;" onkeydown="return acp(event)" placeholder="Significa que si la velocidad aumenta el doble, la Ec no se duplica sino que..." rows="2"></textarea>
+      <div class="char-counter" id="ta-f-ec-cc">0 / 65 caracteres mínimo</div>
+
+      <div class="formula-box" style="margin:8px 0 5px;">Ep = m · g · h</div>
+      <div class="pregunta-lbl am">¿Qué representa la "h" y qué pasa con la Ep si subes a mayor altura?</div>
+      <textarea id="ta-f-ep" onpaste="return false;" onkeydown="return acp(event)" placeholder="'h' representa la altura desde el suelo. Si h aumenta, la Ep..." rows="2"></textarea>
+      <div class="char-counter" id="ta-f-ep-cc">0 / 65 caracteres mínimo</div>
+
+      <div class="formula-box" style="margin:8px 0 5px;">Em = Ec + Ep &nbsp;&nbsp; (sin fricción: Em = constante)</div>
+      <div class="pregunta-lbl am">¿Qué significa que Em sea "constante" cuando no hay fricción?</div>
+      <textarea id="ta-f-em" onpaste="return false;" onkeydown="return acp(event)" placeholder="Significa que la suma de Ec y Ep siempre es igual a... Aunque Ec suba y Ep baje, la suma..." rows="2"></textarea>
+      <div class="char-counter" id="ta-f-em-cc">0 / 65 caracteres mínimo</div>
+    </div>
+
+    <!-- MAPA CONCEPTUAL -->
+    <div class="ficha-sec">
+      <div class="ficha-sec-tit">B · Relaciones entre energías</div>
+      <p class="texto" style="font-size:.82rem;">Completa cada nodo explicando cómo se relaciona con los demás:</p>
+      <div class="mapa-nodo em-nodo">
+        <div class="mapa-nodo-tit">Energía Mecánica (Em)</div>
+        <textarea id="ta-mc-em" onpaste="return false;" onkeydown="return acp(event)" placeholder="La energía mecánica es la suma de Ec y Ep. Se conserva cuando... Con fricción..." rows="2" style="font-size:.82rem;min-height:52px;"></textarea>
+        <div class="char-counter" id="ta-mc-em-cc">0 / 65 caracteres mínimo</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:5px 0;">
+        <div class="mapa-nodo ec-nodo">
+          <div class="mapa-nodo-tit">Ec — cinética</div>
+          <textarea id="ta-mc-ec" onpaste="return false;" onkeydown="return acp(event)" placeholder="Depende de la masa y la velocidad. Aumenta cuando..." rows="2" style="font-size:.82rem;min-height:52px;"></textarea>
+          <div class="char-counter" id="ta-mc-ec-cc">0 / 40 caracteres mínimo</div>
+        </div>
+        <div class="mapa-nodo ep-nodo">
+          <div class="mapa-nodo-tit">Ep — potencial</div>
+          <textarea id="ta-mc-ep" onpaste="return false;" onkeydown="return acp(event)" placeholder="Depende de la masa y la altura. Aumenta cuando..." rows="2" style="font-size:.82rem;min-height:52px;"></textarea>
+          <div class="char-counter" id="ta-mc-ep-cc">0 / 40 caracteres mínimo</div>
+        </div>
+      </div>
+      <div class="mapa-nodo ef-nodo">
+        <div class="mapa-nodo-tit">Energía Térmica Ef — calor por fricción</div>
+        <textarea id="ta-mc-ef" onpaste="return false;" onkeydown="return acp(event)" placeholder="La energía térmica aparece cuando hay fricción. Proviene de... Cuando Ef aumenta, Em..." rows="2" style="font-size:.82rem;min-height:52px;"></textarea>
+        <div class="char-counter" id="ta-mc-ef-cc">0 / 40 caracteres mínimo</div>
+      </div>
+    </div>
+
+    <!-- CONCLUSIONES -->
+    <div class="ficha-sec">
+      <div class="ficha-sec-tit">C · Mis conclusiones</div>
+      <div class="pregunta-lbl am">¿Qué fue lo más sorprendente que descubriste hoy? ¿Por qué doblar la velocidad tiene más efecto en Ec que doblar la masa?</div>
+      <textarea id="ta-conc-1" onpaste="return false;" onkeydown="return acp(event)" placeholder="Lo más sorprendente fue... Doblar la velocidad tiene más efecto porque v está elevada al cuadrado, lo que significa que..." rows="3"></textarea>
+      <div class="char-counter" id="ta-conc-1-cc">0 / 65 caracteres mínimo</div>
+
+      <div class="pregunta-lbl am" style="margin-top:10px;">¿En qué situaciones de la vida real te parece importante entender la conservación de la energía mecánica?</div>
+      <textarea id="ta-conc-2" onpaste="return false;" onkeydown="return acp(event)" placeholder="En situaciones como... Por ejemplo cuando... Entender la conservación de energía es útil porque..." rows="3"></textarea>
+      <div class="char-counter" id="ta-conc-2-cc">0 / 65 caracteres mínimo</div>
+    </div>
+
+    <!-- RESULTADOS NUMÉRICOS -->
+    <div class="ficha-sec">
+      <div class="ficha-sec-tit">D · Mis resultados numéricos (Bloque 5)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px;">
+        <div class="val-item" style="background:var(--az3);"><div class="vi-lbl" style="color:var(--az);">Ep inicial</div><div id="ficha-ep-val" style="font-family:'Bebas Neue';font-size:1.25rem;color:var(--az);">—</div></div>
+        <div class="val-item" style="background:var(--v3);"><div class="vi-lbl" style="color:var(--v);">v sin fricción</div><div id="ficha-v-val" style="font-family:'Bebas Neue';font-size:1.25rem;color:var(--v);">—</div></div>
+        <div class="val-item" style="background:var(--n3);"><div class="vi-lbl" style="color:var(--n);">Em con fricción</div><div id="ficha-emf-val" style="font-family:'Bebas Neue';font-size:1.25rem;color:var(--n);">—</div></div>
+        <div class="val-item" style="background:var(--r3);"><div class="vi-lbl" style="color:var(--r);">v con fricción</div><div id="ficha-vf-val" style="font-family:'Bebas Neue';font-size:1.25rem;color:var(--r);">—</div></div>
+      </div>
+      <div class="pregunta-lbl am" style="margin-top:10px;">¿Qué te dicen estos cuatro números sobre el efecto de la fricción?</div>
+      <textarea id="ta-nums" onpaste="return false;" onkeydown="return acp(event)" placeholder="Comparando los resultados, la fricción hace que la velocidad final sea... Esto se debe a que..." rows="2"></textarea>
+      <div class="char-counter" id="ta-nums-cc">0 / 65 caracteres mínimo</div>
+    </div>
+  </div>
+
+  <button class="teacher-only doc-skip" onclick="irBloque(7)">↷ Saltar (docente)</button>
+  <button class="btn-avanzar" id="btn-b6" onclick="irBloque(7)">Ver mi resumen final ▶</button>
+</section>
+
+<!-- BLOQUE 7: RESUMEN FINAL -->
+<section class="bloque" id="bloque-7">
+  <div class="sec-label">Resumen Final · S06</div>
+  <div class="sec-tit v">Resultados · Energía Mecánica</div>
+
+  <div id="res-grade-box" class="resumen-grade"></div>
+
+  <div class="card teacher-only" style="background:var(--v3);border-left:4px solid var(--v);">
+    <strong style="font-size:.78rem;color:var(--v);">MODO DOCENTE</strong>
+    <div id="res-teacher-data" style="font-size:.76rem;color:var(--v);margin-top:4px;line-height:1.7;"></div>
+    <div style="font-size:.74rem;color:var(--gris);margin-top:5px;">Salidas detectadas: <strong id="res-salidas">0</strong></div>
+  </div>
+
+  <div class="card">
+    <p class="texto" style="font-size:.8rem;color:var(--gris);margin-bottom:7px;">Desglose — la columna "Respuesta esperada" te sirve de guía de estudio:</p>
+    <table class="res-tabla">
+      <thead><tr><th>Sección</th><th>Tu respuesta</th><th>Estado</th><th>Respuesta esperada</th></tr></thead>
+      <tbody id="res-tabla-body"></tbody>
+    </table>
+  </div>
+
+  <!-- BOTÓN IMPRIMIR RESUMEN -->
+  <div style="background:white;border-radius:var(--radio);padding:14px;margin-top:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);text-align:center;">
+    <p class="texto" style="font-size:.82rem;color:var(--gris);margin-bottom:10px;">Guarda o imprime tu resumen de resultados para mostrarlo al profesor o usarlo como guía de estudio:</p>
+    <button onclick="window.print()" style="font-family:'Bebas Neue';font-size:1.05rem;letter-spacing:1.3px;background:var(--v);color:white;border:none;padding:11px 0;border-radius:10px;cursor:pointer;width:100%;max-width:340px;display:block;margin:0 auto;">🖨️ Imprimir resumen / Guardar PDF</button>
+    <p style="font-size:.68rem;color:var(--gris);margin-top:7px;">En el diálogo de impresión elige <strong>"Guardar como PDF"</strong> · El resumen incluye tus respuestas y las respuestas esperadas para estudiar.</p>
+  </div>
+</section>
+
+<!-- PANEL DOCENTE -->
+<div class="doc-panel" id="doc-panel">
+  <div class="doc-panel-tit">Docente · G208</div>
+  <div class="doc-panel-lbl" id="panel-bloque-lbl">—</div>
+  <button class="doc-panel-btn saltar" onclick="saltarBloque()">↷ Saltar bloque</button>
+  <button class="doc-panel-btn resumen" onclick="irResumenDirecto()">⬡ Ir a resumen</button>
+  <button class="doc-panel-btn simular" onclick="simularResultados()">⚡ Simular respuestas</button>
+  <button class="doc-panel-btn grupo" onclick="abrirTablaGrupo()">📋 Ver tabla grupo</button>
+</div>
+
+<div class="corner-key" onclick="abrirModalAcceso()" title="Docente">⚿</div>
+
+<!-- MODAL ACCESO DOCENTE -->
+<div class="modal-overlay" id="modal-acceso">
+  <div class="modal-box">
+    <h3>Acceso Docente</h3>
+    <p>Código de acceso docente:</p>
+    <input class="modal-inp" type="password" id="modal-cod" placeholder="Código" maxlength="6" onkeydown="if(event.key==='Enter')validarAccesoModal()">
+    <button class="modal-btn" onclick="validarAccesoModal()">Entrar</button>
+    <div class="modal-err" id="modal-err">Código incorrecto.</div>
+    <button class="modal-close" onclick="cerrarModalAcceso()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL TABLA GRUPO -->
+<div class="modal-grupo" id="modal-grupo">
+  <div class="modal-grupo-inner">
+    <h3>Tabla Grupo G208</h3>
+    <div style="font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:10px;">Valores únicos y códigos de verificación por alumno</div>
+    <table class="gtabla" id="gtabla"></table>
+    <button class="modal-cerrar" onclick="cerrarTablaGrupo()">Cerrar</button>
+  </div>
+</div>
+<script>
+// ══════ ALUMNOS G208 ══════
+var ALUMNOS=['','1 - AARON ROJAS Ximena Valentina','2 - ANTONIO BENITEZ Vanessa','3 - ARVIZU LOPEZ Ana Rosa','4 - AVILES ORTIZ Paloma Irais','5 - BARRERA VELAZQUEZ Nataly Mayte','6 - BAUTISTA ANGUIANO Ian Lissandro','7 - CASTRO PEREZ Maria Fernanda','8 - CORTEZ LUNA Yaretzi','9 - CRUZ SARABIA Camila Lupita','10 - DOMINGUEZ OLMOS Monica Citlalli','11 - ENRIQUEZ TREJO Maria Romina','12 - FRANCO HERNANDEZ Miranda','13 - FUENTES ROSAS Jose Eduardo','14 - GASPAR CRUZ Yoali','15 - GONZALEZ ANAYA Edith Estrella','16 - GONZALEZ MARTINEZ Sofia Valentina','17 - HERNANDEZ ESPINO Ariadna Laila','18 - HERNANDEZ HERNANDEZ Diana','19 - JIMENEZ ERAZO Francisco Jaziel','20 - JIMENEZ GONZALEZ Evelyn Danae','21 - MANZANO JULIAN Ana Valeria','22 - MARTINEZ CASTRO Santiago','23 - MARTINEZ GUTIERREZ Regina','24 - MENDEZ HERNANDEZ Nataly Guadalupe','25 - MIRANDA NAVARRETE Axel','26 - MONRROY SALVADOR Angel','27 - MORALES MEDINA Ana','28 - MORALES SEGURA Zadkiel Caleb','29 - MORENO HERNANDEZ Sienkan Aaron','30 - OJEDA NAVARRETE Roberto','31 - PACHECO ALANIS Regina','32 - PEREZ FLORES Ana Paula','33 - RANGEL RESENDIZ Amairani','34 - ROMERO ALVAREZ Donovan','35 - ROSALES MEJIA Sandra','36 - SANCHEZ SARABIA Romina Sofia','37 - SEGURA HERNANDEZ Cristian Alexander','38 - SILVA VILLARREAL Jesus David','39 - TREJO ROJAS Mathias Israel','40 - VAZQUEZ MORALES Diego Erick','41 - ZERPA HERNANDEZ Freinner Jovanny','42 - INVITADO 1','43 - INVITADO 2','44 - INVITADO 3'];
+
+// ══════ ESTADO GLOBAL ══════
+var n=-1,nombre='';
+var masa=0,alturaV=0,Et_dado=0,Ep_calc=0,v_fondo=0,Em_final=0,v_fric=0;
+var grav=9.8,salidaCount=0,currentBlock=0;
+var intentos={ep:0,v:0,emf:0,vf:0};
+var calcsOk={ep:false,v:false,emf:false,vf:false};
+var probsOk={p1:false,p2:false,p3:false,p4:false,p5:false,p6:false,p7a:false,p7b:false,p7c:false};
+
+// TEXT CONFIG [id, minChars, keywords]
+var TCFG=[
+  ['ta-b1-1',65,['velocidad','rapido','rapida','energia','fuerza','impacto','daño','mas','mayor','dobla','cuatro','veces']],
+  ['ta-b1-2',65,['masa','peso','altura','mayor','mas','pesado','sube','alto','fuerza','cae','doble']],
+  ['ta-b1-3',65,['velocidad','aceler','baja','sube','rapido','calor','friccion','transforma','convierte','pierde','cinetica']],
+  ['ta-b2-1',65,['cuatro','4','veces','cuadrado','cuadruplic','doble','dobla','mas','mayor','energia','prediccion','esperaba']],
+  ['ta-b2-2',65,['doble','2','veces','masa','velocidad','mayor','efecto','mas','diferencia','cuatro','cuadrado']],
+  ['ta-b2-3',65,['energia','cinetica','trabajo','muro','transfiere','mueve','detiene','deforma','mayor','capacidad']],
+  ['ta-b3-1',65,['doblar','dobla','altura','masa','mayor','proporcional','igual','efecto','diferencia','doble','ambas']],
+  ['ta-b3-2',65,['cinetica','ec','altura','maximo','minimo','convierte','transforma','baja','sube','inicio','toca']],
+  ['ta-b3-3',65,['calculo','ep','masa','altura','mayor','menor','resultado','formula','mgh','coincidio','sorprendio']],
+  ['ta-b4-1',65,['igual','constante','conserva','suma','siempre','mismo','mecanica','resultado','tres','momentos']],
+  ['ta-b4-2',65,['friccion','calor','termica','disminuye','pierde','baja','convierte','ef','transforma','suma','igual']],
+  ['ta-p5b',40,['cinetica','ec','movimiento','velocidad','convierte','transforma','energia']],
+  ['ta-f-ec',65,['cuadrado','cuadruplic','cuatro','dobla','doble','mayor','efecto','velocidad','aumenta','no se duplica']],
+  ['ta-f-ep',65,['altura','mayor','mas','sube','potencial','almacena','gravitacional','aumenta','crece']],
+  ['ta-f-em',65,['constante','conserva','igual','suma','total','siempre','transforma','cinetica','potencial']],
+  ['ta-mc-em',65,['suma','ec','ep','conserva','mecanica','total','cinetica','potencial','friccion']],
+  ['ta-mc-ec',40,['velocidad','masa','movimiento','cinetica','rapido','aumenta']],
+  ['ta-mc-ep',40,['altura','masa','potencial','gravitacional','almacena','aumenta']],
+  ['ta-mc-ef',40,['friccion','calor','termica','convierte','pierde','disminuye']],
+  ['ta-conc-1',65,['sorprendio','cuadrado','cuadruplic','velocidad','masa','mayor','efecto','diferencia','aprend']],
+  ['ta-conc-2',65,['vida','real','ejemplo','seguridad','auto','deporte','conservacion','energia','util']],
+  ['ta-nums',65,['friccion','menor','velocidad','pierde','calor','reduce','efecto','disminuye','final']]
+];
+
+// Respuestas esperadas para el resumen
+var RESP_ESPERADAS={
+  'ta-b1-1':'El Auto B causará 4 veces más daño. Aunque va el doble de rápido, la energía cinética depende de v², por lo que al doblar la velocidad la Ec se cuadruplica, no se duplica.',
+  'ta-b1-2':'El objeto de 20 kg llega con el doble de fuerza (doble masa = doble Ep). El objeto que cae desde 10 m también llega con el doble de fuerza (doble altura = doble Ep). Ep = mgh es lineal en ambas variables.',
+  'ta-b1-3':'Sin fricción la bola acelera continuamente: la Ep se convierte en Ec. Con fricción, parte de esa energía se convierte en calor (Ef), por lo que la velocidad final es menor.',
+  'ta-b2-1':'B tiene 4 veces más energía porque v está elevada al cuadrado. Al doblar la velocidad, la Ec se cuadruplica (no se duplica). La mayoría esperaba el doble, pero es el cuádruple.',
+  'ta-b2-2':'Doblar la masa produce 2 veces más daño. Doblar la velocidad produce 4 veces más daño. La velocidad tiene mayor efecto porque aparece al cuadrado en la fórmula Ec = ½mv².',
+  'ta-b2-3':'La energía cinética es la capacidad del objeto en movimiento para realizar trabajo. Al chocar contra el muro, transfiere toda esa energía deformándolo. Mayor Ec = mayor trabajo sobre el muro = mayor daño.',
+  'ta-b3-1':'Doblar la altura duplica la Ep. Doblar la masa también duplica la Ep. A diferencia de la velocidad en Ec, ambas variables tienen efecto lineal en Ep = mgh.',
+  'ta-b3-2':'La Ep es máxima al inicio (altura máxima, velocidad = 0). Es mínima al tocar el suelo (h = 0). Durante la caída la Ep se convierte en Ec (energía cinética).',
+  'ta-b3-3':'Ep de A = 5×9.8×40 = 1960 J. Ep de B = 30×9.8×15 = 4410 J. B tiene más Ep aunque esté más bajo, porque su masa mucho mayor compensa la diferencia de altura.',
+  'ta-b4-1':'Las tres sumas deben dar el mismo valor. La energía mecánica (Ec+Ep) se conserva: lo que pierde Ep lo gana Ec. Sin fricción Ef = 0 y la energía total no cambia.',
+  'ta-b4-2':'Con fricción, Ec+Ep disminuye. Pero Ec+Ep+Ef sigue siendo constante. La energía que "pierde" el movimiento se convierte en calor (Ef). La energía no desaparece, se transforma.',
+  'ta-f-ec':'Si la velocidad aumenta el doble, la Ec se cuadruplica porque v está elevada al cuadrado. Es una relación cuadrática, no lineal.',
+  'ta-f-ep':'h es la altura desde el suelo. Si h aumenta, la Ep aumenta proporcionalmente (relación lineal). Un objeto en altura tiene energía "almacenada" lista para convertirse en movimiento.',
+  'ta-f-em':'Em constante significa que la suma Ec+Ep siempre vale lo mismo durante el movimiento. Si Ep baja, Ec sube exactamente la misma cantidad. La energía se transforma, no se pierde.',
+  'ta-mc-em':'La energía mecánica es la suma de Ec y Ep. Se conserva cuando no hay fricción (la suma es siempre igual). Con fricción, Em disminuye porque parte se convierte en calor (Ef).',
+  'ta-mc-ec':'Depende de la masa y la velocidad (al cuadrado). Aumenta cuando el objeto va más rápido o cuando su masa es mayor.',
+  'ta-mc-ep':'Depende de la masa y la altura. Aumenta cuando el objeto sube más alto o cuando su masa es mayor. Es la energía "almacenada" por la posición.',
+  'ta-mc-ef':'Aparece cuando hay fricción. Proviene de la energía mecánica del sistema que se convierte en calor. Cuando Ef aumenta, Em disminuye en la misma cantidad.',
+  'ta-conc-1':'Lo más sorprendente: doblar la velocidad cuadruplica la Ec (4×), no la duplica. Esto se debe a que v está elevada al cuadrado en Ec = ½mv², produciendo un efecto mucho mayor que doblar la masa.',
+  'ta-conc-2':'Ejemplos: seguridad vial (a mayor velocidad, mucho mayor daño en accidentes), montañas rusas (Ep se convierte en Ec al bajar), deportes (velocidad de balones), ingeniería de estructuras.',
+  'ta-nums':'La fricción reduce la velocidad final. Con fricción la velocidad es menor porque parte de la Ep inicial se perdió como calor (Ef). Mayor fricción = menor velocidad final.'
+};
+
+// ══════ ANTI COPYPASTE ══════
+function acp(e){if((e.ctrlKey||e.metaKey)&&(e.key==='v'||e.key==='c'||e.key==='x')){e.preventDefault();return false;}return true;}
+document.addEventListener('paste',function(e){if(e.target.tagName==='TEXTAREA')e.preventDefault();});
+
+// ══════ SEMILLA / CÓDIGO ══════
+function sr(s){var x=Math.sin(s*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+function cod(val,nl,salt){var v=Math.round(Math.abs(val));return((v*31+nl*97+salt*53)%9000+9000)%9000+1000;}
+
+// ══════ INIT ALUMNO ══════
+function initAlumno(num){
+  n=num;
+  if(n===890){masa=65;alturaV=6.0;Et_dado=800;}
+  else{masa=Math.round(45+sr(n*7+11)*30);alturaV=Math.round((4+sr(n*13+53)*4)*10)/10;Et_dado=Math.round(150+sr(n*3+97)*350);}
+  Ep_calc=parseFloat((masa*grav*alturaV).toFixed(1));
+  while(Et_dado>=Ep_calc*0.6)Et_dado=Math.round(Et_dado*0.7);
+  v_fondo=parseFloat((Math.sqrt(2*Ep_calc/masa)).toFixed(2));
+  Em_final=parseFloat((Ep_calc-Et_dado).toFixed(1));
+  v_fric=parseFloat((Math.sqrt(2*Em_final/masa)).toFixed(2));
+}
+
+// ══════ EXIT COUNTER ══════
+document.addEventListener('visibilitychange',function(){if(document.hidden&&n>0){salidaCount++;var b=document.getElementById('salida-badge');if(b)b.innerHTML=salidaCount+' salida'+(salidaCount>1?'s':'');}});
+
+// ══════ LOGIN ══════
+(function(){var s=document.getElementById('sel-alumno');for(var i=1;i<ALUMNOS.length;i++){var o=document.createElement('option');o.value=i;o.textContent=ALUMNOS[i];s.appendChild(o);}})();
+
+function doLogin(){
+  var sel=document.getElementById('sel-alumno');
+  var cod_input=document.getElementById('cod-docente').value.trim();
+  var retorno=document.getElementById('cod-retorno').value.trim();
+  var err=document.getElementById('login-err');
+  // Acceso docente via código 890
+  if(cod_input==='890'){
+    nombre='DOCENTE (modo prueba)';initAlumno(890);
+    document.body.classList.add('teacher-mode');
+    finalizarLogin(retorno);return;
+  }
+  var num=parseInt(sel.value);
+  if(isNaN(num)||num<1||num>44){err.style.display='block';err.textContent='Selecciona tu nombre de la lista.';return;}
+  err.style.display='none';
+  nombre=ALUMNOS[num];initAlumno(num);
+  finalizarLogin(retorno);
+}
+
+function finalizarLogin(retorno){
+  var chip=document.getElementById('chip-al');chip.textContent=nombre;chip.style.display='inline-block';
+  document.getElementById('salida-badge').style.display='inline-block';
+  document.getElementById('b5-masa').textContent=masa;
+  document.getElementById('b5-alt').textContent=alturaV;
+  document.getElementById('b5-et').textContent=Et_dado;
+  document.getElementById('b5-et2').textContent=Et_dado;
+  document.getElementById('b5-formula-ep').innerHTML='Ep = '+masa+' &times; 9.8 &times; '+alturaV;
+  document.getElementById('b5-formula-v').innerHTML='v = &radic;(2 &times; Ep / '+masa+')';
+  document.getElementById('ficha-ep-val').textContent='—';
+  document.getElementById('ficha-v-val').textContent='—';
+  document.getElementById('ficha-emf-val').textContent='—';
+  document.getElementById('ficha-vf-val').textContent='—';
+  if(document.body.classList.contains('teacher-mode')){
+    var da=document.getElementById('doc-vals-b5');if(da){da.style.display='block';
+    da.innerHTML='💡 Ep='+Ep_calc+' J · v='+v_fondo+' m/s · Em_f='+Em_final+' J · v_fric='+v_fric+' m/s';}
+  }
+  setupTextareas();buildSimulaciones();
+  if(retorno&&retorno.indexOf('-')>0){var pts=retorno.split('-');var rn=parseInt(pts[0]),rb=parseInt(pts[1]);if(rn===n&&rb>=1&&rb<=7){irBloque(rb);return;}}
+  irBloque(1);
+}
+
+// ══════ NAVEGACIÓN ══════
+var BLOQUES=['bloque-0','bloque-1','bloque-2','bloque-3','bloque-4','bloque-5','bloque-6','bloque-7'];
+var BLABELS=['Login','Apertura','Ec+W','Ep','Em','Cálculos','Apunte','Fin'];
+
+function irBloque(idx){
+  BLOQUES.forEach(function(id,i){var el=document.getElementById(id);if(el)el.style.display=i===idx?'block':'none';});
+  currentBlock=idx;actualizarProgreso();actualizarPanelLabel();window.scrollTo(0,0);
+  if(idx>=5){var ab=document.getElementById('cod-avance-b5'),an=document.getElementById('cod-avance-num');if(ab&&an){ab.style.display='block';an.textContent=n+'-'+idx;}}
+  if(idx===6)actualizarFichaValores();
+  if(idx===7)generarResumen();
+  if(document.body.classList.contains('teacher-mode')){
+    ['btn-b1','btn-b2','btn-b3','btn-b4','btn-b5','btn-b6'].forEach(function(id){var b=document.getElementById(id);if(b)b.className='btn-avanzar on';});
+  } else {
+    checkBloqueReady();
+  }
+}
+
+function actualizarProgreso(){
+  for(var i=0;i<=7;i++){var c=document.getElementById('pc'+i),l=document.getElementById('pl'+i);if(!c)continue;c.className='pd-c'+(i<currentBlock?' ok':i===currentBlock?' on':'');if(l)l.className='pd-l'+(i<currentBlock?' ok':i===currentBlock?' on':'');}
+  for(var j=0;j<=6;j++){var ln=document.getElementById('pln'+j+''+(j+1));if(ln)ln.className='pln'+(j<currentBlock?' ok':'');}
+}
+function actualizarPanelLabel(){var l=document.getElementById('panel-bloque-lbl');if(l)l.textContent=BLABELS[currentBlock]||'—';}
+
+// ══════ TEXTAREAS ══════
+function setupTextareas(){
+  TCFG.forEach(function(cfg){
+    var ta=document.getElementById(cfg[0]),cc=document.getElementById(cfg[0]+'-cc');if(!ta)return;
+    ta.addEventListener('input',function(){
+      var len=ta.value.length;
+      if(cc){cc.textContent=len+' / '+cfg[1]+' caracteres mínimo';cc.style.color=len>=cfg[1]?'#2E7D32':len>=cfg[1]*.6?'#F57F17':'#C62828';}
+      checkBloqueReady();
+    });
+  });
+}
+
+function getTS(id){
+  var ta=document.getElementById(id);if(!ta)return'na';
+  var val=ta.value.trim(),cfg=null;
+  TCFG.forEach(function(c){if(c[0]===id)cfg=c;});
+  if(!cfg)return'na';if(val.length<cfg[1])return'err';
+  var lo=val.toLowerCase();for(var k=0;k<cfg[2].length;k++){if(lo.indexOf(cfg[2][k])>=0)return'ok';}
+  return'warn';
+}
+
+function checkBloqueReady(){
+  function allOk(ids){return ids.every(function(id){return getTS(id)!=='err';});}
+  var maps={
+    1:['btn-b1',['ta-b1-1','ta-b1-2','ta-b1-3']],
+    2:['btn-b2',['ta-b2-1','ta-b2-2','ta-b2-3']],
+    3:['btn-b3',['ta-b3-1','ta-b3-2','ta-b3-3','ta-p5b']],
+    4:['btn-b4',['ta-b4-1','ta-b4-2']],
+    6:['btn-b6',['ta-f-ec','ta-f-ep','ta-f-em','ta-mc-em','ta-mc-ec','ta-mc-ep','ta-mc-ef','ta-conc-1','ta-conc-2','ta-nums']]
+  };
+  if(maps[currentBlock]){var bid=maps[currentBlock][0],ids=maps[currentBlock][1];var btn=document.getElementById(bid);if(btn)btn.className='btn-avanzar'+(allOk(ids)?' on':'');}
+  if(currentBlock===5){var ac=calcsOk.ep&&calcsOk.v&&calcsOk.emf&&calcsOk.vf;var b5=document.getElementById('btn-b5');if(b5)b5.className='btn-avanzar'+(ac?' on':'');}
+}
+
+// ══════ PROBLEMAS FIJOS ══════
+var PROBS={
+  p1:{ans:375000,tol:0.03,hint:'½ × 1200 × 25² = ½ × 1200 × 625',label:'Ec=375,000 J'},
+  p2:{ans:Math.sqrt(2*180/0.45),tol:0.05,hint:'v = √(2×180/0.45) = √800',label:'v≈28.28 m/s'},
+  p3:{ans:40,tol:0.03,hint:'m = 2×2000/10² = 4000/100',label:'m=40 kg'},
+  p4:{ans:65659.2,tol:0.03,hint:'280 × 9.8 × 24 = ?',label:'Ep=65,659.2 J'},
+  p5:{ans:480.2,tol:0.03,hint:'3.5 × 9.8 × 14 = ?',label:'Ep=480.2 J'},
+  p6:{ans:10,tol:0.03,hint:'h = 5880 / (60 × 9.8) = 5880/588',label:'h=10 m'},
+  '7a':{ans:196,tol:0.03,hint:'Em = mgh = 2 × 9.8 × 10',label:'Em inicio=196 J'},
+  '7b':{ans:111,tol:0.03,hint:'Em_f = 196 - 85',label:'Em final=111 J'},
+  '7c':{ans:Math.sqrt(2*111/2),tol:0.05,hint:'v = √(2×111/2) = √111',label:'v≈10.54 m/s'}
+};
+
+function verificarProb(id){
+  var p=PROBS['p'+id]||PROBS[id];if(!p)return;
+  var inpId='inp-p'+(typeof id==='string'?id:''+id);
+  var inp=document.getElementById(inpId),resId='res-p'+(typeof id==='string'?id:''+id);
+  var res=document.getElementById(resId);if(!inp||!res)return;
+  var val=parseFloat(inp.value.replace(',','.'));
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';res.style.display='block';return;}
+  var tol=Math.abs(p.ans*p.tol)+0.1;
+  if(Math.abs(val-p.ans)<=tol){
+    res.className='res-box ok';res.innerHTML='✅ Correcto. '+p.label;res.style.display='block';
+    probsOk['p'+(typeof id==='string'?id:''+id)]=true;
+    var hb=document.getElementById('hint-p'+id);if(hb)hb.style.display='none';
+  }else{
+    res.className='res-box err';res.innerHTML='❌ Revisa el procedimiento en tu cuaderno.';res.style.display='block';
+    var hb2=document.getElementById('hint-p'+id);if(hb2)hb2.style.display='inline-block';
+  }
+}
+function mostrarHintProb(id){
+  var p=PROBS['p'+id]||PROBS[id];if(!p)return;
+  var resId='res-p'+(typeof id==='string'?id:''+id);
+  var res=document.getElementById(resId);if(!res)return;
+  res.className='res-box hint';res.innerHTML='💡 '+p.hint;res.style.display='block';
+}
+
+// ══════ CÁLCULOS PROPIOS ══════
+function desbloquearPaso(num){var p=document.getElementById('paso-'+num);if(p){p.style.opacity='1';p.style.pointerEvents='auto';p.classList.add('activo');}}
+function completarPaso(num){var p=document.getElementById('paso-'+num);if(p){p.classList.remove('activo');p.classList.add('completado');}}
+
+function verificarEp(){
+  intentos.ep++;var val=parseFloat(document.getElementById('inp-ep').value.replace(',','.'));
+  var tol=Ep_calc*0.03,res=document.getElementById('res-ep');
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';res.style.display='block';return;}
+  if(Math.abs(val-Ep_calc)<=tol){
+    res.className='res-box ok';res.innerHTML='✅ Correcto. Ep = '+Ep_calc+' J';res.style.display='block';
+    calcsOk.ep=true;document.getElementById('cod-ep').style.display='block';document.getElementById('cod-ep').innerHTML='🔑 Código: '+cod(Ep_calc,n,6);
+    document.getElementById('ficha-ep-val').textContent=Ep_calc+' J';
+    completarPaso(1);desbloquearPaso(2);checkBloqueReady();
+  }else{
+    res.className='res-box err';res.innerHTML='❌ Revisa: m × 9.8 × h';res.style.display='block';
+    if(intentos.ep>=1)document.getElementById('hint-ep').style.display='inline-block';
+    if(intentos.ep>=3){res.innerHTML+='<br><small>Valor: '+Ep_calc+' J</small>';calcsOk.ep=true;completarPaso(1);desbloquearPaso(2);document.getElementById('ficha-ep-val').textContent=Ep_calc+' J';checkBloqueReady();}
+  }
+}
+function mostrarHintEp(){var r=document.getElementById('res-ep');r.className='res-box hint';r.innerHTML='💡 Ep = '+masa+' × 9.8 × '+alturaV;r.style.display='block';}
+
+function verificarV(){
+  intentos.v++;var val=parseFloat(document.getElementById('inp-v').value.replace(',','.'));
+  var tol=Math.max(v_fondo*0.03,0.15),res=document.getElementById('res-v');
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';res.style.display='block';return;}
+  if(Math.abs(val-v_fondo)<=tol){
+    res.className='res-box ok';res.innerHTML='✅ Correcto. v = '+v_fondo+' m/s ≈ '+(v_fondo*3.6).toFixed(1)+' km/h';res.style.display='block';
+    calcsOk.v=true;document.getElementById('cod-v').style.display='block';document.getElementById('cod-v').innerHTML='🔑 Código: '+cod(Math.round(v_fondo*100),n,7);
+    document.getElementById('ficha-v-val').textContent=v_fondo+' m/s';
+    completarPaso(2);desbloquearPaso(3);checkBloqueReady();
+  }else{
+    res.className='res-box err';res.innerHTML='❌ v = √(2 × Ep / m)';res.style.display='block';
+    if(intentos.v>=1)document.getElementById('hint-v').style.display='inline-block';
+    if(intentos.v>=3){res.innerHTML+='<br><small>Valor: '+v_fondo+' m/s</small>';calcsOk.v=true;completarPaso(2);desbloquearPaso(3);document.getElementById('ficha-v-val').textContent=v_fondo+' m/s';checkBloqueReady();}
+  }
+}
+function mostrarHintV(){var r=document.getElementById('res-v');r.className='res-box hint';r.innerHTML='💡 Ec=Ep='+Ep_calc+' J → v=√(2×'+Ep_calc+'/'+masa+')';r.style.display='block';}
+
+function verificarEmF(){
+  intentos.emf++;var val=parseFloat(document.getElementById('inp-emf').value.replace(',','.'));
+  var tol=Em_final*0.03,res=document.getElementById('res-emf');
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';res.style.display='block';return;}
+  if(Math.abs(val-Em_final)<=tol){
+    res.className='res-box ok';res.innerHTML='✅ Correcto. Em_final = '+Em_final+' J';res.style.display='block';
+    calcsOk.emf=true;document.getElementById('cod-emf').style.display='block';document.getElementById('cod-emf').innerHTML='🔑 Código: '+cod(Em_final,n,8);
+    document.getElementById('ficha-emf-val').textContent=Em_final+' J';
+    completarPaso(3);desbloquearPaso(4);checkBloqueReady();
+  }else{
+    res.className='res-box err';res.innerHTML='❌ Em_f = Ep - Ef';res.style.display='block';
+    if(intentos.emf>=1)document.getElementById('hint-emf').style.display='inline-block';
+    if(intentos.emf>=3){res.innerHTML+='<br><small>Valor: '+Em_final+' J</small>';calcsOk.emf=true;completarPaso(3);desbloquearPaso(4);document.getElementById('ficha-emf-val').textContent=Em_final+' J';checkBloqueReady();}
+  }
+}
+function mostrarHintEmf(){var r=document.getElementById('res-emf');r.className='res-box hint';r.innerHTML='💡 Em_f = '+Ep_calc+' - '+Et_dado;r.style.display='block';}
+
+function verificarVF(){
+  intentos.vf++;var val=parseFloat(document.getElementById('inp-vf').value.replace(',','.'));
+  var tol=Math.max(v_fric*0.03,0.15),res=document.getElementById('res-vf');
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';res.style.display='block';return;}
+  if(Math.abs(val-v_fric)<=tol){
+    res.className='res-box ok';res.innerHTML='✅ Correcto. v_fric = '+v_fric+' m/s — menor que sin fricción ('+v_fondo+' m/s)';res.style.display='block';
+    calcsOk.vf=true;document.getElementById('cod-vf').style.display='block';document.getElementById('cod-vf').innerHTML='🔑 Código: '+cod(Math.round(v_fric*100),n,9);
+    document.getElementById('ficha-vf-val').textContent=v_fric+' m/s';
+    completarPaso(4);checkBloqueReady();
+  }else{
+    res.className='res-box err';res.innerHTML='❌ v = √(2×Em_f/m)';res.style.display='block';
+    if(intentos.vf>=1)document.getElementById('hint-vf').style.display='inline-block';
+    if(intentos.vf>=3){res.innerHTML+='<br><small>Valor: '+v_fric+' m/s</small>';calcsOk.vf=true;completarPaso(4);document.getElementById('ficha-vf-val').textContent=v_fric+' m/s';checkBloqueReady();}
+  }
+}
+function mostrarHintVf(){var r=document.getElementById('res-vf');r.className='res-box hint';r.innerHTML='💡 v = √(2×'+Em_final+'/'+masa+')';r.style.display='block';}
+
+function actualizarFichaValores(){
+  if(calcsOk.ep)document.getElementById('ficha-ep-val').textContent=Ep_calc+' J';
+  if(calcsOk.v)document.getElementById('ficha-v-val').textContent=v_fondo+' m/s';
+  if(calcsOk.emf)document.getElementById('ficha-emf-val').textContent=Em_final+' J';
+  if(calcsOk.vf)document.getElementById('ficha-vf-val').textContent=v_fric+' m/s';
+}
+
+// ══════ RESUMEN FINAL ══════
+function generarResumen(){
+  var rows=[
+    ['Apertura B1','Predicciones iniciales',['ta-b1-1','ta-b1-2','ta-b1-3']],
+    ['Ec+Trabajo B2','Interpretación simulación + 3 problemas',['ta-b2-1','ta-b2-2','ta-b2-3']],
+    ['Ep B3','Interpretación simulación + 3 problemas',['ta-b3-1','ta-b3-2','ta-b3-3','ta-p5b']],
+    ['Em B4','Registros 3 momentos + conclusiones',['ta-b4-1','ta-b4-2']],
+    ['Apunte B6','Fórmulas, mapa conceptual, conclusiones',['ta-f-ec','ta-f-ep','ta-f-em','ta-mc-em','ta-mc-ec','ta-mc-ep','ta-mc-ef','ta-conc-1','ta-conc-2','ta-nums']]
+  ];
+  var total=0,earned=0,html='';
+  rows.forEach(function(r){
+    var scores=r[2].map(getTS);
+    var ok=scores.filter(function(s){return s==='ok';}).length;
+    var warn=scores.filter(function(s){return s==='warn';}).length;
+    var err=scores.filter(function(s){return s==='err';}).length;
+    var pts=r[2].length;total+=pts;earned+=Math.min(ok+warn*0.5,pts);
+    var badge=err>0?'<span class="badge-err">Incompleto</span>':warn>0?'<span class="badge-warn">Revisar</span>':'<span class="badge-ok">Completo</span>';
+    // Mostrar primera respuesta escrita + esperada
+    var firstTA=document.getElementById(r[2][0]);
+    var alumnoResp=firstTA&&firstTA.value.trim().length>10?'"…'+firstTA.value.trim().substring(0,80)+(firstTA.value.trim().length>80?'…':'')+'"':'—';
+    var espId=r[2][0];var espResp=RESP_ESPERADAS[espId]||'—';
+    html+='<tr><td><strong>'+r[0]+'</strong><br><span style="font-size:.7rem;color:var(--gris)">'+r[1]+'</span></td>'+
+      '<td style="font-size:.76rem;">'+alumnoResp+'</td><td>'+badge+'</td>'+
+      '<td><div class="resp-esperada">'+espResp+'</div></td></tr>';
+  });
+  // Cálculos
+  var calcOk=[calcsOk.ep,calcsOk.v,calcsOk.emf,calcsOk.vf].filter(Boolean).length;
+  total+=4;earned+=calcOk;
+  var cb=calcOk===4?'<span class="badge-ok">4/4</span>':calcOk>=2?'<span class="badge-warn">'+calcOk+'/4</span>':'<span class="badge-err">'+calcOk+'/4</span>';
+  html+='<tr><td><strong>Cálculos B5</strong><br><span style="font-size:.7rem;color:var(--gris)">Ep, v, Em_f, v_fric</span></td>'+
+    '<td style="font-size:.76rem;">Ep='+Ep_calc+' J · v='+v_fondo+' m/s<br>Em_f='+Em_final+' J · v_f='+v_fric+' m/s</td><td>'+cb+'</td>'+
+    '<td><div class="resp-esperada">Ep=m×g×h='+Ep_calc+' J · v=√(2Ep/m)='+v_fondo+' m/s · Em_f=Ep-Ef='+Em_final+' J · v_f='+v_fric+' m/s</div></td></tr>';
+  // Problemas fijos
+  var pOk=Object.values(probsOk).filter(Boolean).length;var pTot=Object.keys(probsOk).length;
+  total+=pTot;earned+=pOk;
+  var pb=pOk===pTot?'<span class="badge-ok">'+pOk+'/'+pTot+'</span>':pOk>=Math.floor(pTot/2)?'<span class="badge-warn">'+pOk+'/'+pTot+'</span>':'<span class="badge-err">'+pOk+'/'+pTot+'</span>';
+  html+='<tr><td><strong>Problemas 1-7</strong><br><span style="font-size:.7rem;color:var(--gris)">Ec, v, m, Ep, h, Em+fricción</span></td>'+
+    '<td style="font-size:.76rem;">'+pOk+' de '+pTot+' verificados</td><td>'+pb+'</td>'+
+    '<td><div class="resp-esperada">P1=375,000J · P2≈28.3m/s · P3=40kg · P4=65,659J · P5=480.2J · P6=10m · P7a=196J · P7b=111J · P7c≈10.5m/s</div></td></tr>';
+  document.getElementById('res-tabla-body').innerHTML=html;
+  var pct=total>0?Math.round(earned/total*100):0;
+  var gb=document.getElementById('res-grade-box');
+  var col=pct>=80?'var(--v3)':pct>=60?'var(--am3)':'var(--r3)';
+  var tc=pct>=80?'var(--v)':pct>=60?'var(--am)':'var(--r)';
+  var msg=pct>=80?'Excelente trabajo':pct>=60?'Bien — revisa lo pendiente':'Completa las secciones faltantes';
+  gb.style.background=col;
+  gb.innerHTML='<div class="grade-num" style="color:'+tc+'">'+pct+'%</div><div class="grade-lbl" style="color:'+tc+'">'+msg+'</div><div style="font-size:.76rem;margin-top:5px;color:var(--gris)">'+nombre+' · S06 · Energía Mecánica</div>';
+  document.getElementById('res-salidas').textContent=salidaCount;
+  if(document.body.classList.contains('teacher-mode')){
+    document.getElementById('res-teacher-data').innerHTML='Masa:'+masa+'kg · Alt:'+alturaV+'m · Et:'+Et_dado+'J | Ep:'+Ep_calc+'J · v:'+v_fondo+'m/s · Em_f:'+Em_final+'J · v_fric:'+v_fric+'m/s';
+  }
+}
+
+// ══════ DOCENTE ══════
+function abrirModalAcceso(){if(document.body.classList.contains('teacher-mode'))return;document.getElementById('modal-acceso').classList.add('on');setTimeout(function(){var i=document.getElementById('modal-cod');if(i)i.focus();},100);}
+function cerrarModalAcceso(){document.getElementById('modal-acceso').classList.remove('on');document.getElementById('modal-cod').value='';document.getElementById('modal-err').style.display='none';}
+function validarAccesoModal(){
+  var val=document.getElementById('modal-cod').value.trim();
+  if(val==='890'){
+    cerrarModalAcceso();
+    if(n>0){document.body.classList.add('teacher-mode');actualizarPanelLabel();}
+    else{nombre='DOCENTE (modo prueba)';initAlumno(890);document.body.classList.add('teacher-mode');buildSimulaciones();setupTextareas();irBloque(1);}
+  }else{document.getElementById('modal-err').style.display='block';document.getElementById('modal-cod').value='';}
+}
+function saltarBloque(){
+  var s=currentBlock+1;if(s>7)s=7;
+  if(currentBlock===5){calcsOk.ep=calcsOk.v=calcsOk.emf=calcsOk.vf=true;}
+  irBloque(s);
+}
+function irResumenDirecto(){calcsOk.ep=calcsOk.v=calcsOk.emf=calcsOk.vf=true;irBloque(7);}
+function simularResultados(){
+  var fills={
+    'ta-b1-1':'El Auto B causará 4 veces más daño porque la energía cinética depende de v al cuadrado, al doblar la velocidad la energía se cuadruplica, no se duplica.',
+    'ta-b1-2':'El objeto de 20 kg llega con el doble de fuerza por tener el doble de masa. El que cae desde 10 m también llega con más fuerza porque tiene el doble de altura y por lo tanto doble de Ep.',
+    'ta-b1-3':'Sin fricción la bola acelera y gana velocidad porque la Ep se convierte en Ec. Con fricción parte de la energía se pierde como calor y la bola llega más lenta al final.',
+    'ta-b2-1':'B tiene 4 veces más energía porque v está al cuadrado. Mi predicción decía el doble pero al verlo me di cuenta que doblar la velocidad cuadruplica la Ec, no la duplica.',
+    'ta-b2-2':'Doblar la masa produce 2 veces más daño. Doblar la velocidad produce 4 veces más daño. La velocidad tiene mayor efecto por el cuadrado en la fórmula Ec igual a la mitad mv cuadrado.',
+    'ta-b2-3':'Tiene sentido porque la energía cinética es la capacidad del objeto en movimiento de hacer trabajo. Al detenerse en el muro transfiere toda esa energía deformándolo, mayor Ec mayor daño.',
+    'ta-b3-1':'Al doblar la altura la Ep también se duplica. Al doblar la masa la Ep también se duplica. Ambas variables tienen el mismo efecto proporcional a diferencia de la velocidad en Ec.',
+    'ta-b3-2':'La Ep es máxima al inicio cuando está en la mayor altura y velocidad cero. Es mínima al tocar el suelo cuando h vale cero. Durante la caída la Ep se convierte en energía cinética.',
+    'ta-b3-3':'Calculé que Ep de A es 5 por 9.8 por 40 igual 1960 J y Ep de B es 30 por 9.8 por 15 igual 4410 J. B tiene más Ep aunque esté más bajo porque su masa mucho mayor compensa la diferencia.',
+    'ta-b4-1':'Las tres sumas me dieron el mismo resultado. Esto significa que la energía mecánica se conserva constante durante el movimiento. Concluyo que lo que pierde Ep lo gana Ec y la suma siempre es igual.',
+    'ta-b4-2':'Con fricción la suma Ec más Ep disminuye en cada momento. Sin embargo la suma Ec más Ep más Ef sigue siendo constante igual al inicio. La energía que pierde el movimiento se convierte en calor térmica.',
+    'ta-p5b':'Al llegar al suelo la Ep se convierte completamente en energía cinética Ec que es la energía de movimiento con la que el objeto golpea.',
+    'ta-f-ec':'Significa que si la velocidad aumenta el doble la Ec no se duplica sino que se cuadruplica. Es una relación cuadrática por eso la velocidad tiene mucho mayor efecto que la masa.',
+    'ta-f-ep':'h representa la altura desde el suelo en metros. Si h aumenta la Ep aumenta proporcionalmente de forma lineal. Un objeto en altura almacena energía lista para convertirse en movimiento.',
+    'ta-f-em':'Significa que la suma de Ec y Ep siempre vale lo mismo durante el movimiento sin fricción. Aunque Ec suba y Ep baje la suma total permanece igual a la energía inicial.',
+    'ta-mc-em':'La energía mecánica es la suma de Ec más Ep. Se conserva cuando no hay fricción porque la suma siempre es igual. Con fricción Em disminuye porque parte se convierte en calor Ef.',
+    'ta-mc-ec':'Depende de la masa y la velocidad al cuadrado. Aumenta cuando el objeto va más rápido o cuando su masa es mayor siendo la velocidad el factor de mayor efecto.',
+    'ta-mc-ep':'Depende de la masa y la altura. Aumenta cuando el objeto sube más alto o cuando su masa es mayor. Es la energía almacenada por la posición en el campo gravitacional.',
+    'ta-mc-ef':'Aparece cuando hay fricción durante el movimiento. Proviene de la energía mecánica que se convierte en calor. Cuando Ef aumenta Em disminuye en la misma cantidad.',
+    'ta-conc-1':'Lo más sorprendente fue que doblar la velocidad cuadruplica la Ec. Doblar la velocidad tiene más efecto porque v está elevada al cuadrado en la fórmula produciendo un efecto cuatro veces mayor.',
+    'ta-conc-2':'En situaciones como la seguridad vial es importante porque a mayor velocidad el daño en accidente es cuatro veces mayor. También en deportes montañas rusas y ingeniería de estructuras.',
+    'ta-nums':'Comparando los resultados la fricción hace que la velocidad final sea menor que sin fricción. Esto se debe a que la fricción convierte parte de la energía en calor reduciendo la Em disponible.'
+  };
+  Object.keys(fills).forEach(function(id){
+    var ta=document.getElementById(id);if(!ta)return;
+    ta.value=fills[id];ta.dispatchEvent(new Event('input'));
+  });
+  calcsOk.ep=calcsOk.v=calcsOk.emf=calcsOk.vf=true;
+  document.getElementById('ficha-ep-val').textContent=Ep_calc+' J';
+  document.getElementById('ficha-v-val').textContent=v_fondo+' m/s';
+  document.getElementById('ficha-emf-val').textContent=Em_final+' J';
+  document.getElementById('ficha-vf-val').textContent=v_fric+' m/s';
+  irBloque(7);
+}
+function abrirTablaGrupo(){
+  var tabla=document.getElementById('gtabla');if(!tabla)return;
+  var html='<thead><tr><th>#</th><th>Alumno</th><th>kg</th><th>m</th><th>Et</th><th>Ep</th><th>v s/f</th><th>Em_f</th><th>v c/f</th><th>CodEp</th><th>Codv</th></tr></thead><tbody>';
+  for(var i=1;i<ALUMNOS.length;i++){
+    var ms=Math.round(45+sr(i*7+11)*30),al=Math.round((4+sr(i*13+53)*4)*10)/10,et=Math.round(150+sr(i*3+97)*350);
+    var ep_g=parseFloat((ms*9.8*al).toFixed(1));
+    while(et>=ep_g*0.6)et=Math.round(et*0.7);
+    var v_g=parseFloat((Math.sqrt(2*ep_g/ms)).toFixed(2)),emf_g=parseFloat((ep_g-et).toFixed(1)),vf_g=parseFloat((Math.sqrt(2*emf_g/ms)).toFixed(2));
+    html+='<tr><td>'+i+'</td><td style="font-size:.62rem;">'+(ALUMNOS[i].split(' - ')[1]||ALUMNOS[i])+'</td>'+
+      '<td class="num-val">'+ms+'</td><td class="num-val">'+al+'</td><td class="num-val">'+et+'</td>'+
+      '<td class="num-val">'+ep_g+'</td><td class="num-val">'+v_g+'</td><td class="num-val">'+emf_g+'</td><td class="num-val">'+vf_g+'</td>'+
+      '<td class="cod-val">'+cod(ep_g,i,6)+'</td><td class="cod-val">'+cod(Math.round(v_g*100),i,7)+'</td></tr>';
+  }
+  html+='</tbody>';tabla.innerHTML=html;document.getElementById('modal-grupo').classList.add('on');
+}
+function cerrarTablaGrupo(){document.getElementById('modal-grupo').classList.remove('on');}
+
+// ══════════════════════════════════════════════════════════
+// SIMULACIONES
+// ══════════════════════════════════════════════════════════
+function buildSimulaciones(){buildSimEC();buildSimEP();buildSimEM();}
+
+// ────── SIM EC ──────
+function buildSimEC(){
+  var c=document.getElementById('sim-ec-container');if(!c)return;
+  c.innerHTML='<div style="color:#e8eaf0;min-width:300px;">'+
+  '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">'+
+  '<button onclick="ecP(1000,20,1000,20)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Iguales</button>'+
+  '<button onclick="ecP(1000,20,1000,40)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Misma masa, B 2× rápido</button>'+
+  '<button onclick="ecP(1000,30,2000,30)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Misma vel, B 2× masa</button>'+
+  '<button onclick="ecP(500,50,3000,20)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Ligero rápido vs camión</button>'+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">'+
+  '<div style="background:#1d2029;border-radius:9px;padding:9px;border-top:3px solid #185FA5;">'+
+  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;"><span style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#185FA5;display:inline-block;"></span>Auto A</span><span id="ecc-ecA" style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(55,138,221,.2);color:#85B7EB;">200,000 J</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:58px;">Masa</span><input type="range" id="ecc-ma" min="500" max="3000" value="1000" step="50" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#378ADD 18%,rgba(255,255,255,.08) 18%);outline:none;cursor:pointer;"><span id="ecc-lma" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:52px;text-align:right;">1000 kg</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:58px;">Velocidad</span><input type="range" id="ecc-va" min="5" max="60" value="20" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#378ADD 28%,rgba(255,255,255,.08) 28%);outline:none;cursor:pointer;"><span id="ecc-lva" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:52px;text-align:right;">20 m/s</span></div>'+
+  '</div>'+
+  '<div style="background:#1d2029;border-radius:9px;padding:9px;border-top:3px solid #993C1D;">'+
+  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;"><span style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#993C1D;display:inline-block;"></span>Auto B</span><span id="ecc-ecB" style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(216,90,48,.2);color:#F0997B;">800,000 J</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:58px;">Masa</span><input type="range" id="ecc-mb" min="500" max="3000" value="1000" step="50" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#D85A30 18%,rgba(255,255,255,.08) 18%);outline:none;cursor:pointer;"><span id="ecc-lmb" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:52px;text-align:right;">1000 kg</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:58px;">Velocidad</span><input type="range" id="ecc-vb" min="5" max="60" value="40" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#D85A30 65%,rgba(255,255,255,.08) 65%);outline:none;cursor:pointer;"><span id="ecc-lvb" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:52px;text-align:right;">40 m/s</span></div>'+
+  '</div></div>'+
+  '<canvas id="ecc-cv" width="640" height="180" style="display:block;width:100%;border-radius:7px;background:#161920;"></canvas>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:7px 0;">'+
+  '<div style="background:#161920;border-radius:7px;padding:7px 9px;border-left:3px solid #185FA5;"><div style="font-size:10px;color:rgba(255,255,255,.4);">Auto A · Trabajo</div><div id="ecc-wA" style="font-size:12px;font-weight:700;color:#85B7EB;">—</div><div id="ecc-dmgA" style="font-size:10px;color:rgba(255,255,255,.3);">Daño: —</div></div>'+
+  '<div style="background:#161920;border-radius:7px;padding:7px 9px;border-left:3px solid #993C1D;"><div style="font-size:10px;color:rgba(255,255,255,.4);">Auto B · Trabajo</div><div id="ecc-wB" style="font-size:12px;font-weight:700;color:#F0997B;">—</div><div id="ecc-dmgB" style="font-size:10px;color:rgba(255,255,255,.3);">Daño: —</div></div>'+
+  '</div>'+
+  '<div id="ecc-insight" style="font-size:12px;font-weight:500;text-align:center;padding:6px;border-radius:7px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);margin-bottom:7px;">Ajusta los valores y presiona Impactar</div>'+
+  '<div style="display:flex;gap:7px;"><button onclick="ecStart()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(248,113,113,.4);background:rgba(248,113,113,.12);color:#f87171;font-weight:700;cursor:pointer;font-size:12px;">💥 Impactar</button><button onclick="ecReset()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.45);font-weight:700;cursor:pointer;font-size:12px;">↺ Reiniciar</button></div>'+
+  '</div>';
+  ecInit();
+}
+
+var ecRAF=null,ecState='idle',ecPA=0,ecPB=0,ecCA=false,ecCB=false,ecCkA=0,ecCkB=0,ecShA=0,ecShB=0,ecPh='approach';
+function ecFmt(e){if(e>=1e6)return(e/1e6).toFixed(2)+' MJ';return Math.round(e).toLocaleString('es-MX')+' J';}
+function ecCalc(m,v){return 0.5*m*v*v;}
+function ecDmg(r){if(r<.15)return'Leve';if(r<.4)return'Moderado';if(r<.7)return'Grave';return'Total';}
+function ecGV(){return{ma:+document.getElementById('ecc-ma').value,va:+document.getElementById('ecc-va').value,mb:+document.getElementById('ecc-mb').value,vb:+document.getElementById('ecc-vb').value};}
+function ecChips(){
+  var v=ecGV();
+  ['ma','va','mb','vb'].forEach(function(k){
+    var el=document.getElementById('ecc-'+k),lbl=document.getElementById('ecc-l'+k);if(!el||!lbl)return;
+    lbl.textContent=v[k]+(k.startsWith('v')?' m/s':' kg');
+    var pct=(el.value-el.min)/(el.max-el.min)*100;
+    var col=k.endsWith('a')||k.endsWith('A')?'#378ADD':'#D85A30';
+    // check if A or B
+    col=(k==='ma'||k==='va')?'#378ADD':'#D85A30';
+    el.style.background='linear-gradient(to right,'+col+' '+pct+'%,rgba(255,255,255,.08) '+pct+'%)';
+  });
+  document.getElementById('ecc-ecA').textContent=ecFmt(ecCalc(v.ma,v.va));
+  document.getElementById('ecc-ecB').textContent=ecFmt(ecCalc(v.mb,v.vb));
+}
+function ecInit(){
+  ecChips();ecDraw();
+  ['ecc-ma','ecc-va','ecc-mb','ecc-vb'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',function(){if(ecState==='running'){cancelAnimationFrame(ecRAF);ecState='idle';}ecChips();ecDraw();});});
+}
+function ecDrawWall(dA,dB,shA,shB){
+  var cv=document.getElementById('ecc-cv');if(!cv)return;
+  var ctx=cv.getContext('2d'),WX=cv.width/2-16,H=cv.height,WW=32,BH=16,BW=30;
+  for(var row=0;row<Math.ceil((H-12)/BH);row++){
+    var off=(row%2===0)?0:BW/2;
+    for(var col=-1;col<2;col++){
+      var bx=WX+col*BW-off,by=6+row*BH;
+      if(bx+BW<WX||bx>WX+WW)continue;
+      ctx.fillStyle='#4a4a52';ctx.fillRect(Math.max(WX,bx)+.3,by+.3,Math.min(BW-1,WX+WW-bx-1),BH-1.5);
+      ctx.strokeStyle='#2a2a30';ctx.lineWidth=.4;ctx.strokeRect(Math.max(WX,bx)+.3,by+.3,Math.min(BW-1,WX+WW-bx-1),BH-1.5);
+    }
+  }
+  var rA=function(s,n){return((s*9301+49297)%233280)/233280*n;};
+  var rB=function(s,n){return((s*6271+49297)%233280)/233280*n;};
+  var LA=58,LB=125;
+  if(dA>0){ctx.strokeStyle='#378ADD';ctx.lineWidth=1;for(var i=0;i<Math.ceil(dA*7);i++){var sx=WX+1+rA(i*3,WW-2),sy=LA-16+rA(i*7,32);ctx.beginPath();ctx.moveTo(sx,sy);var lx=sx,ly=sy;for(var s=0;s<2+Math.floor(dA*3);s++){lx+=rA(i*s+1,12)-6;ly+=rA(i*s+3,16)-3;ctx.lineTo(lx,ly);}ctx.globalAlpha=Math.min(1,dA*1.4);ctx.stroke();ctx.globalAlpha=1;}
+  if(dA>.3){ctx.fillStyle='#4a4a52';for(var i2=0;i2<Math.floor(dA*5);i2++){var dx=WX-3-rA(i2*5,16+shA*2),dy=LA-8+rA(i2*11,18),ds=2+rA(i2*7,4);ctx.save();ctx.translate(dx,dy);ctx.rotate(rA(i2,Math.PI));ctx.fillRect(-ds/2,-ds/2,ds,ds);ctx.restore();}}}
+  if(dB>0){ctx.strokeStyle='#D85A30';ctx.lineWidth=1;for(var j=0;j<Math.ceil(dB*7);j++){var sx2=WX+1+rB(j*3,WW-2),sy2=LB-16+rB(j*7,32);ctx.beginPath();ctx.moveTo(sx2,sy2);var lx2=sx2,ly2=sy2;for(var s2=0;s2<2+Math.floor(dB*3);s2++){lx2+=rB(j*s2+1,12)-6;ly2+=rB(j*s2+3,16)-3;ctx.lineTo(lx2,ly2);}ctx.globalAlpha=Math.min(1,dB*1.4);ctx.stroke();ctx.globalAlpha=1;}
+  if(dB>.3){ctx.fillStyle='#4a4a52';for(var j2=0;j2<Math.floor(dB*5);j2++){var dx2=WX-3-rB(j2*5,16+shB*2),dy2=LB-8+rB(j2*11,18),ds2=2+rB(j2*7,4);ctx.save();ctx.translate(dx2,dy2);ctx.rotate(rB(j2,Math.PI));ctx.fillRect(-ds2/2,-ds2/2,ds2,ds2);ctx.restore();}}}
+}
+function ecDrawCarFn(ctx,x,y,bc,rc,lbl){
+  var bw=44,bh=20;
+  ctx.fillStyle=bc;ctx.beginPath();ctx.roundRect(x,y-bh/2,bw,bh,4);ctx.fill();
+  ctx.fillStyle=rc;ctx.beginPath();ctx.roundRect(x+bw*.22,y-bh/2-6,bw*.5,8,[3,3,0,0]);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.beginPath();ctx.roundRect(x+bw*.53,y-bh/2+3,bw*.2,bh-6,2);ctx.fill();
+  [[x+bw*.16,y+bh/2],[x+bw*.78,y+bh/2]].forEach(function(w){ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(w[0],w[1],5,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.2)';ctx.beginPath();ctx.arc(w[0],w[1],2,0,Math.PI*2);ctx.fill();});
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='500 10px sans-serif';ctx.textAlign='center';ctx.fillText(lbl,x+bw/2,y+3);
+}
+function ecDraw(){
+  var cv=document.getElementById('ecc-cv');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  var WX=W/2-16,LA=58,LB=125,START=16,MAX_T=WX-START-48;
+  ctx.fillStyle='rgba(255,255,255,.04)';ctx.fillRect(0,LA-26,WX+18,52);ctx.fillRect(0,LB-26,WX+18,52);
+  ctx.strokeStyle='rgba(255,255,255,.11)';ctx.lineWidth=1.2;ctx.setLineDash([8,8]);
+  ctx.beginPath();ctx.moveTo(0,LA);ctx.lineTo(WX,LA);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,LB);ctx.lineTo(WX,LB);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+  ecDrawWall(ecCkA,ecCkB,ecShA,ecShB);
+  var xA=START+ecPA+(ecShA>0?(Math.random()-.5)*ecShA:0);
+  var xB=START+ecPB+(ecShB>0?(Math.random()-.5)*ecShB:0);
+  ecDrawCarFn(ctx,xA,LA,'#378ADD','#185FA5','A');ecDrawCarFn(ctx,xB,LB,'#D85A30','#712B13','B');
+  if(ecCA){ctx.fillStyle='#85B7EB';ctx.font='500 9px sans-serif';ctx.textAlign='left';ctx.fillText('A impactó',WX+20,LA+3);}
+  if(ecCB){ctx.fillStyle='#F0997B';ctx.font='500 9px sans-serif';ctx.textAlign='left';ctx.fillText('B impactó',WX+20,LB+3);}
+}
+function ecShowRes(){
+  var v=ecGV();var EA=ecCalc(v.ma,v.va),EB=ecCalc(v.mb,v.vb),mx=Math.max(EA,EB,1);
+  document.getElementById('ecc-wA').textContent=ecFmt(EA);document.getElementById('ecc-wB').textContent=ecFmt(EB);
+  document.getElementById('ecc-dmgA').textContent='Daño: '+ecDmg(EA/mx*.9+.1);
+  document.getElementById('ecc-dmgB').textContent='Daño: '+ecDmg(EB/mx*.9+.1);
+  var ins=document.getElementById('ecc-insight'),diff=Math.abs(EA-EB);
+  if(diff<500){ins.textContent='Mismo impacto — misma Ec';ins.style.background='rgba(52,211,153,.1)';ins.style.color='#6ee7b7';}
+  else if(EA>EB){var r=EA/Math.max(EB,1);ins.textContent='A causó '+(r>=1.9?Math.round(r)+'×':Math.round((r-1)*100)+'%')+' más daño que B';ins.style.background='rgba(55,138,221,.12)';ins.style.color='#85B7EB';}
+  else{var r2=EB/Math.max(EA,1);ins.textContent='B causó '+(r2>=1.9?Math.round(r2)+'×':Math.round((r2-1)*100)+'%')+' más daño que A';ins.style.background='rgba(216,90,48,.12)';ins.style.color='#F0997B';}
+}
+function ecLoop(){
+  var v=ecGV();var EA=ecCalc(v.ma,v.va),EB=ecCalc(v.mb,v.vb),mx=Math.max(EA,EB,1);
+  var cv=document.getElementById('ecc-cv');if(!cv)return;
+  var MAX_T=cv.width/2-16-16-48;var ms=Math.max(v.va,v.vb,1);
+  if(ecPh==='approach'){
+    if(!ecCA){ecPA+=v.va/ms*MAX_T/75;if(ecPA>=MAX_T){ecPA=MAX_T;ecCA=true;ecShA=7;ecCkA=Math.min(1,EA/mx*.94+.06);}}
+    if(!ecCB){ecPB+=v.vb/ms*MAX_T/75;if(ecPB>=MAX_T){ecPB=MAX_T;ecCB=true;ecShB=7;ecCkB=Math.min(1,EB/mx*.94+.06);}}
+    if(ecCA&&ecCB)ecPh='impact';
+  }else if(ecPh==='impact'){ecShA=Math.max(0,ecShA-.55);ecShB=Math.max(0,ecShB-.55);if(ecShA===0&&ecShB===0){ecPh='settle';ecShowRes();ecState='done';ecDraw();return;}}
+  ecDraw();ecRAF=requestAnimationFrame(ecLoop);
+}
+window.ecStart=function(){if(ecState==='running')return;cancelAnimationFrame(ecRAF);ecPA=ecPB=ecCkA=ecCkB=ecShA=ecShB=0;ecCA=ecCB=false;ecPh='approach';ecState='running';document.getElementById('ecc-insight').textContent='Corriendo...';document.getElementById('ecc-dmgA').textContent='Daño: —';document.getElementById('ecc-dmgB').textContent='Daño: —';ecChips();ecRAF=requestAnimationFrame(ecLoop);};
+window.ecReset=function(){cancelAnimationFrame(ecRAF);ecState='idle';ecPA=ecPB=ecCkA=ecCkB=ecShA=ecShB=0;ecCA=ecCB=false;ecPh='approach';document.getElementById('ecc-insight').textContent='Ajusta los valores y presiona Impactar';document.getElementById('ecc-wA').textContent='—';document.getElementById('ecc-wB').textContent='—';document.getElementById('ecc-dmgA').textContent='Daño: —';document.getElementById('ecc-dmgB').textContent='Daño: —';ecChips();ecDraw();};
+window.ecP=function(mA,vA,mB,vB){document.getElementById('ecc-ma').value=mA;document.getElementById('ecc-va').value=vA;document.getElementById('ecc-mb').value=mB;document.getElementById('ecc-vb').value=vB;ecReset();};
+
+// ────── SIM EP ──────
+function buildSimEP(){
+  var c=document.getElementById('sim-ep-container');if(!c)return;
+  c.innerHTML='<div style="color:#e8eaf0;min-width:300px;">'+
+  '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">'+
+  '<button onclick="epP(10,15,10,15)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Iguales</button>'+
+  '<button onclick="epP(10,15,10,30)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Misma masa, B 2× alto</button>'+
+  '<button onclick="epP(10,20,20,20)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Misma altura, B 2× masa</button>'+
+  '<button onclick="epP(5,40,30,15)" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;">Liviano alto vs pesado bajo</button>'+
+  '</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">'+
+  '<div style="background:#1d2029;border-radius:9px;padding:9px;border-top:3px solid #185FA5;">'+
+  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;"><span style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#185FA5;display:inline-block;"></span>Objeto A</span><span id="epc-epA" style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(55,138,221,.2);color:#85B7EB;">1,470 J</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:50px;">Masa</span><input type="range" id="epc-ma" min="1" max="50" value="10" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#378ADD 18%,rgba(255,255,255,.08) 18%);outline:none;cursor:pointer;"><span id="epc-lma" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:46px;text-align:right;">10 kg</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:50px;">Altura</span><input type="range" id="epc-ha" min="1" max="50" value="15" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#378ADD 29%,rgba(255,255,255,.08) 29%);outline:none;cursor:pointer;"><span id="epc-lha" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:46px;text-align:right;">15 m</span></div>'+
+  '</div>'+
+  '<div style="background:#1d2029;border-radius:9px;padding:9px;border-top:3px solid #993C1D;">'+
+  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;"><span style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#993C1D;display:inline-block;"></span>Objeto B</span><span id="epc-epB" style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(216,90,48,.2);color:#F0997B;">1,470 J</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:50px;">Masa</span><input type="range" id="epc-mb" min="1" max="50" value="10" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#D85A30 18%,rgba(255,255,255,.08) 18%);outline:none;cursor:pointer;"><span id="epc-lmb" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:46px;text-align:right;">10 kg</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:rgba(255,255,255,.45);min-width:50px;">Altura</span><input type="range" id="epc-hb" min="1" max="50" value="15" step="1" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:linear-gradient(to right,#D85A30 29%,rgba(255,255,255,.08) 29%);outline:none;cursor:pointer;"><span id="epc-lhb" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:46px;text-align:right;">15 m</span></div>'+
+  '</div></div>'+
+  '<canvas id="epc-cv" width="640" height="200" style="display:block;width:100%;border-radius:7px;background:#161920;"></canvas>'+
+  '<div id="epc-insight" style="font-size:12px;font-weight:500;text-align:center;padding:6px;border-radius:7px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);margin:7px 0;">Ajusta los valores y presiona Soltar</div>'+
+  '<div style="display:flex;gap:7px;"><button onclick="epStart()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(52,211,153,.4);background:rgba(52,211,153,.1);color:#6ee7b7;font-weight:700;cursor:pointer;font-size:12px;">▼ Soltar</button><button onclick="epReset()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.45);font-weight:700;cursor:pointer;font-size:12px;">↺ Reiniciar</button></div>'+
+  '</div>';
+  epInit();
+}
+var epRAF=null,epState='idle',epYA=0,epYB=0,epVA=0,epVB=0,epLA=false,epLB=false,epCrA=0,epCrB=0,epBoA=0,epBoB=0;
+function epCalc(m,h){return m*9.8*h;}function epFmt(e){if(e>=1e6)return(e/1e6).toFixed(2)+' MJ';return Math.round(e).toLocaleString('es-MX')+' J';}
+function epGV(){return{ma:+document.getElementById('epc-ma').value,ha:+document.getElementById('epc-ha').value,mb:+document.getElementById('epc-mb').value,hb:+document.getElementById('epc-hb').value};}
+function epChips(){
+  var v=epGV();
+  document.getElementById('epc-lma').textContent=v.ma+' kg';document.getElementById('epc-lha').textContent=v.ha+' m';
+  document.getElementById('epc-lmb').textContent=v.mb+' kg';document.getElementById('epc-lhb').textContent=v.hb+' m';
+  document.getElementById('epc-epA').textContent=epFmt(epCalc(v.ma,v.ha));
+  document.getElementById('epc-epB').textContent=epFmt(epCalc(v.mb,v.hb));
+  [['epc-ma','#378ADD'],['epc-ha','#378ADD'],['epc-mb','#D85A30'],['epc-hb','#D85A30']].forEach(function(p){
+    var el=document.getElementById(p[0]);if(!el)return;
+    var pct=(el.value-el.min)/(el.max-el.min)*100;
+    el.style.background='linear-gradient(to right,'+p[1]+' '+pct+'%,rgba(255,255,255,.08) '+pct+'%)';
+  });
+}
+function epDrawScene(cHA,cHB){
+  var cv=document.getElementById('epc-cv');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  var GY=H-16,CA=W/4,CB=3*W/4,R=14;var v=epGV(),mxH=Math.max(v.ha,v.hb,1);
+  ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(0,GY-1,W,H-GY+1);
+  ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(W,GY);ctx.stroke();
+  function gY(h){return 20+R+(1-h/mxH)*(GY-20-R*2);}
+  if(epCrA>0){var cr=Math.min(22,epCrA*25);ctx.fillStyle='rgba(55,138,221,.18)';ctx.beginPath();ctx.ellipse(CA,GY,cr,cr*.3,0,0,Math.PI*2);ctx.fill();}
+  if(epCrB>0){var cr2=Math.min(22,epCrB*25);ctx.fillStyle='rgba(216,90,48,.18)';ctx.beginPath();ctx.ellipse(CB,GY,cr2,cr2*.3,0,0,Math.PI*2);ctx.fill();}
+  var oYA=gY(cHA)+(epBoA>0?(Math.random()-.5)*epBoA:0),oYB=gY(cHB)+(epBoB>0?(Math.random()-.5)*epBoB:0);
+  ctx.strokeStyle='rgba(55,138,221,.3)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(CA,oYA+R);ctx.lineTo(CA,GY);ctx.stroke();
+  ctx.strokeStyle='rgba(216,90,48,.3)';ctx.beginPath();ctx.moveTo(CB,oYB+R);ctx.lineTo(CB,GY);ctx.stroke();ctx.setLineDash([]);
+  var sA=R+Math.min(4,v.ma/50*4),sB=R+Math.min(4,v.mb/50*4);
+  ctx.fillStyle='#378ADD';ctx.beginPath();ctx.arc(CA,oYA,sA,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(CA,oYA,sA,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='500 10px sans-serif';ctx.textAlign='center';ctx.fillText('A',CA,oYA+3);
+  ctx.fillStyle='rgba(85,183,235,.75)';ctx.font='9px monospace';ctx.fillText(v.ma+'kg',CA,oYA-sA-4);
+  ctx.fillStyle='#D85A30';ctx.beginPath();ctx.arc(CB,oYB,sB,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(CB,oYB,sB,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='500 10px sans-serif';ctx.textAlign='center';ctx.fillText('B',CB,oYB+3);
+  ctx.fillStyle='rgba(240,153,123,.75)';ctx.font='9px monospace';ctx.fillText(v.mb+'kg',CB,oYB-sB-4);
+  ctx.font='10px monospace';ctx.fillStyle='rgba(55,138,221,.65)';ctx.textAlign='right';if(cHA>.5)ctx.fillText('h='+Math.round(cHA)+'m',CA-sA-3,(oYA+GY)/2);
+  ctx.fillStyle='rgba(216,90,48,.65)';ctx.textAlign='left';if(cHB>.5)ctx.fillText('h='+Math.round(cHB)+'m',CB+sB+3,(oYB+GY)/2);
+}
+function epShowRes(){
+  var v=epGV();var epA=epCalc(v.ma,v.ha),epB=epCalc(v.mb,v.hb);
+  var ins=document.getElementById('epc-insight'),diff=Math.abs(epA-epB);
+  if(diff<10){ins.textContent='Misma Ep — mismo impacto';ins.style.background='rgba(52,211,153,.1)';ins.style.color='#6ee7b7';}
+  else if(epA>epB){var r=epA/Math.max(epB,1);ins.textContent='A tenía '+(r>=1.9?Math.round(r)+'×':Math.round((r-1)*100)+'%')+' más Ep — mayor impacto';ins.style.background='rgba(55,138,221,.1)';ins.style.color='#85B7EB';}
+  else{var r2=epB/Math.max(epA,1);ins.textContent='B tenía '+(r2>=1.9?Math.round(r2)+'×':Math.round((r2-1)*100)+'%')+' más Ep — mayor impacto';ins.style.background='rgba(216,90,48,.1)';ins.style.color='#F0997B';}
+}
+function epLoop(){
+  var v=epGV(),dt=.2;
+  if(!epLA){epVA+=9.8*dt;epYA+=epVA*dt;if(epYA>=v.ha){epYA=v.ha;epLA=true;var mx=Math.max(epCalc(v.ma,v.ha),epCalc(v.mb,v.hb));epCrA=Math.min(1,epCalc(v.ma,v.ha)/mx*.94+.06);epBoA=5;}}
+  if(!epLB){epVB+=9.8*dt;epYB+=epVB*dt;if(epYB>=v.hb){epYB=v.hb;epLB=true;var mx2=Math.max(epCalc(v.ma,v.ha),epCalc(v.mb,v.hb));epCrB=Math.min(1,epCalc(v.mb,v.hb)/mx2*.94+.06);epBoB=5;}}
+  epBoA=Math.max(0,epBoA-.36);epBoB=Math.max(0,epBoB-.36);
+  epDrawScene(Math.max(0,v.ha-epYA),Math.max(0,v.hb-epYB));
+  if(epLA&&epLB&&epBoA===0&&epBoB===0){epState='done';epShowRes();return;}
+  epRAF=requestAnimationFrame(epLoop);
+}
+function epInit(){epChips();epDrawScene(epGV().ha,epGV().hb);['epc-ma','epc-ha','epc-mb','epc-hb'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',function(){if(epState==='running'){cancelAnimationFrame(epRAF);epState='idle';}epChips();var v=epGV();epDrawScene(v.ha,v.hb);});});}
+window.epStart=function(){if(epState==='running')return;cancelAnimationFrame(epRAF);epYA=epYB=epVA=epVB=epCrA=epCrB=epBoA=epBoB=0;epLA=epLB=false;epState='running';document.getElementById('epc-insight').textContent='Cayendo...';epChips();epRAF=requestAnimationFrame(epLoop);};
+window.epReset=function(){cancelAnimationFrame(epRAF);epState='idle';epYA=epYB=epVA=epVB=epCrA=epCrB=epBoA=epBoB=0;epLA=epLB=false;document.getElementById('epc-insight').textContent='Ajusta los valores y presiona Soltar';epChips();var v=epGV();epDrawScene(v.ha,v.hb);};
+window.epP=function(mA,hA,mB,hB){document.getElementById('epc-ma').value=mA;document.getElementById('epc-ha').value=hA;document.getElementById('epc-mb').value=mB;document.getElementById('epc-hb').value=hB;epReset();};
+
+// ────── SIM EM ──────
+function buildSimEM(){
+  var c=document.getElementById('sim-em-container');if(!c)return;
+  c.innerHTML='<div style="color:#e8eaf0;min-width:300px;">'+
+  '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;align-items:center;">'+
+  '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.5);">Altura<input type="range" id="emc-h" min="20" max="180" value="150" step="1" style="-webkit-appearance:none;width:90px;height:3px;border-radius:2px;background:linear-gradient(to right,#38bdf8 83%,rgba(255,255,255,.08) 83%);outline:none;cursor:pointer;"><span id="emc-lh" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:38px;">150 m</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.5);">Fricción μ<input type="range" id="emc-f" min="0" max="50" value="0" step="1" style="-webkit-appearance:none;width:90px;height:3px;border-radius:2px;background:rgba(255,255,255,.08);outline:none;cursor:pointer;"><span id="emc-lf" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:36px;">0 %</span></div>'+
+  '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.5);">Masa<input type="range" id="emc-m" min="1" max="10" value="5" step="1" style="-webkit-appearance:none;width:70px;height:3px;border-radius:2px;background:linear-gradient(to right,#f59e0b 44%,rgba(255,255,255,.08) 44%);outline:none;cursor:pointer;"><span id="emc-lm" style="font-size:11px;font-weight:700;color:#e8eaf0;min-width:34px;">5 kg</span></div>'+
+  '</div>'+
+  '<canvas id="emc-cv" width="640" height="210" style="display:block;width:100%;border-radius:7px;background:#161920;margin-bottom:7px;"></canvas>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:7px;">'+
+  '<div style="background:#1d2029;border-radius:7px;padding:7px 9px;border-top:2px solid #f59e0b;"><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Cinética</div><div id="emc-ke" style="font-size:12px;font-weight:700;color:#f59e0b;">0 J</div><div style="height:3px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:4px;overflow:hidden;"><div id="emc-bke" style="height:100%;background:#f59e0b;border-radius:2px;width:0%;transition:width .04s;"></div></div></div>'+
+  '<div style="background:#1d2029;border-radius:7px;padding:7px 9px;border-top:2px solid #38bdf8;"><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Potencial</div><div id="emc-pe" style="font-size:12px;font-weight:700;color:#38bdf8;">0 J</div><div style="height:3px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:4px;overflow:hidden;"><div id="emc-bpe" style="height:100%;background:#38bdf8;border-radius:2px;width:100%;transition:width .04s;"></div></div></div>'+
+  '<div style="background:#1d2029;border-radius:7px;padding:7px 9px;border-top:2px solid #f87171;"><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Térmica</div><div id="emc-te" style="font-size:12px;font-weight:700;color:#f87171;">0 J</div><div style="height:3px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:4px;overflow:hidden;"><div id="emc-bte" style="height:100%;background:#f87171;border-radius:2px;width:0%;transition:width .04s;"></div></div></div>'+
+  '<div style="background:#1d2029;border-radius:7px;padding:7px 9px;border-top:2px solid #34d399;"><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Total E₀</div><div id="emc-tot" style="font-size:12px;font-weight:700;color:#34d399;">0 J</div><div style="height:3px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:4px;overflow:hidden;"><div style="height:100%;background:#34d399;border-radius:2px;width:100%;"></div></div></div>'+
+  '</div>'+
+  '<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap;">'+
+  '<span id="emc-badge" style="font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid #34d399;background:rgba(52,211,153,.1);color:#34d399;font-weight:700;">✓ Conservada</span>'+
+  '<span id="emc-em" style="font-size:10px;color:rgba(255,255,255,.32);">Em = — J</span>'+
+  '</div>'+
+  '<div style="display:flex;gap:7px;"><button id="emc-btnPlay" onclick="emPlay()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(52,211,153,.4);background:rgba(52,211,153,.1);color:#34d399;font-weight:700;cursor:pointer;font-size:12px;">▶ Soltar</button><button onclick="emReset()" style="flex:1;padding:7px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.45);font-weight:700;cursor:pointer;font-size:12px;">↺ Reiniciar</button></div>'+
+  '</div>';
+  emInit();
+}
+var emRAF=null,emRun=false,emS={};
+var emG=9.8,emRX0=65,emRY0=20,emRX1=600,emRY1=188;
+var emDX=emRX1-emRX0,emDY=emRY1-emRY0,emRL=Math.sqrt(emDX*emDX+emDY*emDY);
+var emUX=emDX/emRL,emUY=emDY/emRL,emANG=Math.atan2(emDY,emDX);
+var emSA=Math.sin(emANG),emCA=Math.cos(emANG);
+function emFmt(e){if(e>=1e6)return(e/1e6).toFixed(2)+' MJ';return Math.round(e).toLocaleString('es-MX')+' J';}
+function emGP(){return{h0:+document.getElementById('emc-h').value,muPct:+document.getElementById('emc-f').value,m:+document.getElementById('emc-m').value};}
+function emInitSim(){var p=emGP();var mu=p.muPct/100*.6,L=p.h0/emSA,E0=p.m*emG*p.h0;emS={h0:p.h0,mu:mu,m:p.m,L:L,E0:E0,d:0,v:0,Ec:0,Ep:E0,Ef:0,done:false};emUI();emRender();}
+function emStep(dt){if(emS.done)return;var a=emG*emSA-emS.mu*emG*emCA;if(a<=0&&emS.v<=0){emS.done=true;return;}var v2=emS.v+a*dt;if(v2<=0){emS.v=0;emS.done=true;emEnergy();return;}emS.v=v2;emS.d+=emS.v*dt;if(emS.d>=emS.L){emS.d=emS.L;emS.done=true;}emEnergy();}
+function emEnergy(){var h=Math.max(0,emS.h0-emS.d*emSA);emS.Ep=emS.m*emG*h;emS.Ef=emS.mu*emS.m*emG*emCA*emS.d;emS.Ec=Math.max(0,emS.E0-emS.Ep-emS.Ef);emS.v=Math.sqrt(2*emS.Ec/emS.m);}
+function emRender(){
+  var cv=document.getElementById('emc-cv');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  var t=Math.min(1,emS.d/emS.L),bx=emRX0+t*emDX,by=emRY0+t*emDY;
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(40,emRY1);ctx.lineTo(W-30,emRY1);ctx.stroke();ctx.setLineDash([]);
+  if(by<emRY1-7){ctx.beginPath();ctx.moveTo(22,by);ctx.lineTo(22,emRY1);ctx.strokeStyle='#38bdf8';ctx.lineWidth=1.2;ctx.stroke();[[by,1],[emRY1,-1]].forEach(function(a){ctx.beginPath();ctx.moveTo(18,a[0]+a[1]*5);ctx.lineTo(22,a[0]);ctx.lineTo(26,a[0]+a[1]*5);ctx.strokeStyle='#38bdf8';ctx.lineWidth=1.2;ctx.stroke();});ctx.fillStyle='#38bdf8';ctx.font='9px monospace';ctx.textAlign='right';ctx.fillText('h='+Math.round(emS.h0*(1-t))+'m',16,(by+emRY1)/2+3);}
+  if(t>.01&&emS.mu>0){var gr=ctx.createLinearGradient(emRX0,emRY0,bx,by);gr.addColorStop(0,'rgba(248,113,113,.03)');gr.addColorStop(1,'rgba(248,113,113,'+Math.min(.7,emS.mu*2)+')');ctx.beginPath();ctx.moveTo(emRX0,emRY0);ctx.lineTo(bx,by);ctx.strokeStyle=gr;ctx.lineWidth=5;ctx.stroke();}
+  ctx.beginPath();ctx.moveTo(emRX0+2,emRY0+2);ctx.lineTo(emRX1+2,emRY1+2);ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=3.5;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(emRX0,emRY0);ctx.lineTo(emRX1,emRY1);ctx.strokeStyle='rgba(255,255,255,.26)';ctx.lineWidth=2.5;ctx.stroke();
+  if(emS.v>.4&&t<.97){var ax=bx+emUX*14,ay=by+emUY*14,mV=Math.sqrt(2*emS.E0/emS.m),al=12+(emS.v/mV)*45,ex=ax+emUX*al,ey=ay+emUY*al;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ex,ey);ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';var ang=Math.atan2(ey-ay,ex-ax);ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-7*Math.cos(ang-.4),ey-7*Math.sin(ang-.4));ctx.moveTo(ex,ey);ctx.lineTo(ex-7*Math.cos(ang+.4),ey-7*Math.sin(ang+.4));ctx.strokeStyle='#f59e0b';ctx.lineWidth=1.8;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';}
+  if(emS.Ec>0){var gr2=ctx.createRadialGradient(bx,by,14,bx,by,26+(emS.Ec/emS.E0)*13);gr2.addColorStop(0,'rgba(245,158,11,.3)');gr2.addColorStop(1,'rgba(245,158,11,0)');ctx.beginPath();ctx.arc(bx,by,26+(emS.Ec/emS.E0)*13,0,Math.PI*2);ctx.fillStyle=gr2;ctx.fill();}
+  ctx.beginPath();ctx.arc(bx+2,by+2,14,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.25)';ctx.fill();
+  ctx.beginPath();ctx.arc(bx,by,14,0,Math.PI*2);ctx.fillStyle='#f59e0b';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(bx,by,14,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.beginPath();ctx.arc(bx-4,by-4,4,0,Math.PI*2);ctx.fill();
+  ctx.font='500 10px monospace';ctx.textAlign='center';
+  if(emS.done&&t>=.999){ctx.fillStyle='#34d399';ctx.fillText('Llegó · Ec='+emFmt(emS.Ec)+' · Calor='+emFmt(emS.Ef),W/2,12);}
+  else if(emS.done&&emS.v<=0){ctx.fillStyle='#f87171';ctx.fillText('Fricción detuvo la bola · Calor='+emFmt(emS.Ef),W/2,12);}
+  else if(t<.04){ctx.fillStyle='#38bdf8';ctx.textAlign='left';ctx.fillText('Ep máx='+emFmt(emS.E0),emRX0+2,emRY0-4);}
+}
+function emUI(){
+  var E0=emS.E0||1;var tot=emS.Ec+emS.Ep+emS.Ef;
+  document.getElementById('emc-ke').textContent=emFmt(emS.Ec);
+  document.getElementById('emc-pe').textContent=emFmt(emS.Ep);
+  document.getElementById('emc-te').textContent=emFmt(emS.Ef);
+  document.getElementById('emc-tot').textContent=emFmt(tot);
+  document.getElementById('emc-bke').style.width=Math.min(100,emS.Ec/E0*100).toFixed(1)+'%';
+  document.getElementById('emc-bpe').style.width=Math.min(100,emS.Ep/E0*100).toFixed(1)+'%';
+  document.getElementById('emc-bte').style.width=Math.min(100,emS.Ef/E0*100).toFixed(1)+'%';
+  document.getElementById('emc-em').textContent='Em(Ec+Ep) = '+emFmt(emS.Ec+emS.Ep);
+  var b=document.getElementById('emc-badge'),d=Math.abs(tot-emS.E0);
+  b.textContent=d<2?'✓ Ec+Ep+Ef=E₀ conservada':'⚠ Error: '+emFmt(d);b.style.color=d<2?'#34d399':'#f87171';b.style.borderColor=d<2?'#34d399':'#f87171';
+  emUpdSl();
+}
+function emUpdSl(){
+  [['emc-h','#38bdf8'],['emc-f','#f87171'],['emc-m','#f59e0b']].forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;var pct=(el.value-el.min)/(el.max-el.min)*100;el.style.background='linear-gradient(to right,'+p[1]+' '+pct+'%,rgba(255,255,255,.08) '+pct+'%)';});
+}
+function emInit(){
+  emInitSim();
+  ['emc-h','emc-f','emc-m'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',function(){document.getElementById('emc-lh').textContent=document.getElementById('emc-h').value+' m';document.getElementById('emc-lf').textContent=document.getElementById('emc-f').value+' %';document.getElementById('emc-lm').textContent=document.getElementById('emc-m').value+' kg';cancelAnimationFrame(emRAF);emRun=false;document.getElementById('emc-btnPlay').textContent='▶ Soltar';emInitSim();});});
+}
+window.emPlay=function(){
+  if(emRun){cancelAnimationFrame(emRAF);emRun=false;document.getElementById('emc-btnPlay').textContent='▶ Soltar';return;}
+  if(emS.done)emInitSim();
+  emRun=true;document.getElementById('emc-btnPlay').textContent='⏸ Pausar';
+  (function loop(){emStep(.025);emUI();emRender();if(!emS.done)emRAF=requestAnimationFrame(loop);else{emRun=false;document.getElementById('emc-btnPlay').textContent='▶ Soltar';}})();
+};
+window.emReset=function(){cancelAnimationFrame(emRAF);emRun=false;document.getElementById('emc-btnPlay').textContent='▶ Soltar';emInitSim();};
+
+// ══════ INIT ══════
+window.addEventListener('load',function(){irBloque(0);actualizarPanelLabel();});
+</script>
+</body>
+</html>
