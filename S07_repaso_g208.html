@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>S07 · Repaso Examen · CNEyT II · G208</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;
+  --az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;
+  --v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;
+  --r:#C62828;--r3:#FFEBEE;
+  --n:#E65100;--n3:#FFF3E0;
+  --am:#F57F17;--am3:#FFF8E1;
+  --dark:#1A1A2E;--gris:#666;--gris2:#E0E0E0;--gris3:#F5F5F5;
+  --radio:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#EEF2FF;color:var(--dark);font-size:15px;}
+
+/* PROGRESO */
+.prog-bar{background:var(--dark);padding:8px 14px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:0;overflow-x:auto;}
+.pd{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.pd-c{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:rgba(255,255,255,.3);font-family:'Bebas Neue';font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:.3s;}
+.pd-c.on{background:var(--mo2);border-color:var(--mo2);color:#fff;}
+.pd-c.ok{background:var(--v2);border-color:var(--v2);color:#fff;}
+.pd-l{font-size:.5rem;color:rgba(255,255,255,.22);margin-top:2px;text-align:center;max-width:40px;line-height:1.2;}
+.pd-l.on{color:var(--mo3);}
+.pd-l.ok{color:var(--v2);}
+.pln{flex:1;height:2px;background:rgba(255,255,255,.1);min-width:4px;max-width:18px;transition:.3s;}
+.pln.ok{background:var(--v2);}
+
+/* HEADER */
+.hdr{background:linear-gradient(150deg,#0D1B4A,#1A0533);padding:16px 16px 12px;color:white;}
+.hdr-tag{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.45);margin-bottom:4px;}
+.hdr-tit{font-family:'Bebas Neue';font-size:1.8rem;color:#93C5FD;letter-spacing:1.5px;line-height:1.05;margin-bottom:4px;}
+.hdr-sub{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.5;}
+.chip-al{display:none;background:var(--mo2);color:white;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-top:8px;}
+.salida-badge{display:none;background:rgba(255,180,0,.18);border:1px solid rgba(255,180,0,.4);color:#FFD54F;font-size:.64rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;}
+.examen-badge{background:rgba(197,28,28,.25);border:1px solid rgba(197,28,28,.5);color:#EF9A9A;font-size:.64rem;font-weight:800;padding:3px 10px;border-radius:10px;display:inline-block;margin-top:6px;}
+
+/* BLOQUES */
+.bloque{display:none;padding:14px 14px 28px;max-width:720px;margin:0 auto;animation:fadeUp .3s ease;}
+.bloque.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:white;border-radius:var(--radio);padding:14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.card.mo{border-left:4px solid var(--mo);}
+.card.az{border-left:4px solid var(--az);}
+.card.v{border-left:4px solid var(--v);}
+.card.n{border-left:4px solid var(--n);}
+.card.r{border-left:4px solid var(--r);}
+.card.am{border-left:4px solid var(--am);}
+.sec-label{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);margin-bottom:3px;}
+.sec-tit{font-family:'Bebas Neue';font-size:1.35rem;color:var(--mo);letter-spacing:.8px;margin-bottom:10px;border-bottom:2px solid var(--mo3);padding-bottom:6px;}
+.sec-tit.az{color:var(--az);border-bottom-color:var(--az3);}
+.sec-tit.v{color:var(--v);border-bottom-color:var(--v3);}
+.sec-tit.n{color:var(--n);border-bottom-color:var(--n3);}
+p.texto{font-size:.86rem;line-height:1.7;color:var(--dark);margin-bottom:8px;}
+.pregunta-lbl{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--mo);margin-bottom:3px;margin-top:10px;}
+
+/* QUIZ */
+.tema-header{background:var(--dark);border-radius:10px 10px 0 0;padding:12px 14px;color:white;display:flex;align-items:center;justify-content:space-between;}
+.tema-tit{font-family:'Bebas Neue';font-size:1.2rem;color:#93C5FD;letter-spacing:.8px;}
+.tema-prog{font-size:.7rem;color:rgba(255,255,255,.5);font-weight:700;}
+.tema-body{background:white;border-radius:0 0 10px 10px;padding:14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.1);}
+.qnum{font-size:.64rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:5px;}
+.qtexto{font-size:.88rem;font-weight:700;color:var(--dark);line-height:1.6;margin-bottom:10px;}
+.qopts{display:flex;flex-direction:column;gap:6px;}
+.qopt{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:2px solid var(--gris2);border-radius:8px;cursor:pointer;font-size:.85rem;line-height:1.5;font-weight:600;transition:.15s;}
+.qopt:hover{border-color:var(--az);background:var(--az3);}
+.qopt.sel{border-color:var(--az);background:var(--az3);}
+.qopt.correcto{border-color:var(--v);background:var(--v3);color:var(--v);}
+.qopt.incorrecto{border-color:var(--r);background:var(--r3);color:var(--r);}
+.qopt-letra{width:22px;height:22px;border-radius:50%;background:var(--gris2);color:var(--dark);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.qopt.correcto .qopt-letra{background:var(--v);color:white;}
+.qopt.incorrecto .qopt-letra{background:var(--r);color:white;}
+.qfeedback{margin-top:8px;padding:8px 11px;border-radius:7px;font-size:.8rem;line-height:1.55;display:none;}
+.qfeedback.show{display:block;}
+.qfeedback.ok{background:var(--v3);color:var(--v);border-left:3px solid var(--v);}
+.qfeedback.nook{background:var(--r3);color:var(--r);border-left:3px solid var(--r);}
+.q-divider{border:none;border-top:1.5px solid var(--gris2);margin:12px 0;}
+
+/* TEMA SCORE */
+.tema-score-bar{background:var(--gris3);border-radius:20px;height:6px;margin-top:8px;overflow:hidden;}
+.tema-score-fill{height:100%;border-radius:20px;background:var(--v2);transition:width .4s ease;}
+.temas-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.tema-chip{border-radius:8px;padding:8px 10px;text-align:center;font-size:.72rem;font-weight:700;border:2px solid var(--gris2);background:white;cursor:pointer;transition:.15s;}
+.tema-chip.done{border-color:var(--v);background:var(--v3);color:var(--v);}
+.tema-chip.activo{border-color:var(--mo);background:var(--mo3);color:var(--mo);}
+.tema-chip:hover{border-color:var(--az);}
+
+/* CÁLCULO */
+.val-alumno{background:linear-gradient(135deg,var(--dark),#1e1a3a);border-radius:10px;padding:12px 14px;margin-bottom:12px;color:white;}
+.va-titulo{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.4);margin-bottom:8px;}
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.val-item{background:rgba(255,255,255,.08);border-radius:7px;padding:8px 10px;}
+.vi-lbl{font-size:.62rem;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;margin-bottom:2px;}
+.vi-val{font-family:'Bebas Neue';font-size:1.35rem;color:#93C5FD;letter-spacing:.5px;}
+.vi-unit{font-size:.67rem;color:rgba(255,255,255,.4);margin-left:3px;}
+.paso{background:white;border-radius:9px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid var(--gris2);}
+.paso.activo{border-left-color:var(--az);}
+.paso.completado{border-left-color:var(--v);}
+.paso-num{font-size:.62rem;font-weight:800;text-transform:uppercase;color:var(--gris);letter-spacing:.4px;margin-bottom:3px;}
+.paso-tit{font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:7px;line-height:1.4;}
+.formula-box{background:var(--dark);color:#93C5FD;border-radius:8px;padding:9px 13px;font-size:.88rem;text-align:center;margin:8px 0;line-height:2.1;}
+.formula-box .sub-label{font-size:.68rem;color:rgba(255,255,255,.4);display:block;margin-top:2px;}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.9em;line-height:1.2;}
+.frac .num{border-bottom:1.5px solid currentColor;padding:0 3px 1px;}
+.frac .den{padding:1px 3px 0;}
+.raiz{display:inline-flex;align-items:center;vertical-align:middle;}
+.raiz-sym{font-size:1.1em;margin-right:1px;}
+.raiz-cont{border-top:1.5px solid currentColor;padding:1px 3px 0;}
+input[type=text]{font-family:'Outfit',sans-serif;font-size:.9rem;padding:8px 11px;border:2px solid var(--gris2);border-radius:8px;width:130px;background:white;color:var(--dark);}
+input[type=text]:focus{outline:none;border-color:var(--az);}
+.inp-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-verify{font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;background:var(--az);color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;}
+.res-box{margin-top:7px;padding:8px 11px;border-radius:8px;font-size:.82rem;font-weight:600;display:none;}
+.res-box.ok{background:var(--v3);color:var(--v);display:block;}
+.res-box.err{background:var(--r3);color:var(--r);display:block;}
+.res-box.hint{background:var(--n3);color:var(--n);display:block;}
+.cod-box{background:var(--dark);color:#A5D6A7;border-radius:7px;padding:7px 11px;font-size:.86rem;font-weight:800;text-align:center;margin-top:6px;display:none;letter-spacing:1px;}
+.hint-btn{background:var(--n3);color:var(--n);border:none;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;margin-top:5px;display:none;}
+
+/* AUTOEVALUACIÓN */
+.ae-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1.5px solid var(--gris2);font-size:.84rem;gap:8px;}
+.ae-item:last-child{border-bottom:none;}
+.ae-lbl{flex:1;font-weight:600;line-height:1.4;}
+.ae-btns{display:flex;gap:5px;flex-shrink:0;}
+.ae-btn{font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:15px;border:2px solid var(--gris2);background:white;cursor:pointer;transition:.15s;}
+.ae-btn.v{background:var(--v3);border-color:var(--v);color:var(--v);}
+.ae-btn.am{background:var(--am3);border-color:var(--am);color:var(--am);}
+.ae-btn.r{background:var(--r3);border-color:var(--r);color:var(--r);}
+textarea{font-family:'Outfit',sans-serif;font-size:.86rem;padding:9px 11px;border:2px solid var(--gris2);border-radius:8px;width:100%;resize:vertical;min-height:65px;background:white;color:var(--dark);margin-top:6px;}
+textarea:focus{outline:none;border-color:var(--az);}
+.char-counter{font-size:.7rem;font-weight:700;margin-top:3px;}
+
+/* AVANZAR */
+.btn-avanzar{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--mo);color:white;border:none;padding:11px 24px;border-radius:10px;cursor:pointer;display:none;margin-top:14px;width:100%;}
+.btn-avanzar:hover{background:var(--mo2);}
+.btn-avanzar.on{display:block;}
+
+/* COD AVANCE */
+.cod-avance-box{background:var(--am3);border:1.5px dashed var(--am);border-radius:8px;padding:8px 12px;margin-top:10px;font-size:.79rem;color:#4a2c00;display:none;}
+.cod-avance-num{font-family:'Bebas Neue';font-size:1.5rem;color:var(--am);letter-spacing:3px;}
+
+/* RESUMEN */
+.res-header{border-radius:var(--radio);padding:16px;text-align:center;margin-bottom:14px;color:white;}
+.res-grade{font-family:'Bebas Neue';font-size:3.5rem;line-height:1;}
+.res-grade-lbl{font-size:.8rem;font-weight:700;opacity:.85;margin-top:2px;}
+.res-score-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.res-score-card{flex:1;min-width:100px;background:white;border-radius:9px;padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.rsc-val{font-family:'Bebas Neue';font-size:1.6rem;color:var(--mo);letter-spacing:.5px;}
+.rsc-lbl{font-size:.68rem;color:var(--gris);font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+
+/* TABLA RESUMEN */
+.res-tabla{width:100%;border-collapse:collapse;font-size:.78rem;}
+.res-tabla th{padding:7px 9px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.3px;}
+.res-tabla th:nth-child(1){background:var(--dark);color:white;width:40%;}
+.res-tabla th:nth-child(2){background:var(--az);color:white;width:25%;}
+.res-tabla th:nth-child(3){background:var(--v);color:white;width:35%;}
+.res-tabla td{padding:7px 9px;border-bottom:1px solid var(--gris2);vertical-align:top;line-height:1.5;}
+.res-tabla tr:last-child td{border-bottom:none;}
+.badge-ok{background:var(--v3);color:var(--v);font-weight:800;padding:2px 7px;border-radius:8px;font-size:.7rem;display:inline-block;}
+.badge-err{background:var(--r3);color:var(--r);font-weight:800;padding:2px 7px;border-radius:8px;font-size:.7rem;display:inline-block;}
+.badge-warn{background:var(--am3);color:var(--am);font-weight:800;padding:2px 7px;border-radius:8px;font-size:.7rem;display:inline-block;}
+.resp-esp{font-size:.75rem;color:var(--v);font-style:italic;line-height:1.4;}
+
+/* PRINT BUTTON */
+.btn-print{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--v);color:white;border:none;padding:11px 24px;border-radius:10px;cursor:pointer;width:100%;margin-top:10px;display:block;}
+.btn-print:hover{background:var(--v2);}
+.print-inst{background:var(--am3);border-radius:8px;padding:9px 12px;font-size:.79rem;color:#4a2c00;margin-top:8px;line-height:1.6;}
+
+/* DOCENTE */
+.teacher-only{display:none;}
+body.teacher-mode .teacher-only{display:block;}
+.doc-skip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;margin-top:9px;}
+.doc-answer{background:var(--v3);border-left:4px solid var(--v);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:8px;font-size:.81rem;color:var(--v);display:none;}
+body.teacher-mode .doc-answer{display:block;}
+.doc-panel{display:none;position:fixed;bottom:16px;right:16px;z-index:500;background:#1A1A2E;border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;box-shadow:0 6px 24px rgba(0,0,0,.5);min-width:190px;}
+body.teacher-mode .doc-panel{display:block;}
+.doc-panel-tit{font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:9px;}
+.doc-panel-btn{display:block;width:100%;font-family:'Outfit',sans-serif;font-size:.76rem;font-weight:700;padding:7px 11px;border-radius:7px;border:none;cursor:pointer;margin-bottom:6px;text-align:left;}
+.doc-panel-btn:last-child{margin-bottom:0;}
+.doc-panel-btn.sal{background:rgba(255,200,0,.14);color:#FFD54F;border:1px solid rgba(255,200,0,.3);}
+.doc-panel-btn.res{background:rgba(46,125,50,.22);color:#A5D6A7;border:1px solid rgba(46,125,50,.4);}
+.doc-panel-btn.grp{background:rgba(21,101,192,.22);color:#90CAF9;border:1px solid rgba(21,101,192,.4);}
+.doc-panel-btn.sim{background:rgba(156,75,181,.18);color:#CE93D8;border:1px solid rgba(156,75,181,.4);}
+.corner-key{position:fixed;bottom:8px;left:8px;z-index:600;width:18px;height:18px;opacity:.07;cursor:pointer;font-size:.68rem;display:flex;align-items:center;justify-content:center;color:white;transition:opacity .2s;}
+.corner-key:hover{opacity:.4;}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:800;align-items:center;justify-content:center;}
+.modal-ov.on{display:flex;}
+.modal-box{background:#1A1A2E;border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:22px 20px;max-width:300px;width:90%;color:white;}
+.modal-box h3{font-family:'Bebas Neue';font-size:1.2rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:9px;}
+.modal-box p{font-size:.79rem;color:rgba(255,255,255,.6);margin-bottom:11px;}
+.modal-inp{font-family:'Outfit',sans-serif;font-size:.88rem;padding:9px 11px;border:2px solid rgba(255,255,255,.15);border-radius:8px;width:100%;background:rgba(255,255,255,.06);color:white;margin-bottom:7px;}
+.modal-inp:focus{outline:none;border-color:var(--az);}
+.modal-btn{font-family:'Bebas Neue';letter-spacing:1px;font-size:1rem;background:var(--az);color:white;border:none;padding:9px 0;border-radius:8px;cursor:pointer;width:100%;}
+.modal-err{font-size:.75rem;color:var(--r);font-weight:700;margin-top:4px;display:none;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.35);font-size:.75rem;cursor:pointer;margin-top:6px;width:100%;text-align:center;}
+.modal-grp{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;overflow-y:auto;padding:14px;}
+.modal-grp.on{display:block;}
+.modal-grp-inner{background:#1A1A2E;border-radius:14px;max-width:700px;margin:0 auto;padding:16px;color:white;}
+.modal-grp-inner h3{font-family:'Bebas Neue';font-size:1.25rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:3px;}
+.modal-grp-inner .sub{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:11px;}
+.gtabla{width:100%;border-collapse:collapse;font-size:.71rem;}
+.gtabla th{background:rgba(255,255,255,.08);padding:5px 7px;text-align:left;color:rgba(255,255,255,.5);font-size:.62rem;text-transform:uppercase;}
+.gtabla td{padding:4px 7px;border-bottom:1px solid rgba(255,255,255,.06);}
+.gtabla td:first-child{font-weight:700;color:rgba(255,255,255,.4);width:26px;}
+.nv{font-family:'Bebas Neue';font-size:.9rem;color:#93C5FD;}
+.cv{font-family:monospace;font-size:.69rem;color:#A5D6A7;}
+.modal-cerrar{background:rgba(255,255,255,.1);border:none;color:white;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;padding:9px;border-radius:8px;cursor:pointer;margin-top:12px;width:100%;}
+
+/* LOGIN */
+.login-select,.login-input{font-family:'Outfit',sans-serif;font-size:.88rem;padding:9px 11px;border:2px solid var(--gris2);border-radius:8px;width:100%;background:white;color:var(--dark);}
+.login-select:focus,.login-input:focus{outline:none;border-color:var(--az);}
+.login-input{margin-top:8px;}
+.login-btn{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--az);color:white;border:none;padding:10px 24px;border-radius:9px;cursor:pointer;width:100%;margin-top:10px;}
+.login-err{color:var(--r);font-size:.79rem;font-weight:700;margin-top:5px;display:none;}
+
+/* PRINT */
+@media print{
+  .prog-bar,.hdr,.doc-panel,.corner-key,.modal-ov,.modal-grp,.btn-avanzar,.btn-verify,
+  .hint-btn,.doc-skip,.doc-answer,.login-err,.bloque:not(#bloque-5),
+  .ae-btns,.cod-avance-box,.no-print{display:none!important;}
+  body{background:white!important;font-size:12px;}
+  #bloque-5{display:block!important;padding:0!important;max-width:100%!important;}
+  .res-header{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .res-tabla th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .card,.paso{box-shadow:none!important;border:1px solid #ddd!important;}
+  .btn-print,.print-inst{display:none!important;}
+  @page{margin:8mm 10mm;size:letter;}
+}
+</style>
+</head>
+<body>
+
+<!-- CORNER KEY -->
+<div class="corner-key" id="corner-key" onclick="abrirModal()">⬡</div>
+
+<!-- MODAL ACCESO -->
+<div class="modal-ov" id="modal-acc">
+  <div class="modal-box">
+    <h3>Acceso Especial</h3>
+    <p>Ingresa el código para continuar.</p>
+    <input class="modal-inp" type="password" id="modal-cod" placeholder="Código" onkeydown="if(event.key==='Enter')validarModal()">
+    <button class="modal-btn" onclick="validarModal()">Ingresar ▶</button>
+    <div class="modal-err" id="modal-err">Código incorrecto.</div>
+    <button class="modal-close" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL GRUPO -->
+<div class="modal-grp" id="modal-grp">
+  <div class="modal-grp-inner">
+    <h3>Resultados Esperados · Grupo 208</h3>
+    <div class="sub">S07 · Cálculo integrador · Valores únicos por alumno</div>
+    <div style="overflow-x:auto;"><table class="gtabla" id="gtabla"></table></div>
+    <button class="modal-cerrar" onclick="document.getElementById('modal-grp').classList.remove('on')">✕ Cerrar</button>
+  </div>
+</div>
+
+<!-- PANEL DOCENTE -->
+<div class="doc-panel" id="doc-panel">
+  <div class="doc-panel-tit">🔑 Modo Docente</div>
+  <button class="doc-panel-btn sal" onclick="saltarBloque()">↷ Saltar bloque actual</button>
+  <button class="doc-panel-btn res" onclick="irResumenDirecto()">📊 Ir a resumen</button>
+  <button class="doc-panel-btn grp" onclick="abrirTablaGrp()">👥 Tabla del grupo</button>
+  <button class="doc-panel-btn sim" onclick="simularAlumno()">🔬 Simular alumno</button>
+  <div style="font-size:.6rem;color:rgba(255,255,255,.2);margin-top:7px;text-align:center;">Bloque: <span id="panel-lbl">—</span></div>
+</div>
+
+<!-- BARRA PROGRESO -->
+<div class="prog-bar">
+  <div class="pd"><div class="pd-c on" id="pc0">0</div><div class="pd-l on" id="pl0">Inicio</div></div>
+  <div class="pln" id="ln01"></div>
+  <div class="pd"><div class="pd-c" id="pc1">1</div><div class="pd-l" id="pl1">Apertura</div></div>
+  <div class="pln" id="ln12"></div>
+  <div class="pd"><div class="pd-c" id="pc2">2</div><div class="pd-l" id="pl2">Repaso</div></div>
+  <div class="pln" id="ln23"></div>
+  <div class="pd"><div class="pd-c" id="pc3">3</div><div class="pd-l" id="pl3">Cálculo</div></div>
+  <div class="pln" id="ln34"></div>
+  <div class="pd"><div class="pd-c" id="pc4">4</div><div class="pd-l" id="pl4">Auto&shy;eval</div></div>
+  <div class="pln" id="ln45"></div>
+  <div class="pd"><div class="pd-c" id="pc5">R</div><div class="pd-l" id="pl5">Resumen</div></div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-tag">CNEyT II · Propósito Formativo 1 y 2 · Prof. Adrián Cruz</div>
+  <div class="hdr-tit">S07 · Repaso y Preparación</div>
+  <div class="hdr-sub">Repaso conceptual S01–S06 · Cálculo integrador · Material de estudio</div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:7px;">
+    <span class="chip-al" id="chip-al">—</span>
+    <span class="salida-badge teacher-only" id="salida-badge">0 salidas</span>
+    <span class="examen-badge">⚠ Examen martes 25 de marzo</span>
+  </div>
+</div>
+
+<!-- ═══ B0: LOGIN ═══ -->
+<section class="bloque on" id="bloque-0">
+  <div style="max-width:420px;margin:20px auto;">
+    <div class="card mo">
+      <div class="sec-label">Identificación</div>
+      <div class="sec-tit">¿Quién eres?</div>
+      <p class="texto">Última sesión antes del examen. El repaso conceptual es aleatorio — cada vez que cargues la página pueden salir preguntas distintas. El cálculo sí es único por tu número de lista.</p>
+      <select class="login-select" id="sel-alumno"><option value="">— elige tu nombre —</option></select>
+      <input class="login-input" type="text" id="cod-acceso" placeholder="Código especial (dejar en blanco)" autocomplete="off">
+      <div style="margin-top:10px;background:var(--az3);border-radius:7px;padding:8px 11px;font-size:.77rem;color:var(--az);">
+        <strong>🔄 ¿Regresaste?</strong> Código de avance:
+        <input class="login-input" type="text" id="cod-retorno" placeholder="Ej: 12-3" autocomplete="off" style="margin-top:5px;">
+      </div>
+      <button class="login-btn" onclick="doLogin()">Entrar ▶</button>
+      <div class="login-err" id="login-err">Selecciona tu nombre para continuar.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ B1: APERTURA ═══ -->
+<section class="bloque" id="bloque-1">
+  <div class="sec-label">Bloque 1 · ~5 min</div>
+  <div class="sec-tit">Apertura · Lo que ya sabes</div>
+  <div style="background:linear-gradient(135deg,var(--dark),#1e2a4a);border-radius:var(--radio);padding:14px;margin-bottom:12px;color:white;">
+    <p style="font-size:.86rem;line-height:1.75;opacity:.95;">Este semestre recorriste un camino completo: <strong style="color:#93C5FD;">¿qué es la energía?</strong> → cómo se transforma → por qué nunca desaparece → qué fuerzas generan movimiento → cómo se mide la velocidad → cómo se almacena y libera la energía mecánica. Hoy lo conectas todo antes del examen.</p>
+  </div>
+  <div class="card mo">
+    <div class="pregunta-lbl">Pregunta 1.1 · Conexión global</div>
+    <p class="texto">En una sola situación cotidiana de la CDMX que tú elijas, describe <strong>al menos 3 de los conceptos vistos en el semestre</strong> y cómo se relacionan entre sí. Puede ser el microbús, una bicicleta, un elevador, lo que quieras.</p>
+    <textarea id="ta-apt" onpaste="return false;" placeholder="La situación que elijo es... En ella se puede ver la energía... porque..." rows="4"></textarea>
+    <div class="char-counter" id="ta-apt-cc">0 / 80 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Sin respuesta única. Verifica que mencione al menos 3 conceptos (energía, fuerza, velocidad, Ep, Ec, Em, conservación, transformación) con relación entre ellos — no solo listados.</div>
+    <button class="teacher-only doc-skip" onclick="irBloque(2)">↷ Avanzar sin resolver</button>
+  </div>
+  <button class="btn-avanzar" id="btn-b1" onclick="irBloque(2)">Continuar → Repaso conceptual ▶</button>
+</section>
+
+<!-- ═══ B2: REPASO CONCEPTUAL ═══ -->
+<section class="bloque" id="bloque-2">
+  <div class="sec-label">Bloque 2 · ~25 min</div>
+  <div class="sec-tit az">Repaso conceptual · S01 – S06</div>
+
+  <!-- Sub-progreso temas -->
+  <div style="background:var(--dark);border-radius:10px;padding:10px 13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-size:.72rem;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;">Tema <span id="tema-actual-num">1</span> de 6</span>
+    <span style="font-size:.72rem;font-weight:700;color:#93C5FD;">Correctas: <span id="q-correctas-total">0</span> / <span id="q-total-label">18</span></span>
+  </div>
+
+  <div id="tema-contenido"></div>
+
+  <button class="btn-avanzar" id="btn-b2" onclick="irBloque(3)">Continuar → Cálculo integrador ▶</button>
+  <button class="teacher-only doc-skip" onclick="irBloque(3)">↷ Saltar repaso completo</button>
+</section>
+
+<!-- ═══ B3: CÁLCULO INTEGRADOR ═══ -->
+<section class="bloque" id="bloque-3">
+  <div class="sec-label">Bloque 3 · ~15 min</div>
+  <div class="sec-tit n">Cálculo integrador · Tus valores únicos</div>
+
+  <div style="background:linear-gradient(135deg,var(--dark),#1e2a4a);border-radius:var(--radio);padding:13px;margin-bottom:12px;color:white;">
+    <p style="font-size:.85rem;line-height:1.75;opacity:.95;">🚲 <strong style="color:#93C5FD;">Sebastián</strong> sale en bicicleta hacia el plantel y tiene que subir y bajar una rampa. Tus valores representan la masa total (Sebastián + bici) y las condiciones de esa rampa.</p>
+  </div>
+
+  <div class="val-alumno" id="val-b3">
+    <div class="va-titulo">Tus datos — únicos por número de lista</div>
+    <div class="val-grid">
+      <div class="val-item"><div class="vi-lbl">Masa total</div><div class="vi-val" id="b3-m">—</div><div class="vi-unit" style="display:inline">kg</div></div>
+      <div class="val-item"><div class="vi-lbl">Altura de la rampa</div><div class="vi-val" id="b3-h">—</div><div class="vi-unit" style="display:inline">m</div></div>
+      <div class="val-item"><div class="vi-lbl">g =</div><div class="vi-val">9.8</div><div class="vi-unit" style="display:inline">m/s²</div></div>
+      <div class="val-item"><div class="vi-lbl">Et por fricción (bajada)</div><div class="vi-val" id="b3-et">—</div><div class="vi-unit" style="display:inline">J</div></div>
+    </div>
+  </div>
+
+  <!-- Paso 1: Ep -->
+  <div class="paso" id="paso-1">
+    <div class="paso-num">Paso 1 de 3 · Energía Potencial al llegar a la cima</div>
+    <div class="paso-tit">Calcula la <strong>Ep</strong> de Sebastián en lo alto de la rampa.</div>
+    <div class="formula-box" style="font-size:.84rem;padding:8px 12px;">Ep = m × g × h</div>
+    <p class="texto" style="font-size:.81rem;" id="b3-p1-f">Sustituye: Ep = ? × 9.8 × ?</p>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p1" placeholder="Ep en J">
+      <button class="btn-verify" onclick="verificarCalc(1)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p1"></div>
+    <button class="hint-btn" id="hint-p1" onclick="mostrarHintCalc(1)">💡 Pista</button>
+    <div class="cod-box" id="cod-p1"></div>
+  </div>
+
+  <!-- Paso 2: v sin fricción -->
+  <div class="paso" id="paso-2" style="opacity:.4;pointer-events:none;">
+    <div class="paso-num">Paso 2 de 3 · Velocidad al llegar al fondo (sin fricción)</div>
+    <div class="paso-tit">Sin fricción, toda la Ep se convierte en Ec. Calcula la <strong>velocidad</strong>.</div>
+    <div class="formula-box" style="font-size:.84rem;padding:8px 12px;">
+      v = <span class="raiz"><span class="raiz-sym">&#8730;</span><span class="raiz-cont"><span class="frac"><span class="num">2 · Ep</span><span class="den">m</span></span></span></span>
+    </div>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p2" placeholder="v en m/s">
+      <button class="btn-verify" onclick="verificarCalc(2)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p2"></div>
+    <button class="hint-btn" id="hint-p2" onclick="mostrarHintCalc(2)">💡 Pista</button>
+    <div class="cod-box" id="cod-p2"></div>
+  </div>
+
+  <!-- Paso 3: v con fricción -->
+  <div class="paso" id="paso-3" style="opacity:.4;pointer-events:none;">
+    <div class="paso-num">Paso 3 de 3 · Velocidad real (con fricción)</div>
+    <div class="paso-tit">En la bajada real se pierden <span id="b3-et2">—</span> J como calor. Calcula la <strong>velocidad real</strong>.</div>
+    <div class="formula-box" style="font-size:.84rem;padding:8px 12px;">
+      Em<sub>final</sub> = Ep − Et &nbsp;&nbsp;→&nbsp;&nbsp;
+      v = <span class="raiz"><span class="raiz-sym">&#8730;</span><span class="raiz-cont"><span class="frac"><span class="num">2 · Em<sub>f</sub></span><span class="den">m</span></span></span></span>
+    </div>
+    <div class="inp-row">
+      <input type="text" inputmode="decimal" id="inp-p3" placeholder="v en m/s">
+      <button class="btn-verify" onclick="verificarCalc(3)">Verificar</button>
+    </div>
+    <div class="res-box" id="res-p3"></div>
+    <button class="hint-btn" id="hint-p3" onclick="mostrarHintCalc(3)">💡 Pista</button>
+    <div class="cod-box" id="cod-p3"></div>
+  </div>
+
+  <div class="cod-avance-box" id="cod-av-b3">📌 <strong>Código de avance:</strong> <span class="cod-avance-num" id="cod-av-num">—</span>
+    <div style="font-size:.71rem;color:#4a2c00;margin-top:3px;">Anótalo — si recargas puedes continuar desde aquí.</div>
+  </div>
+  <div class="doc-answer" id="doc-calc-vals"></div>
+  <button class="teacher-only doc-skip" onclick="irBloque(4)">↷ Avanzar sin resolver</button>
+  <button class="btn-avanzar" id="btn-b3" onclick="irBloque(4)">Continuar → Autoevaluación ▶</button>
+</section>
+
+<!-- ═══ B4: AUTOEVALUACIÓN ═══ -->
+<section class="bloque" id="bloque-4">
+  <div class="sec-label">Bloque 4 · ~8 min</div>
+  <div class="sec-tit r">Autoevaluación · ¿Qué llevo al examen?</div>
+  <div class="card r">
+    <p class="texto">El examen cubre <strong>PF1 y PF2 completos</strong>. Marca con honestidad — esto no afecta tu calificación de hoy, pero es la herramienta más útil para los días que quedan.</p>
+  </div>
+  <div class="card">
+    <div id="ae-lista"></div>
+  </div>
+  <div class="card mo">
+    <div class="pregunta-lbl">Mi plan de repaso</div>
+    <p class="texto">Basándote en lo que marcaste, escribe <strong>qué vas a hacer específicamente</strong> para repasar antes del martes. Sé concreto — no "voy a estudiar", sino qué tema, con qué recurso, cuánto tiempo.</p>
+    <textarea id="ta-plan" onpaste="return false;" placeholder="El jueves voy a repasar... El viernes voy a practicar..." rows="3"></textarea>
+    <div class="char-counter" id="ta-plan-cc">0 / 50 caracteres mínimo</div>
+    <div class="doc-answer">💡 <strong>Docente:</strong> Observa en qué ítems se concentran los ❌. Son las áreas a reforzar verbalmente en los días previos al examen.</div>
+    <button class="teacher-only doc-skip" onclick="irBloque(5)">↷ Avanzar sin resolver</button>
+  </div>
+  <button class="btn-avanzar" id="btn-b4" onclick="irBloque(5)">Ver mi resumen y material de estudio ▶</button>
+</section>
+
+<!-- ═══ B5: RESUMEN + PRINT ═══ -->
+<section class="bloque" id="bloque-5">
+  <div class="sec-label">Resumen Final · S07</div>
+  <div class="sec-tit v">Resultados y Material de Estudio</div>
+
+  <!-- Grade box -->
+  <div id="res-header-box" class="res-header"></div>
+
+  <!-- Score cards -->
+  <div class="res-score-row">
+    <div class="res-score-card"><div class="rsc-val" id="sc-rep">—</div><div class="rsc-lbl">Repaso /18</div></div>
+    <div class="res-score-card"><div class="rsc-val" id="sc-calc">—</div><div class="rsc-lbl">Cálculos</div></div>
+    <div class="res-score-card"><div class="rsc-val" id="sc-ae">—</div><div class="rsc-lbl">Autoeval</div></div>
+  </div>
+
+  <!-- Teacher block -->
+  <div class="card teacher-only" style="background:var(--v3);border-left:4px solid var(--v);margin-bottom:12px;">
+    <strong style="font-size:.79rem;color:var(--v);">MODO DOCENTE</strong>
+    <div id="res-doc-data" style="font-size:.77rem;color:var(--v);margin-top:4px;line-height:1.7;"></div>
+    <div style="font-size:.74rem;color:var(--gris);margin-top:3px;">Salidas: <strong id="res-salidas">0</strong></div>
+  </div>
+
+  <!-- Tabla conceptual -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="sec-label">Repaso conceptual — Preguntas y respuestas esperadas</div>
+    <p class="texto" style="font-size:.79rem;color:var(--gris);">Usa esta sección para estudiar: compara tu respuesta con la esperada y repasa las explicaciones de las que fallaste.</p>
+    <table class="res-tabla" id="res-tabla-quiz">
+      <thead><tr><th>Pregunta</th><th>Tu respuesta</th><th>Respuesta esperada</th></tr></thead>
+      <tbody id="res-quiz-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Tabla cálculos -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="sec-label">Cálculo integrador — Procedimiento y códigos</div>
+    <table class="res-tabla" id="res-tabla-calc">
+      <thead><tr><th>Paso</th><th>Tu resultado</th><th>Procedimiento esperado</th></tr></thead>
+      <tbody id="res-calc-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Apertura + plan -->
+  <div class="card" style="margin-bottom:12px;" id="res-textos-card"></div>
+
+  <!-- Autoevaluación resumen -->
+  <div class="card" style="margin-bottom:14px;" id="res-ae-card"></div>
+
+  <!-- Print -->
+  <button class="btn-print no-print" onclick="window.print()">🖨️ Guardar como PDF / Imprimir</button>
+  <div class="print-inst no-print">
+    En el diálogo de impresión, elige <strong>"Guardar como PDF"</strong> como destino. El PDF incluye todas tus respuestas, los resultados correctos y el procedimiento de los cálculos — es tu guía de estudio para el martes.
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════════════════════
+// LISTA ALUMNOS
+// ══════════════════════════════════════════════════════
+var ALUMNOS=['','1 - AARON ROJAS Ximena Valentina','2 - ANTONIO BENITEZ Vanessa','3 - ARVIZU LOPEZ Ana Rosa','4 - AVILES ORTIZ Paloma Irais','5 - BARRERA VELAZQUEZ Nataly Mayte','6 - BAUTISTA ANGUIANO Ian Lissandro','7 - CASTRO PEREZ Maria Fernanda','8 - CORTEZ LUNA Yaretzi','9 - CRUZ SARABIA Camila Lupita','10 - DOMINGUEZ OLMOS Monica Citlalli','11 - ENRIQUEZ TREJO Maria Romina','12 - FRANCO HERNANDEZ Miranda','13 - FUENTES ROSAS Jose Eduardo','14 - GASPAR CRUZ Yoali','15 - GONZALEZ ANAYA Edith Estrella','16 - GONZALEZ MARTINEZ Sofia Valentina','17 - HERNANDEZ ESPINO Ariadna Laila','18 - HERNANDEZ HERNANDEZ Diana','19 - JIMENEZ ERAZO Francisco Jaziel','20 - JIMENEZ GONZALEZ Evelyn Danae','21 - MANZANO JULIAN Ana Valeria','22 - MARTINEZ CASTRO Santiago','23 - MARTINEZ GUTIERREZ Regina','24 - MENDEZ HERNANDEZ Nataly Guadalupe','25 - MIRANDA NAVARRETE Axel','26 - MONRROY SALVADOR Angel','27 - MORALES MEDINA Ana','28 - MORALES SEGURA Zadkiel Caleb','29 - MORENO HERNANDEZ Sienkan Aaron','30 - OJEDA NAVARRETE Roberto','31 - PACHECO ALANIS Regina','32 - PEREZ FLORES Ana Paula','33 - RANGEL RESENDIZ Amairani','34 - ROMERO ALVAREZ Donovan','35 - ROSALES MEJIA Sandra','36 - SANCHEZ SARABIA Romina Sofia','37 - SEGURA HERNANDEZ Cristian Alexander','38 - SILVA VILLARREAL Jesus David','39 - TREJO ROJAS Mathias Israel','40 - VAZQUEZ MORALES Diego Erick','41 - ZERPA HERNANDEZ Freinner Jovanny','42 - INVITADO 1','43 - INVITADO 2','44 - INVITADO 3'];
+
+// ══════════════════════════════════════════════════════
+// BANCO DE PREGUNTAS (6 temas × 6 preguntas)
+// ══════════════════════════════════════════════════════
+var BANCO=[
+// T0: Tipos de energía (S01-S02)
+{titulo:'Tipos de energía · S01–S02',color:'#1565C0',preguntas:[
+  {p:'Un microbús circula por Insurgentes. ¿Qué tipo de energía tiene principalmente mientras está en movimiento?',ops:['Energía química','Energía cinética','Energía potencial','Energía lumínica'],ok:1,ex:'Todo objeto en movimiento tiene energía cinética. El microbús en movimiento tiene Ec proporcional a su masa y su velocidad al cuadrado.'},
+  {p:'Una batería nueva guardada en un cajón, sin conectar a ningún circuito. ¿Qué tipo de energía tiene?',ops:['Energía eléctrica','Energía cinética','Energía química','Energía térmica'],ok:2,ex:'La energía está almacenada en los enlaces químicos de sus materiales. Se convierte en eléctrica solo cuando fluye corriente por el circuito.'},
+  {p:'Un café muy caliente sobre la mesa de clases. ¿Qué tipo de energía tiene el café que lo diferencia de uno frío?',ops:['Energía potencial','Energía térmica','Energía química','Energía eléctrica'],ok:1,ex:'La energía térmica está relacionada con el movimiento de las moléculas. A mayor temperatura, las moléculas se mueven más rápido y hay más energía térmica.'},
+  {p:'Una pelota detenida en lo alto de una rampa, sin moverse. ¿Qué tipo de energía tiene?',ops:['Energía cinética','Energía química','Energía potencial gravitacional','Energía térmica'],ok:2,ex:'La energía potencial gravitacional se almacena por la posición del objeto. A mayor altura, mayor Ep = m × g × h.'},
+  {p:'¿Cuál es la unidad internacional de medida de la energía?',ops:['Newton (N)','Watt (W)','Joule (J)','Kelvin (K)'],ok:2,ex:'El Joule (J) es la unidad internacional de energía y trabajo. 1 caloría ≈ 4.18 J. El Newton mide fuerza, el Watt potencia, el Kelvin temperatura.'},
+  {p:'Un panel solar en el techo de una casa. ¿Qué transformación de energía realiza?',ops:['Química → eléctrica','Lumínica → eléctrica','Térmica → cinética','Eléctrica → lumínica'],ok:1,ex:'El panel solar convierte energía lumínica (luz del Sol) en energía eléctrica a través del efecto fotovoltaico.'}
+]},
+// T1: Cadenas energéticas (S02)
+{titulo:'Cadenas energéticas · S02',color:'#7B2D8B',preguntas:[
+  {p:'El microbús frena bruscamente y sus zapatas se calientan. ¿Cuál es la cadena correcta?',ops:['Química → cinética → térmica','Cinética → química → térmica','Térmica → cinética → química','Eléctrica → cinética → térmica'],ok:0,ex:'El combustible (química) mueve el microbús (cinética). Al frenar, la fricción en las zapatas convierte esa cinética en calor (térmica).'},
+  {p:'Un alumno usa su celular durante la clase y la batería baja de 100% a 3%. ¿Cuál es la cadena principal?',ops:['Eléctrica → térmica → química','Química → eléctrica → lumínica + térmica','Lumínica → química → eléctrica','Cinética → eléctrica → química'],ok:1,ex:'La batería usa energía química para generar eléctrica, que el celular convierte en lumínica (pantalla) y térmica (calor del chip).'},
+  {p:'¿Cuál es la diferencia entre una transformación y una transferencia de energía?',ops:['No hay diferencia, son lo mismo','Transformación: cambia de tipo. Transferencia: pasa de un objeto a otro del mismo tipo','Transformación: pasa entre objetos. Transferencia: cambia de tipo','Transformación es solo para calor, transferencia solo para movimiento'],ok:1,ex:'Transformación = la energía cambia de tipo (cinética → térmica). Transferencia = la energía del mismo tipo pasa de un objeto a otro (calor del café → calor del aire).'},
+  {p:'¿Dónde termina casi siempre la energía útil en cualquier cadena energética?',ops:['Se convierte en energía química nuevamente','Se almacena como energía potencial','Se dispersa como calor en el ambiente','Se destruye en la transformación final'],ok:2,ex:'La energía útil siempre termina como calor disperso en el ambiente. Es irreversible: una vez disperso, no se puede recuperar fácilmente para usarse de nuevo.'},
+  {p:'El comal se calienta con gas LP y calienta la tortilla. ¿Qué tipo de transferencia ocurre entre el comal y la tortilla?',ops:['Transformación energética','Transferencia de energía térmica','Transformación química','Transferencia cinética'],ok:1,ex:'El comal y la tortilla intercambian calor del mismo tipo (térmica → térmica). Eso es transferencia. Sería transformación si cambiara de tipo.'},
+  {p:'Un alumno empuja una caja por el suelo y la caja se calienta un poco. ¿Qué pasó?',ops:['La energía cinética de la caja desapareció','La energía química del alumno se destruyó','La energía cinética se transformó en térmica por fricción','La energía potencial se convirtió en química'],ok:2,ex:'La fricción entre la caja y el suelo convierte parte de la energía cinética en energía térmica. Por eso la caja se calienta.'}
+]},
+// T2: Ley de Conservación + unidades (S03)
+{titulo:'Ley de Conservación · S03',color:'#2E7D32',preguntas:[
+  {p:'Un café caliente se enfría sobre la mesa. ¿A dónde "fue" el calor?',ops:['Desapareció porque la taza es pequeña','Se convirtió en energía química','Se transfirió al aire, la mesa y el ambiente','Quedó dentro de la taza para siempre'],ok:2,ex:'La energía no desaparece. El calor del café se transfirió al aire, la mesa y todo lo que rodeaba la taza, dispersándose en el ambiente.'},
+  {p:'¿Cuántos Joules equivale 1 caloría?',ops:['1 J','2.5 J','4.18 J','100 J'],ok:2,ex:'1 caloría = 4.18 Joules. Para convertir calorías a Joules: multiplica por 4.18. Para convertir Joules a calorías: divide entre 4.18.'},
+  {p:'"La energía cinética se perdió en los frenos." ¿Qué está mal en esa afirmación?',ops:['Nada, es correcta','La energía no se pierde, se transforma en energía térmica (calor en los frenos)','La energía cinética se convierte en química en los frenos','La energía cinética se multiplica al frenar'],ok:1,ex:'La Ley de Conservación establece que la energía no se crea ni se destruye. La Ec se transforma en Et (calor) por la fricción en los frenos. No se pierde.'},
+  {p:'¿Cuántos Joules equivale 1 kilovatio-hora (1 kWh)?',ops:['1,000 J','36,000 J','3,600,000 J','100,000 J'],ok:2,ex:'1 kWh = 1,000 W × 3,600 s = 3,600,000 J. Es la unidad que aparece en el recibo de luz de tu casa.'},
+  {p:'¿Por qué el gas LP "se acaba" si la energía se conserva?',ops:['La energía sí se destruye en ese caso','La energía se conserva pero se dispersa como calor y ya no es útil','El gas LP crea energía nueva que luego desaparece','La energía del gas se almacena en el comal para siempre'],ok:1,ex:'La energía total se conserva. El problema es que se dispersa como calor en el ambiente, un estado de baja utilidad del que no podemos recuperarla fácilmente para volver a usarla.'},
+  {p:'Un alumno dice: "Si la energía se conserva, podemos reciclar el calor de los frenos para mover el auto de nuevo." ¿Qué falla en ese razonamiento?',ops:['Tiene razón, eso ya existe','El calor disperso ya no es energía','La energía sí se destruye en los frenos','El calor disperso sí se conserva pero es difícil de recuperar porque se diseminó en el ambiente'],ok:3,ex:'La energía se conserva, pero una vez dispersa como calor en el ambiente queda en un estado de baja concentración que hace prácticamente imposible recuperarla para trabajo útil.'}
+]},
+// T3: Fuerzas y sistema de referencia (S04)
+{titulo:'Fuerzas y movimiento · S04',color:'#E65100',preguntas:[
+  {p:'En el juego de tira y afloja, hay 3 chicos del lado izquierdo y 1 del derecho. ¿Qué ocurre y por qué?',ops:['La cuerda no se mueve porque las masas se compensan','La cuerda se mueve hacia la izquierda porque la fuerza neta apunta en ese sentido','La cuerda se rompe porque hay 4 personas jalando','El lado con un solo chico siempre gana porque está más concentrado'],ok:1,ex:'Fuerza neta = suma de fuerzas con sus direcciones. 3 chicos vs 1 → mayor fuerza hacia la izquierda → la cuerda se mueve hacia ese lado.'},
+  {p:'¿Cuándo está un objeto en equilibrio?',ops:['Cuando está en reposo','Cuando la fuerza neta que actúa sobre él es cero','Cuando solo hay una fuerza actuando sobre él','Cuando su masa es muy grande'],ok:1,ex:'Equilibrio = fuerza neta = 0. Un objeto puede estar en reposo O en movimiento uniforme (velocidad constante) si la fuerza neta es cero.'},
+  {p:'Alguien te dice "La tienda está a 200 metros". ¿Qué información falta para que esa descripción sea completa?',ops:['La dirección exacta de los Newtons','El nombre de la tienda','El punto de referencia desde donde se mide','El horario de la tienda'],ok:2,ex:'Sin punto de referencia (¿200 m desde dónde?), la posición no se puede describir. El sistema de referencia es indispensable para describir posición.'},
+  {p:'¿Qué hace una fuerza sobre un objeto?',ops:['Solo crea movimiento en objetos en reposo','Puede cambiar el estado de movimiento: acelerar, frenar o cambiar dirección','Solo frena objetos que ya están en movimiento','Siempre hace que el objeto se detenga'],ok:1,ex:'Una fuerza puede acelerar, frenar o cambiar la dirección de movimiento. Puede actuar sobre objetos en reposo o en movimiento.'},
+  {p:'Al entrar al torniquete del Metro empujando con la cadera, ¿qué tipo de fuerza ejerce la cadera sobre el torniquete?',ops:['Fuerza de gravedad','Fuerza de contacto (empuje)','Fuerza magnética','Fuerza eléctrica'],ok:1,ex:'Al hacer contacto físico entre la cadera y el torniquete se ejerce una fuerza de contacto (empuje o normal). La fuerza requiere contacto directo en este caso.'},
+  {p:'Si la fuerza neta sobre el cajón de la simulación es cero, ¿qué pasa con su movimiento?',ops:['Se detiene inmediatamente','Acelera uniformemente','Se mantiene igual (sigue en reposo o en movimiento constante)','Aumenta la velocidad gradualmente'],ok:2,ex:'Fuerza neta cero = sin cambio en el movimiento. Si estaba en reposo, sigue en reposo. Si se movía a velocidad constante, sigue igual.'}
+]},
+// T4: Movimiento y velocidad (S05)
+{titulo:'Movimiento y velocidad · S05',color:'#1565C0',preguntas:[
+  {p:'¿Cómo se calcula la velocidad media?',ops:['v = F × t','v = d / t','v = m × a','v = F / m'],ok:1,ex:'Velocidad media = distancia recorrida / tiempo empleado. Unidades: m/s (metros por segundo).'},
+  {p:'Sebastián recorre 120 m en 15 s. ¿Cuál es su velocidad media?',ops:['8 m/s','1,800 m/s','0.125 m/s','135 m/s'],ok:0,ex:'v = d / t = 120 m / 15 s = 8 m/s. Para convertir a km/h: 8 × 3.6 = 28.8 km/h.'},
+  {p:'Si una fuerza neta actúa sobre un objeto en la misma dirección de su movimiento, ¿qué ocurre con su velocidad?',ops:['La velocidad se mantiene igual','La velocidad disminuye','La velocidad aumenta','El objeto se detiene'],ok:2,ex:'Una fuerza en el sentido del movimiento acelera el objeto. La velocidad aumenta porque hay aceleración neta en ese sentido.'},
+  {p:'¿Cuáles son las unidades del Sistema Internacional para la velocidad?',ops:['km/h','m/s','N/s','J/m'],ok:1,ex:'La unidad SI de velocidad es el metro por segundo (m/s). Para convertir: 1 m/s = 3.6 km/h.'},
+  {p:'Un cajón está en reposo sobre una mesa. La fricción y la normal se equilibran con el peso y la fuerza aplicada. ¿Cuál es la fuerza neta?',ops:['Igual a la fuerza aplicada','Mayor que el peso','Cero','Igual a la fricción'],ok:2,ex:'Si el cajón está en reposo (no acelera), la fuerza neta es cero. Las fuerzas se cancelan exactamente.'},
+  {p:'¿Qué efecto tiene la fricción sobre el movimiento de un objeto?',ops:['Acelera el objeto','Mantiene la velocidad constante','Se opone al movimiento y reduce la velocidad','No tiene efecto sobre objetos en movimiento'],ok:2,ex:'La fricción es una fuerza que se opone al movimiento, actúa en sentido contrario a la velocidad, y convierte energía cinética en térmica.'}
+]},
+// T5: Ec, Ep, Em (S06)
+{titulo:'Energía mecánica · S06',color:'#7B2D8B',preguntas:[
+  {p:'¿De qué depende la Energía Potencial Gravitacional (Ep)?',ops:['Solo de la velocidad','De la masa y la altura','Del tiempo y la distancia','De la fuerza y la velocidad'],ok:1,ex:'Ep = m × g × h. Depende de la masa (kg) y la altura (m). A mayor masa o mayor altura, mayor energía potencial almacenada.'},
+  {p:'¿Qué es la Energía Mecánica (Em)?',ops:['Solo la energía del movimiento','Solo la energía almacenada por la posición','La suma de la energía cinética y la potencial','La diferencia entre calor y movimiento'],ok:2,ex:'Em = Ec + Ep. Es la suma de ambas formas de energía mecánica. Sin fricción, Em se conserva constante aunque Ec y Ep cambien.'},
+  {p:'Un patinador baja una rampa sin fricción. ¿Qué pasa con su Em total?',ops:['Aumenta porque gana velocidad','Disminuye porque gana velocidad','Se mantiene constante: la Ep se convierte en Ec','Disminuye porque la Ep se convierte en calor'],ok:2,ex:'Sin fricción, Em = Ec + Ep = constante. Lo que pierde en Ep lo gana en Ec exactamente. La suma total no cambia.'},
+  {p:'¿Qué ocurre con la Energía Mecánica cuando hay fricción?',ops:['Se conserva igual que sin fricción','Aumenta porque la fricción genera energía','Disminuye porque parte se convierte en energía térmica','Se duplica por el efecto de la fricción'],ok:2,ex:'Con fricción, parte de la Em se transforma en Et (calor). La Em total disminuye, pero la energía total del sistema (incluyendo el calor) sigue conservándose.'},
+  {p:'Si un objeto llega al fondo de una rampa (h=0) y toda su Ep se convirtió en Ec, ¿cómo se calcula su velocidad?',ops:['v = m × g × h','v = Ep × m','v = raíz cuadrada de (2 × Ec / m)','v = Ec / (m × g)'],ok:2,ex:'De Ec = ½ × m × v², despejando: v = √(2 × Ec / m). Si Ec = Ep inicial, se sustituye Ep en lugar de Ec.'},
+  {p:'Valentina (55 kg) y Zadkiel (85 kg) bajan la misma rampa de 4 m sin fricción. ¿Cuál llega con mayor velocidad al fondo?',ops:['Zadkiel, porque pesa más','Valentina, porque pesa menos','Los dos llegan con la misma velocidad','Depende de la fricción'],ok:2,ex:'v = √(2 × g × h). La velocidad al fondo no depende de la masa. Ambos llegan con v = √(2 × 9.8 × 4) = √78.4 ≈ 8.85 m/s. Lo que sí cambia es la Ec y el impacto (que sí depende de la masa).'}
+]}
+];
+
+// ══════════════════════════════════════════════════════
+// AUTOEVALUACIÓN ITEMS
+// ══════════════════════════════════════════════════════
+var AE_ITEMS=[
+  'Identificar tipos de energía en una situación cotidiana',
+  'Explicar la Ley de Conservación con mis propias palabras',
+  'Calcular Ep = m × g × h y despejar variables',
+  'Calcular Ec y despejar velocidad v = √(2Ec/m)',
+  'Describir una cadena completa de transformaciones energéticas',
+  'Explicar qué hace la fricción a la energía mecánica',
+  'Identificar fuerzas y fuerza neta en una situación',
+  'Convertir entre Joules, calorías y kWh'
+];
+
+// ══════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════
+var n=-1, nombre='';
+var masa=0, alturaV=0, etV=0, Ep_v=0, vSF=0, Em_f=0, vCF=0;
+var salidaCount=0, currentBlock=0;
+var temaActual=0, temasOk=new Array(6).fill(false);
+var quizSeleccion=[], quizPregs=[]; // [tema][q] -> selected option index
+var quizResultados=[]; // [tema][q] -> {ok:bool, sel:idx, ex:str, qText, correctTxt}
+var calcsOk={1:false,2:false,3:false}, primerOk={1:false,2:false,3:false};
+var intentos={1:0,2:0,3:0};
+var calcVals={1:'—',2:'—',3:'—'};
+var aeScores={};
+var BLOQUES=['bloque-0','bloque-1','bloque-2','bloque-3','bloque-4','bloque-5'];
+var BLABELS=['Login','Apertura','Repaso','Cálculo','Autoeval','Resumen'];
+
+// ══════════════════════════════════════════════════════
+// SEMILLA
+// ══════════════════════════════════════════════════════
+function sr(seed){var x=Math.sin(seed*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+function codV(val,nl,salt){var v=Math.round(Math.abs(val));return((v*31+nl*97+salt*53)%9000+9000)%9000+1000;}
+
+function initAlumno(num){
+  n=num;
+  if(n===890){masa=72;alturaV=4.5;etV=550;}
+  else{
+    var s1=sr(n*11+7),s2=sr(n*7+19),s3=sr(n*23+61);
+    masa=Math.round(55+s1*35);
+    alturaV=Math.round((3+s2*5)*10)/10;
+    etV=Math.round(200+s3*500);
+  }
+  Ep_v=parseFloat((masa*9.8*alturaV).toFixed(1));
+  while(etV>=Ep_v*0.65){etV=Math.round(etV*0.7);}
+  vSF=parseFloat((Math.sqrt(2*Ep_v/masa)).toFixed(2));
+  Em_f=parseFloat((Ep_v-etV).toFixed(1));
+  vCF=parseFloat((Math.sqrt(2*Em_f/masa)).toFixed(2));
+}
+
+// ══════════════════════════════════════════════════════
+// RANDOM QUIZ (no semilla - Math.random)
+// ══════════════════════════════════════════════════════
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function pick3(arr){return shuffle(arr).slice(0,3);}
+
+function buildQuiz(){
+  quizPregs=[];
+  for(var t=0;t<BANCO.length;t++){
+    quizPregs.push(pick3(BANCO[t].preguntas));
+  }
+  quizSeleccion=quizPregs.map(function(t){return new Array(t.length).fill(-1);});
+  quizResultados=quizPregs.map(function(t){return new Array(t.length).fill(null);});
+}
+
+// ══════════════════════════════════════════════════════
+// EXIT COUNTER
+// ══════════════════════════════════════════════════════
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden&&n>0){
+    salidaCount++;
+    var b=document.getElementById('salida-badge');
+    if(b)b.innerHTML=salidaCount+' salida'+(salidaCount>1?'s':'');
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════
+(function(){
+  var sel=document.getElementById('sel-alumno');
+  for(var i=1;i<ALUMNOS.length;i++){
+    var opt=document.createElement('option');
+    opt.value=i;opt.textContent=ALUMNOS[i];sel.appendChild(opt);
+  }
+})();
+
+function doLogin(){
+  var sel=document.getElementById('sel-alumno');
+  var codI=document.getElementById('cod-acceso').value.trim();
+  var ret=document.getElementById('cod-retorno').value.trim();
+  var err=document.getElementById('login-err');
+  if(codI==='890'){
+    nombre='DOCENTE (modo prueba)';initAlumno(890);
+    document.body.classList.add('teacher-mode');finalizarLogin(ret);return;
+  }
+  var num=parseInt(sel.value);
+  if(isNaN(num)||num<1||num>44){err.style.display='block';return;}
+  err.style.display='none';nombre=ALUMNOS[num];initAlumno(num);finalizarLogin(ret);
+}
+
+function finalizarLogin(ret){
+  var chip=document.getElementById('chip-al');
+  chip.textContent=nombre;chip.style.display='inline-block';
+  document.getElementById('salida-badge').style.display='inline-block';
+  document.getElementById('b3-m').textContent=masa;
+  document.getElementById('b3-h').textContent=alturaV;
+  document.getElementById('b3-et').textContent=etV;
+  document.getElementById('b3-et2').textContent=etV;
+  document.getElementById('b3-p1-f').innerHTML='Sustituye: Ep = '+masa+' &times; 9.8 &times; '+alturaV;
+  if(document.body.classList.contains('teacher-mode')){
+    var da=document.getElementById('doc-calc-vals');
+    if(da){da.style.display='block';da.innerHTML='💡 <strong>Docente:</strong> Ep='+Ep_v+' J (cód '+codV(Ep_v,n,21)+') · v_sf='+vSF+' m/s (cód '+codV(Math.round(vSF*100),n,22)+') · v_cf='+vCF+' m/s (cód '+codV(Math.round(vCF*100),n,23)+')';}
+  }
+  buildQuiz();
+  renderTema(0);
+  setupTA('ta-apt',80);
+  setupTA('ta-plan',50);
+  buildAE();
+  if(ret&&ret.indexOf('-')>0){
+    var pts=ret.split('-');
+    if(parseInt(pts[0])===n&&parseInt(pts[1])>=1){irBloque(parseInt(pts[1]));return;}
+  }
+  irBloque(1);
+}
+
+// ══════════════════════════════════════════════════════
+// TEXTAREA SETUP
+// ══════════════════════════════════════════════════════
+function setupTA(id,min){
+  var ta=document.getElementById(id),cc=document.getElementById(id+'-cc');
+  if(!ta)return;
+  ta.addEventListener('input',function(){
+    var len=ta.value.length;
+    if(cc){cc.textContent=len+' / '+min+' mínimo';cc.style.color=len>=min?'#2E7D32':(len>=min*.6?'#F57F17':'#C62828');}
+    checkReady();
+  });
+}
+function getTA(id,min,keys){
+  var ta=document.getElementById(id);if(!ta)return 'na';
+  var v=ta.value.trim();if(v.length<min)return 'err';
+  var low=v.toLowerCase();
+  for(var k=0;k<keys.length;k++){if(low.indexOf(keys[k])>=0)return 'ok';}
+  return 'warn';
+}
+
+// ══════════════════════════════════════════════════════
+// AUTOEVALUACIÓN
+// ══════════════════════════════════════════════════════
+function buildAE(){
+  var lista=document.getElementById('ae-lista');if(!lista)return;
+  var html='';
+  for(var i=0;i<AE_ITEMS.length;i++){
+    html+='<div class="ae-item"><div class="ae-lbl">'+AE_ITEMS[i]+'</div><div class="ae-btns">'
+      +'<button class="ae-btn" onclick="selAE('+i+',\'v\',this)">✅</button>'
+      +'<button class="ae-btn" onclick="selAE('+i+',\'am\',this)">⚠️</button>'
+      +'<button class="ae-btn" onclick="selAE('+i+',\'r\',this)">❌</button>'
+      +'</div></div>';
+  }
+  lista.innerHTML=html;
+}
+function selAE(idx,nivel,btn){
+  aeScores[idx]=nivel;
+  var row=btn.closest('.ae-btns');
+  if(row){row.querySelectorAll('.ae-btn').forEach(function(b){b.className='ae-btn';});}
+  btn.className='ae-btn '+nivel;
+  checkReady();
+}
+
+// ══════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════════════════════
+function actualizarPL(){var l=document.getElementById('panel-lbl');if(l)l.textContent=BLABELS[currentBlock]||'—';}
+
+function irBloque(idx){
+  for(var i=0;i<BLOQUES.length;i++){
+    var el=document.getElementById(BLOQUES[i]);
+    if(el)el.style.display=(i===idx?'block':'none');
+  }
+  currentBlock=idx;actualizarProgreso();actualizarPL();window.scrollTo(0,0);
+  if(idx>=3){
+    var ca=document.getElementById('cod-av-b3'),cn=document.getElementById('cod-av-num');
+    if(ca&&cn){ca.style.display='block';cn.textContent=n+'-'+idx;}
+  }
+  if(idx===5)generarResumen();
+}
+function actualizarProgreso(){
+  for(var i=0;i<6;i++){
+    var c=document.getElementById('pc'+i),l=document.getElementById('pl'+i);
+    if(!c)continue;
+    c.className='pd-c'+(i<currentBlock?' ok':(i===currentBlock?' on':''));
+    if(l)l.className='pd-l'+(i<currentBlock?' ok':(i===currentBlock?' on':''));
+  }
+  for(var j=0;j<=4;j++){
+    var ln=document.getElementById('ln'+j+(j+1));
+    if(ln)ln.className='pln'+(j<currentBlock?' ok':'');
+  }
+}
+
+function checkReady(){
+  if(currentBlock===1){
+    var b=document.getElementById('btn-b1');
+    if(b)b.className='btn-avanzar'+(getTA('ta-apt',80,['energia','fuerza','movimiento','velocidad','ep','ec','em','transforma','conserva','potencial','cinetica','mecanica'])!=='err'?' on':'');
+  }
+  if(currentBlock===2){
+    var allDone=temasOk.every(function(x){return x;});
+    var b2=document.getElementById('btn-b2');
+    if(b2)b2.className='btn-avanzar'+(allDone?' on':'');
+  }
+  if(currentBlock===3){
+    var b3=document.getElementById('btn-b3');
+    if(b3)b3.className='btn-avanzar'+((calcsOk[1]&&calcsOk[2]&&calcsOk[3])?' on':'');
+  }
+  if(currentBlock===4){
+    var aeC=Object.keys(aeScores).length;
+    var planOk=getTA('ta-plan',50,['repasar','estudiar','tema','formula','ejercicio','revisar','practica'])!=='err';
+    var b4=document.getElementById('btn-b4');
+    if(b4)b4.className='btn-avanzar'+((aeC>=6&&planOk)?' on':'');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// RENDER TEMA (Quiz)
+// ══════════════════════════════════════════════════════
+function renderTema(t){
+  if(t>=BANCO.length){temasOk[temaActual]=true;checkReady();return;}
+  temaActual=t;
+  var tema=BANCO[t],pregs=quizPregs[t];
+  var el=document.getElementById('tema-contenido');
+  if(!el)return;
+  document.getElementById('tema-actual-num').textContent=(t+1);
+  var correct=contarCorrectas();
+  document.getElementById('q-correctas-total').textContent=correct;
+  var html='<div class="tema-header"><div class="tema-tit">'+tema.titulo+'</div><div class="tema-prog" style="color:'+tema.color+';">Tema '+(t+1)+' / 6</div></div><div class="tema-body">';
+  for(var q=0;q<pregs.length;q++){
+    var preg=pregs[q];
+    html+='<div id="qblock-'+t+'-'+q+'">';
+    html+='<div class="qnum">Pregunta '+(q+1)+' de '+pregs.length+'</div>';
+    html+='<div class="qtexto">'+preg.p+'</div>';
+    html+='<div class="qopts" id="qopts-'+t+'-'+q+'">';
+    for(var o=0;o<preg.ops.length;o++){
+      html+='<div class="qopt" id="qopt-'+t+'-'+q+'-'+o+'" onclick="selOpt('+t+','+q+','+o+')">'
+        +'<div class="qopt-letra">'+('ABCD'[o])+'</div><div>'+preg.ops[o]+'</div></div>';
+    }
+    html+='</div>';
+    html+='<div class="qfeedback" id="qfb-'+t+'-'+q+'"></div>';
+    if(q<pregs.length-1)html+='<hr class="q-divider">';
+    html+='</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function selOpt(t,q,o){
+  if(quizSeleccion[t][q]!==-1)return; // ya respondida
+  quizSeleccion[t][q]=o;
+  var preg=quizPregs[t][q];
+  var ok=(o===preg.ok);
+  // Mark options
+  var opts=document.getElementById('qopts-'+t+'-'+q);
+  if(opts){
+    opts.querySelectorAll('.qopt').forEach(function(el){el.onclick=null;el.style.cursor='default';});
+    var selEl=document.getElementById('qopt-'+t+'-'+q+'-'+o);
+    if(selEl)selEl.className='qopt '+(ok?'correcto':'incorrecto');
+    var okEl=document.getElementById('qopt-'+t+'-'+q+'-'+preg.ok);
+    if(okEl&&!ok)okEl.className='qopt correcto';
+  }
+  // Feedback
+  var fb=document.getElementById('qfb-'+t+'-'+q);
+  if(fb){
+    fb.className='qfeedback show '+(ok?'ok':'nook');
+    fb.innerHTML=(ok?'✅ ':'❌ ')+preg.ex;
+  }
+  // Save result
+  quizResultados[t][q]={ok:ok,sel:o,qText:preg.p,correctTxt:preg.ops[preg.ok],selTxt:preg.ops[o],ex:preg.ex};
+  document.getElementById('q-correctas-total').textContent=contarCorrectas();
+  // Check if all 3 in this tema answered
+  var allAnswered=quizSeleccion[t].every(function(v){return v!==-1;});
+  if(allAnswered){
+    temasOk[t]=true;
+    // Auto-advance after short delay
+    setTimeout(function(){
+      if(t<BANCO.length-1){renderTema(t+1);}
+      else{checkReady();var b=document.getElementById('btn-b2');if(b)b.className='btn-avanzar on';}
+    },900);
+  }
+}
+
+function contarCorrectas(){
+  var c=0;
+  for(var t=0;t<quizResultados.length;t++){
+    for(var q=0;q<quizResultados[t].length;q++){
+      if(quizResultados[t][q]&&quizResultados[t][q].ok)c++;
+    }
+  }
+  return c;
+}
+
+// ══════════════════════════════════════════════════════
+// VERIFICACIONES CÁLCULO
+// ══════════════════════════════════════════════════════
+function despasarCalc(num){
+  var p=document.getElementById('paso-'+num);
+  if(p){p.style.opacity='1';p.style.pointerEvents='auto';p.classList.add('activo');}
+}
+function completarCalc(num){
+  var p=document.getElementById('paso-'+num);
+  if(p){p.classList.remove('activo');p.classList.add('completado');}
+}
+
+function verificarCalc(num){
+  intentos[num]++;
+  var inp=document.getElementById('inp-p'+num);
+  if(!inp)return;
+  var val=parseFloat(inp.value.replace(',','.'));
+  var res=document.getElementById('res-p'+num);
+  if(isNaN(val)){res.className='res-box err';res.innerHTML='Ingresa un número.';return;}
+  var expected,tol,isVel=false;
+  if(num===1){expected=Ep_v;tol=Ep_v*0.03;}
+  else if(num===2){expected=vSF;tol=Math.max(vSF*0.03,0.15);isVel=true;}
+  else{expected=vCF;tol=Math.max(vCF*0.03,0.15);isVel=true;}
+  calcVals[num]=val;
+  if(Math.abs(val-expected)<=tol){
+    var extra='';
+    if(isVel)extra=' ≈ '+(expected*3.6).toFixed(1)+' km/h'+(num===3?' (vs '+vSF+' m/s sin fricción)':'');
+    res.className='res-box ok';res.innerHTML='✅ Correcto. = '+expected+(num===1?' J':' m/s')+extra;
+    if(!primerOk[num])primerOk[num]=true;
+    calcsOk[num]=true;
+    var salt=num===1?21:(num===2?22:23);
+    var cval=isVel?Math.round(expected*100):Math.round(expected);
+    var cd=document.getElementById('cod-p'+num);
+    if(cd){cd.style.display='block';cd.innerHTML='🔑 Código '+(num===1?'Ep':num===2?'v_sf':'v_cf')+': '+codV(cval,n,salt);}
+    completarCalc(num);
+    if(num<3)despasarCalc(num+1);
+    checkReady();
+  } else {
+    res.className='res-box err';
+    res.innerHTML='❌ Revisa el cálculo '+(num===1?'Ep = m × g × h':num===2?'v = √(2 × Ep / m)':'Em_f = Ep − Et → v = √(2 × Em_f / m)');
+    if(intentos[num]>=1)document.getElementById('hint-p'+num).style.display='inline-block';
+    if(intentos[num]>=3){
+      res.innerHTML+='<br><small>Valor esperado: '+expected+(num===1?' J':' m/s')+'</small>';
+      calcsOk[num]=true;completarCalc(num);
+      if(num<3)despasarCalc(num+1);
+      checkReady();
+    }
+  }
+}
+function mostrarHintCalc(num){
+  var res=document.getElementById('res-p'+num);
+  var txt=num===1?('Ep = '+masa+' kg × 9.8 × '+alturaV+' m'):
+          num===2?('v = √(2 × '+Ep_v+' / '+masa+')'):
+          ('Em_f = '+Ep_v+' − '+etV+' = '+Em_f+' J → v = √(2 × '+Em_f+' / '+masa+')');
+  res.className='res-box hint';res.innerHTML='💡 '+txt;
+}
+
+// ══════════════════════════════════════════════════════
+// RESUMEN FINAL
+// ══════════════════════════════════════════════════════
+function generarResumen(){
+  // Scores
+  var qCorr=contarCorrectas(),qTot=quizPregs.reduce(function(s,t){return s+t.length;},0);
+  var calcPts=0;
+  [1,2,3].forEach(function(k){
+    if(calcsOk[k]&&primerOk[k])calcPts+=1;
+    else if(calcsOk[k])calcPts+=0.5;
+  });
+  var aePts=Object.keys(aeScores).length>=6?1:0;
+  var aptOk=getTA('ta-apt',80,['energia','fuerza','movimiento','velocidad','ep','ec','em','transforma','conserva','potencial','cinetica','mecanica'])!=='err';
+  var planOk=getTA('ta-plan',50,['repasar','estudiar','tema','formula','ejercicio','revisar','practica'])!=='err';
+  var textPts=(aptOk?1.5:0.5)+(planOk?0.5:0);
+  var total=Math.min(10,parseFloat(((qCorr/qTot)*5+calcPts+aePts+textPts).toFixed(1)));
+  var gc=total>=7?'#2E7D32':(total>=5?'#E65100':'#C62828');
+  var gl=total>=7?'¡Aprobado!':(total>=5?'Suficiente':'Refuerza antes del examen');
+  document.getElementById('res-header-box').style.background=gc;
+  document.getElementById('res-header-box').innerHTML='<div class="res-grade" style="color:white;">'+total+'</div><div class="res-grade-lbl">'+gl+' · '+nombre+'</div>';
+  document.getElementById('sc-rep').textContent=qCorr+'/'+qTot;
+  document.getElementById('sc-calc').textContent=calcPts.toFixed(1)+'/3';
+  document.getElementById('sc-ae').textContent=Object.keys(aeScores).length+'/'+AE_ITEMS.length;
+  document.getElementById('res-salidas').textContent=salidaCount;
+  // Teacher data
+  var td=document.getElementById('res-doc-data');
+  if(td)td.innerHTML='Ep='+Ep_v+' J · v_sf='+vSF+' m/s · Em_f='+Em_f+' J · v_cf='+vCF+' m/s<br>Rep: '+qCorr+'/'+qTot+' · Calc: '+calcPts.toFixed(1)+'/3 · AE: '+Object.keys(aeScores).length+'/'+AE_ITEMS.length;
+
+  // Quiz table
+  var qbody=document.getElementById('res-quiz-body');
+  var qhtml='';
+  for(var t=0;t<BANCO.length;t++){
+    qhtml+='<tr><td colspan="3" style="background:var(--gris3);font-weight:800;font-size:.75rem;padding:6px 9px;color:var(--dark);">'+BANCO[t].titulo+'</td></tr>';
+    for(var q=0;q<quizPregs[t].length;q++){
+      var r=quizResultados[t][q];
+      if(!r){qhtml+='<tr><td style="font-size:.79rem;color:var(--gris);">'+quizPregs[t][q].p.substring(0,60)+'…</td><td><span class="badge-warn">Sin responder</span></td><td class="resp-esp">'+quizPregs[t][q].ops[quizPregs[t][q].ok]+'</td></tr>';continue;}
+      qhtml+='<tr><td style="font-size:.79rem;">'+r.qText.substring(0,60)+'…</td>'
+        +'<td>'+(r.ok?'<span class="badge-ok">✅ '+r.selTxt.substring(0,20)+'</span>':'<span class="badge-err">'+r.selTxt.substring(0,20)+'</span>')+'</td>'
+        +'<td class="resp-esp">'+r.correctTxt+'<br><em style="color:var(--gris);font-size:.72rem;font-style:normal;">'+r.ex.substring(0,80)+'…</em></td></tr>';
+    }
+  }
+  qbody.innerHTML=qhtml;
+
+  // Calc table
+  var cbody=document.getElementById('res-calc-body');
+  cbody.innerHTML='<tr><td style="font-weight:700;">Paso 1 · Ep</td>'
+    +'<td>'+(calcsOk[1]?'<span class="badge-ok">'+Ep_v+' J</span>':'<span class="badge-err">Incompleto</span>')+'</td>'
+    +'<td class="resp-esp">Ep = '+masa+' × 9.8 × '+alturaV+' = <strong>'+Ep_v+' J</strong><br>'+(calcsOk[1]&&primerOk[1]?'🔑 Cód: '+codV(Math.round(Ep_v),n,21):'Sin código')+'</td></tr>'
+    +'<tr><td style="font-weight:700;">Paso 2 · v sin fricción</td>'
+    +'<td>'+(calcsOk[2]?'<span class="badge-ok">'+vSF+' m/s</span>':'<span class="badge-err">Incompleto</span>')+'</td>'
+    +'<td class="resp-esp">v = √(2 × '+Ep_v+' / '+masa+') = <strong>'+vSF+' m/s</strong> ≈ '+(vSF*3.6).toFixed(1)+' km/h<br>'+(calcsOk[2]&&primerOk[2]?'🔑 Cód: '+codV(Math.round(vSF*100),n,22):'Sin código')+'</td></tr>'
+    +'<tr><td style="font-weight:700;">Paso 3 · v con fricción</td>'
+    +'<td>'+(calcsOk[3]?'<span class="badge-ok">'+vCF+' m/s</span>':'<span class="badge-err">Incompleto</span>')+'</td>'
+    +'<td class="resp-esp">Em_f = '+Ep_v+' − '+etV+' = '+Em_f+' J<br>v = √(2 × '+Em_f+' / '+masa+') = <strong>'+vCF+' m/s</strong><br>'+(calcsOk[3]&&primerOk[3]?'🔑 Cód: '+codV(Math.round(vCF*100),n,23):'Sin código')+'</td></tr>';
+
+  // Textos
+  var tc=document.getElementById('res-textos-card');
+  if(tc){
+    var aptV=document.getElementById('ta-apt')?document.getElementById('ta-apt').value.trim():'';
+    var planV=document.getElementById('ta-plan')?document.getElementById('ta-plan').value.trim():'';
+    var aptSc=getTA('ta-apt',80,['energia','fuerza','movimiento','velocidad','ep','ec','em','transforma','conserva','potencial','cinetica','mecanica']);
+    var planSc=getTA('ta-plan',50,['repasar','estudiar','tema','formula','ejercicio','revisar','practica']);
+    tc.innerHTML='<div class="sec-label">Respuestas abiertas</div>'
+      +'<p style="font-size:.79rem;font-weight:700;color:var(--dark);margin-bottom:3px;">Apertura:</p>'
+      +'<p style="font-size:.79rem;color:var(--gris);margin-bottom:6px;line-height:1.5;">'+(aptV||'Sin respuesta')+'</p>'
+      +'<span class="'+(aptSc==='ok'?'badge-ok':aptSc==='warn'?'badge-warn':'badge-err')+'">'+(aptSc==='ok'?'✅ Incluye conceptos clave':aptSc==='warn'?'⚠️ Responde pero sin conceptos clave':'❌ Muy corta o incompleta')+'</span>'
+      +'<p style="font-size:.79rem;font-weight:700;color:var(--dark);margin-top:10px;margin-bottom:3px;">Plan de repaso:</p>'
+      +'<p style="font-size:.79rem;color:var(--gris);margin-bottom:6px;line-height:1.5;">'+(planV||'Sin respuesta')+'</p>'
+      +'<span class="'+(planSc==='ok'?'badge-ok':planSc==='warn'?'badge-warn':'badge-err')+'">'+(planSc==='ok'?'✅ Plan concreto':'⚠️ Plan muy general o muy corto')+'</span>';
+  }
+
+  // AE resumen
+  var aec=document.getElementById('res-ae-card');
+  if(aec){
+    var debiles=[];
+    for(var i=0;i<AE_ITEMS.length;i++){if(aeScores[i]==='r'||aeScores[i]==='am')debiles.push(AE_ITEMS[i]);}
+    var aeHtml='<div class="sec-label">Autoevaluación · Temas a repasar</div>';
+    if(debiles.length===0){aeHtml+='<p style="font-size:.83rem;color:var(--v);">✅ Sin temas críticos marcados — asegúrate de practicar con ejercicios.</p>';}
+    else{
+      aeHtml+='<p style="font-size:.79rem;color:var(--r);font-weight:700;margin-bottom:8px;">Temas que necesitan refuerzo antes del martes:</p>';
+      for(var d=0;d<debiles.length;d++){aeHtml+='<div style="padding:5px 8px;border-left:3px solid var(--r);margin-bottom:4px;font-size:.81rem;">'+debiles[d]+'</div>';}
+    }
+    aec.innerHTML=aeHtml;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// PANEL DOCENTE
+// ══════════════════════════════════════════════════════
+function saltarBloque(){
+  var sig=currentBlock+1;if(sig>5)sig=5;
+  if(currentBlock===2){
+    for(var t=0;t<BANCO.length;t++){
+      temasOk[t]=true;
+      for(var q=0;q<quizPregs[t].length;q++){
+        if(quizSeleccion[t][q]===-1){
+          var ok=(0===quizPregs[t][q].ok);
+          quizSeleccion[t][q]=0;
+          quizResultados[t][q]={ok:ok,sel:0,qText:quizPregs[t][q].p,correctTxt:quizPregs[t][q].ops[quizPregs[t][q].ok],selTxt:quizPregs[t][q].ops[0],ex:quizPregs[t][q].ex};
+        }
+      }
+    }
+  }
+  calcsOk[1]=true;calcsOk[2]=true;calcsOk[3]=true;
+  if(Object.keys(aeScores).length<6){for(var i=0;i<AE_ITEMS.length;i++)if(!aeScores[i])aeScores[i]='ok';}
+  irBloque(sig);
+}
+function irResumenDirecto(){
+  saltarBloque();saltarBloque();saltarBloque();saltarBloque();saltarBloque();irBloque(5);
+}
+function abrirModal(){
+  if(document.body.classList.contains('teacher-mode'))return;
+  document.getElementById('modal-acc').classList.add('on');
+  setTimeout(function(){var i=document.getElementById('modal-cod');if(i)i.focus();},80);
+}
+function cerrarModal(){document.getElementById('modal-acc').classList.remove('on');document.getElementById('modal-cod').value='';document.getElementById('modal-err').style.display='none';}
+function validarModal(){
+  var v=document.getElementById('modal-cod').value.trim();
+  if(v==='890'){
+    cerrarModal();
+    if(n>0){document.body.classList.add('teacher-mode');actualizarPL();}
+    else{nombre='DOCENTE (modo prueba)';initAlumno(890);document.body.classList.add('teacher-mode');finalizarLogin('');}
+  } else {document.getElementById('modal-err').style.display='block';document.getElementById('modal-cod').value='';}
+}
+function abrirTablaGrp(){
+  var t=document.getElementById('gtabla');if(!t)return;
+  var html='<thead><tr><th>#</th><th>Alumno</th><th>m(kg)</th><th>h(m)</th><th>Et(J)</th><th>Ep(J)</th><th>v_sf(m/s)</th><th>Em_f(J)</th><th>v_cf(m/s)</th></tr></thead><tbody>';
+  for(var i=1;i<ALUMNOS.length;i++){
+    var nm=ALUMNOS[i];if(!nm)continue;
+    var ms,al,et;
+    if(i===890){ms=72;al=4.5;et=550;}
+    else{
+      var s1=sr(i*11+7),s2=sr(i*7+19),s3=sr(i*23+61);
+      ms=Math.round(55+s1*35);al=Math.round((3+s2*5)*10)/10;et=Math.round(200+s3*500);
+    }
+    var ep=parseFloat((ms*9.8*al).toFixed(1));
+    while(et>=ep*0.65)et=Math.round(et*0.7);
+    var vsf=parseFloat((Math.sqrt(2*ep/ms)).toFixed(2));
+    var emf=parseFloat((ep-et).toFixed(1));
+    var vcf=parseFloat((Math.sqrt(2*emf/ms)).toFixed(2));
+    var pila=(nm.split(' - ')[1]||nm).substring(0,22);
+    html+='<tr><td>'+i+'</td><td style="font-size:.65rem;">'+pila+'</td><td class="nv">'+ms+'</td><td class="nv">'+al+'</td><td class="nv">'+et+'</td><td class="nv">'+ep+'</td><td class="nv">'+vsf+'</td><td class="nv">'+emf+'</td><td class="nv">'+vcf+'</td></tr>';
+  }
+  html+='</tbody>';t.innerHTML=html;
+  document.getElementById('modal-grp').classList.add('on');
+}
+function simularAlumno(){
+  if(quizPregs.length===0)buildQuiz();
+  for(var t=0;t<BANCO.length;t++){
+    temasOk[t]=true;
+    for(var q=0;q<quizPregs[t].length;q++){
+      var ok=true;
+      quizSeleccion[t][q]=quizPregs[t][q].ok;
+      quizResultados[t][q]={ok:ok,sel:quizPregs[t][q].ok,qText:quizPregs[t][q].p,correctTxt:quizPregs[t][q].ops[quizPregs[t][q].ok],selTxt:quizPregs[t][q].ops[quizPregs[t][q].ok],ex:quizPregs[t][q].ex};
+    }
+  }
+  calcsOk[1]=true;calcsOk[2]=true;calcsOk[3]=true;primerOk[1]=true;primerOk[2]=true;primerOk[3]=true;
+  for(var i=0;i<AE_ITEMS.length;i++)aeScores[i]='ok';
+  var ta1=document.getElementById('ta-apt');if(ta1)ta1.value='En el microbús que frena podemos ver la energía cinética que se convierte en térmica por fricción mientras la Ley de Conservación establece que la energía total no se pierde.';
+  var ta2=document.getElementById('ta-plan');if(ta2)ta2.value='El jueves voy a repasar las fórmulas de Ep y Ec en mi cuaderno y el viernes haré ejercicios de cálculo con distintos valores.';
+  irBloque(5);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+window.addEventListener('load',function(){irBloque(0);actualizarPL();});
+</script>
+</body>
+</html>
