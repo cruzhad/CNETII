@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Examen CNEyT II · G208 · Primer Corte</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mo:#7B2D8B;--mo2:#9C4BB5;--mo3:#F3E5F5;
+  --az:#1565C0;--az2:#1E88E5;--az3:#E3F0FB;
+  --v:#2E7D32;--v2:#43A047;--v3:#E8F5E9;
+  --r:#C62828;--r3:#FFEBEE;
+  --n:#E65100;--n3:#FFF3E0;
+  --am:#F57F17;--am3:#FFF8E1;
+  --dark:#1A1A2E;--gris:#666;--gris2:#E0E0E0;--gris3:#F5F5F5;
+  --radio:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#0D0D1A;color:#EEF2FF;font-size:15px;min-height:100vh;}
+
+/* TIMER BAR */
+.timer-bar{background:#1a1a2e;border-bottom:2px solid rgba(255,255,255,.1);padding:8px 14px;position:sticky;top:0;z-index:300;display:none;align-items:center;justify-content:space-between;gap:10px;}
+.timer-bar.visible{display:flex;}
+.timer-num{font-family:'Bebas Neue';font-size:1.5rem;letter-spacing:2px;color:#93C5FD;transition:color .3s;}
+.timer-num.urgent{color:#EF9A9A;animation:pulseT .8s infinite;}
+@keyframes pulseT{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-label{font-size:.65rem;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.prog-pills{display:flex;gap:3px;}
+.pill-q{width:14px;height:6px;border-radius:3px;background:rgba(255,255,255,.1);transition:.3s;}
+.pill-q.answered{background:var(--v2);}
+.pill-q.current{background:var(--mo2);}
+.salida-badge{font-size:.62rem;color:#FFD54F;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.3);padding:2px 8px;border-radius:10px;font-weight:700;}
+.q-counter{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:700;}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;padding:16px;max-width:720px;margin:0 auto;animation:fadeUp .3s ease;}
+.screen.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--radio);padding:16px;margin-bottom:12px;}
+.card.light{background:white;color:var(--dark);border:none;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+.sec-label{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.sec-tit{font-family:'Bebas Neue';font-size:1.4rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:10px;}
+
+/* HEADER */
+.hdr{background:linear-gradient(150deg,#0D1B4A,#1A0533);padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.hdr-tag{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.45);margin-bottom:4px;}
+.hdr-tit{font-family:'Bebas Neue';font-size:1.8rem;color:#EF9A9A;letter-spacing:1.5px;line-height:1.05;margin-bottom:4px;}
+.hdr-sub{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.5;}
+
+/* LOGIN */
+.login-select,.login-input{font-family:'Outfit';font-size:.9rem;padding:10px 12px;border:2px solid rgba(255,255,255,.15);border-radius:9px;width:100%;background:rgba(255,255,255,.07);color:white;margin-top:6px;}
+.login-select:focus,.login-input:focus{outline:none;border-color:var(--az2);}
+.login-select option{background:#1a1a2e;}
+.login-btn{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--az);color:white;border:none;padding:11px 24px;border-radius:9px;cursor:pointer;width:100%;margin-top:12px;}
+.login-err{color:#EF9A9A;font-size:.8rem;font-weight:700;margin-top:5px;display:none;}
+
+/* PREGUNTA */
+.q-tema{font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mo3);margin-bottom:5px;}
+.q-num{font-family:'Bebas Neue';font-size:1.1rem;color:rgba(255,255,255,.35);letter-spacing:.5px;margin-bottom:8px;}
+.q-texto{font-size:.95rem;font-weight:600;color:white;line-height:1.65;margin-bottom:14px;}
+.q-texto em{color:#93C5FD;font-style:normal;font-weight:700;}
+.q-texto .story-box{background:rgba(147,197,253,.08);border-left:3px solid #93C5FD;border-radius:0 8px 8px 0;padding:10px 13px;margin:8px 0;font-size:.9rem;line-height:1.6;color:rgba(255,255,255,.85);}
+
+/* OPCIONES */
+.opciones{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:2px solid rgba(255,255,255,.1);border-radius:9px;cursor:pointer;font-size:.88rem;line-height:1.5;font-weight:600;color:rgba(255,255,255,.85);transition:.15s;background:rgba(255,255,255,.03);}
+.opt:hover{border-color:var(--az2);background:rgba(30,136,229,.1);}
+.opt.sel{border-color:var(--mo2);background:rgba(156,75,181,.2);color:white;}
+.opt-letra{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-weight:800;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:.15s;}
+.opt.sel .opt-letra{background:var(--mo2);color:white;}
+
+/* INPUTS TEXTO/NUMÉRICO */
+textarea{font-family:'Outfit';font-size:.9rem;padding:10px 12px;border:2px solid rgba(255,255,255,.15);border-radius:9px;width:100%;resize:vertical;min-height:80px;background:rgba(255,255,255,.06);color:white;margin-top:6px;}
+textarea:focus{outline:none;border-color:var(--mo2);}
+.char-counter{font-size:.7rem;font-weight:700;margin-top:4px;}
+.keywords-badge{display:none;font-size:.7rem;padding:3px 9px;border-radius:8px;margin-top:4px;font-weight:700;}
+.keywords-badge.ok{background:rgba(46,125,50,.3);color:#A5D6A7;display:inline-block;}
+.keywords-badge.warn{background:rgba(230,81,0,.25);color:#FFCC80;display:inline-block;}
+
+/* CANVAS */
+.canvas-wrap{position:relative;margin:8px 0;}
+canvas{border:2px solid rgba(255,255,255,.2);border-radius:9px;background:white;display:block;width:100%;touch-action:none;}
+.canvas-tools{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.ctool{font-family:'Outfit';font-size:.75rem;font-weight:700;padding:5px 11px;border-radius:7px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:white;cursor:pointer;transition:.15s;}
+.ctool:hover{background:rgba(255,255,255,.18);}
+.ctool.active-color{border-color:var(--mo2);background:rgba(156,75,181,.3);}
+.canvas-hint{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:5px;line-height:1.5;}
+
+/* AVANZAR */
+.btn-avanzar{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--mo2);color:white;border:none;padding:12px 28px;border-radius:10px;cursor:pointer;width:100%;margin-top:14px;display:none;transition:.2s;}
+.btn-avanzar:hover{background:var(--mo);}
+.btn-avanzar.visible{display:block;}
+.auto-aviso{display:none;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.3);border-radius:8px;padding:8px 12px;font-size:.8rem;color:#FFD54F;font-weight:700;margin-top:8px;}
+.auto-aviso.visible{display:block;}
+.sin-resp-aviso{display:none;background:rgba(198,40,40,.2);border:1px solid rgba(198,40,40,.4);border-radius:9px;padding:10px 13px;font-size:.83rem;color:#EF9A9A;font-weight:700;margin-bottom:12px;}
+.sin-resp-aviso.visible{display:block;}
+
+/* BOTONES */
+.btn-primary{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--mo2);color:white;border:none;padding:11px 24px;border-radius:9px;cursor:pointer;width:100%;margin-top:10px;}
+.btn-primary:hover{background:var(--mo);}
+.btn-green{font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;background:var(--v);color:white;border:none;padding:11px 24px;border-radius:9px;cursor:pointer;width:100%;margin-top:10px;}
+.btn-print{font-family:'Outfit';font-size:.88rem;font-weight:700;background:var(--v);color:white;border:none;padding:10px 18px;border-radius:9px;cursor:pointer;margin-top:8px;width:100%;}
+.puntos-tag{display:inline-block;font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:8px;background:rgba(255,200,0,.2);color:#FFD54F;letter-spacing:.3px;}
+
+/* RESUMEN */
+.res-banner{border-radius:var(--radio);padding:20px;text-align:center;margin-bottom:16px;}
+.res-nombre{font-family:'Bebas Neue';font-size:1.6rem;color:rgba(255,255,255,.9);letter-spacing:1px;margin-bottom:4px;}
+.res-cal{font-family:'Bebas Neue';font-size:4rem;line-height:1;margin-bottom:4px;}
+.res-lbl{font-size:.8rem;font-weight:700;opacity:.8;}
+.res-tabla{width:100%;border-collapse:collapse;font-size:.76rem;}
+.res-tabla th{padding:7px 9px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
+.res-tabla th:nth-child(1){background:#1565C0;color:white;width:6%;}
+.res-tabla th:nth-child(2){background:#7B2D8B;color:white;width:22%;}
+.res-tabla th:nth-child(3){background:#C62828;color:white;width:36%;}
+.res-tabla th:nth-child(4){background:#2E7D32;color:white;width:30%;}
+.res-tabla th:nth-child(5){background:#E65100;color:white;width:6%;}
+.res-tabla td{padding:7px 9px;border-bottom:1px solid #E0E0E0;vertical-align:top;line-height:1.5;color:#1A1A2E;}
+.res-tabla tr:last-child td{border-bottom:none;}
+.res-tabla tr:nth-child(even) td{background:#F5F5F5;}
+.badge-ok{background:#C8E6C9;color:#1B5E20;font-weight:800;padding:2px 7px;border-radius:7px;font-size:.7rem;display:inline-block;}
+.badge-err{background:#FFCDD2;color:#B71C1C;font-weight:800;padding:2px 7px;border-radius:7px;font-size:.7rem;display:inline-block;}
+.badge-skip{background:#FFF9C4;color:#F57F17;font-weight:800;padding:2px 7px;border-radius:7px;font-size:.7rem;display:inline-block;}
+.desglose-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;}
+.dg-item{background:rgba(255,255,255,.05);border-radius:9px;padding:10px;text-align:center;}
+.dg-val{font-family:'Bebas Neue';font-size:1.5rem;color:#93C5FD;letter-spacing:.5px;}
+.dg-lbl{font-size:.65rem;color:rgba(255,255,255,.45);font-weight:700;text-transform:uppercase;margin-top:2px;}
+.canvas-preview{max-width:100%;border-radius:8px;border:1px solid #ccc;margin-top:4px;}
+
+/* DOCENTE */
+.corner-key{position:fixed;bottom:8px;left:8px;z-index:600;width:18px;height:18px;opacity:.06;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;color:white;transition:opacity .2s;}
+.corner-key:hover{opacity:.4;}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:800;align-items:center;justify-content:center;}
+.modal-ov.on{display:flex;}
+.modal-box{background:#1A1A2E;border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:22px 20px;max-width:320px;width:90%;color:white;}
+.modal-box h3{font-family:'Bebas Neue';font-size:1.25rem;color:#93C5FD;letter-spacing:.8px;margin-bottom:10px;}
+.modal-inp{font-family:'Outfit';font-size:.9rem;padding:9px 12px;border:2px solid rgba(255,255,255,.15);border-radius:8px;width:100%;background:rgba(255,255,255,.07);color:white;margin-bottom:8px;}
+.modal-inp:focus{outline:none;border-color:var(--az2);}
+.modal-btn{font-family:'Bebas Neue';letter-spacing:1px;font-size:1rem;background:var(--az);color:white;border:none;padding:9px;border-radius:8px;cursor:pointer;width:100%;}
+.modal-err{font-size:.75rem;color:#EF9A9A;font-weight:700;margin-top:4px;display:none;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.35);font-size:.75rem;cursor:pointer;margin-top:6px;width:100%;text-align:center;}
+.doc-panel{display:none;position:fixed;bottom:16px;right:16px;z-index:500;background:#1A1A2E;border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;box-shadow:0 6px 24px rgba(0,0,0,.6);min-width:185px;}
+body.teacher .doc-panel{display:block;}
+.doc-panel-tit{font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.35);margin-bottom:8px;}
+.doc-btn{display:block;width:100%;font-family:'Outfit';font-size:.76rem;font-weight:700;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;margin-bottom:5px;text-align:left;}
+.doc-btn:last-child{margin-bottom:0;}
+.doc-btn.sal{background:rgba(255,200,0,.14);color:#FFD54F;border:1px solid rgba(255,200,0,.3);}
+.doc-btn.res{background:rgba(46,125,50,.22);color:#A5D6A7;border:1px solid rgba(46,125,50,.4);}
+.doc-btn.soluciones{background:rgba(147,197,253,.12);color:#93C5FD;border:1px solid rgba(147,197,253,.25);}
+.doc-info{font-size:.62rem;color:rgba(255,255,255,.2);margin-top:6px;text-align:center;}
+
+/* SOLUCIONES PANEL */
+.sol-panel{display:none;background:rgba(30,136,229,.06);border:1px solid rgba(30,136,229,.2);border-radius:9px;padding:12px;margin-top:10px;font-size:.75rem;color:rgba(255,255,255,.75);line-height:1.8;}
+body.teacher .sol-panel{display:block;}
+
+/* WATERMARK EN RESUMEN */
+.watermark-name{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:.04;}
+.watermark-name span{position:absolute;font-family:'Bebas Neue';font-size:3rem;color:white;white-space:nowrap;transform:rotate(-30deg);}
+
+/* PRINT */
+@media print{
+  body{background:white!important;color:black!important;font-size:10pt;}
+  .timer-bar,.corner-key,.doc-panel,.modal-ov,.btn-avanzar,.btn-primary,.btn-print,.watermark-name,.no-print{display:none!important;}
+  #screen-login,#screen-instrucciones,#screen-pregunta{display:none!important;}
+  #screen-resumen{display:block!important;padding:5mm;background:white!important;}
+  .card{background:white!important;border:1px solid #ddd!important;box-shadow:none!important;color:black!important;}
+  .res-banner{background:#1A1A2E!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .res-tabla th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .res-tabla td{color:black!important;}
+  .sec-label,.sec-tit{color:black!important;}
+  @page{margin:8mm 10mm;}
+}
+</style>
+</head>
+<body>
+
+<div class="corner-key" onclick="abrirModal()">⬡</div>
+
+<!-- MODAL DOCENTE -->
+<div class="modal-ov" id="modal-acc">
+  <div class="modal-box">
+    <h3>Panel Docente</h3>
+    <p style="font-size:.79rem;color:rgba(255,255,255,.55);margin-bottom:10px;">Código de acceso:</p>
+    <input class="modal-inp" type="password" id="modal-cod" placeholder="Código" onkeydown="if(event.key==='Enter')validarModal()">
+    <button class="modal-btn" onclick="validarModal()">Entrar ▶</button>
+    <div class="modal-err" id="modal-err">Código incorrecto.</div>
+    <button class="modal-close" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- PANEL DOCENTE -->
+<div class="doc-panel" id="doc-panel">
+  <div class="doc-panel-tit">🔑 Modo Docente activo</div>
+  <button class="doc-btn sal" onclick="saltarPregunta()">↷ Avanzar sin responder</button>
+  <button class="doc-btn res" onclick="irResumenDirecto()">📊 Ir directo al resumen</button>
+  <button class="doc-btn" onclick="simularAlumno()" style="background:rgba(156,75,181,.18);color:#CE93D8;border:1px solid rgba(156,75,181,.35);">🔬 Simular alumno completo</button>
+  <button class="doc-btn soluciones" onclick="toggleSoluciones()">📋 Ver / ocultar soluciones</button>
+  <div class="sol-panel" id="sol-panel"></div>
+  <div class="doc-info">Preg: <span id="doc-q-info">—</span> · Salidas: <span id="doc-salidas">0</span></div>
+</div>
+
+<!-- TIMER BAR -->
+<div class="timer-bar" id="timer-bar">
+  <div>
+    <div class="timer-label">Tiempo restante</div>
+    <div class="timer-num" id="timer-num">55:00</div>
+  </div>
+  <div id="pills-wrap" class="prog-pills"></div>
+  <div style="text-align:right;">
+    <div class="q-counter" id="q-counter">0/17</div>
+    <div class="salida-badge teacher-only" id="salida-badge" style="display:none;">0 salidas</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr" id="main-hdr">
+  <div class="hdr-tag">CNEyT II · G208 · Primer Corte 2025–2026</div>
+  <div class="hdr-tit">Examen</div>
+  <div class="hdr-sub"><span onclick="abrirModal()" style="cursor:pointer;border-bottom:1px dotted rgba(255,255,255,.3);" title="Acceso docente">Prof. Adrián Cruz</span> · S01–S06 · El poder de la energía</div>
+</div>
+
+<!-- SCREEN 0: LOGIN -->
+<div class="screen on" id="screen-login">
+  <div style="max-width:440px;margin:24px auto;">
+    <div class="card">
+      <div class="sec-label">Identificación</div>
+      <div class="sec-tit">Antes de comenzar</div>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.65);line-height:1.65;margin-bottom:12px;">Este examen tiene <strong style="color:#93C5FD;">55 minutos</strong> y 17 preguntas. Una vez que comiences el cronómetro no se detiene. Asegúrate de estar listo antes de continuar.</p>
+      <label style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.7);">Nombre completo (Apellidos Nombres):</label>
+      <input class="login-input" type="text" id="inp-nombre" placeholder="Ej: GARCÍA LÓPEZ Juan Carlos" autocomplete="off" onpaste="return false;">
+      <div class="login-err" id="login-err">Escribe tu nombre completo (mínimo 8 caracteres).</div>
+      <button class="login-btn" onclick="iniciarExamen()">Comenzar examen ▶</button>
+    </div>
+    <div style="font-size:.72rem;color:rgba(255,255,255,.25);text-align:center;margin-top:10px;line-height:1.6;">⚠ No minimices ni cierres esta pantalla durante el examen.<br>El sistema registra todas tus respuestas.</div>
+  </div>
+</div>
+
+<!-- SCREEN 1: PREGUNTA (dinámica) -->
+<div class="screen" id="screen-pregunta">
+  <div class="sin-resp-aviso" id="aviso-sin-resp">
+    ⚠ Has dejado 3 preguntas sin responder. Las siguientes preguntas sin contestar perderán su puntaje automáticamente.
+  </div>
+  <div id="contenido-pregunta"></div>
+</div>
+
+<!-- SCREEN 2: RESUMEN -->
+<div class="screen" id="screen-resumen">
+  <div class="watermark-name" id="watermark"></div>
+  <div id="res-banner-box" class="res-banner"></div>
+  <div class="desglose-grid" id="desglose-grid"></div>
+  <div class="card" style="background:white;color:#1A1A2E;margin-bottom:14px;">
+    <div style="font-size:.78rem;font-weight:800;color:#1A1A2E;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;">Desglose por pregunta</div>
+    <div style="overflow-x:auto;">
+      <table class="res-tabla" id="tabla-resumen">
+        <thead><tr><th>#</th><th>Tema</th><th>Tu respuesta</th><th>Respuesta esperada</th><th>Pts</th></tr></thead>
+        <tbody id="tbody-resumen"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-size:.78rem;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;">Indicadores del examen</div>
+    <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.8;" id="indicadores-res"></div>
+  </div>
+  <button class="btn-print no-print" onclick="imprimirResumen()">🖨 Guardar como PDF / Imprimir</button>
+  <div class="no-print" style="background:rgba(255,200,0,.1);border:1px solid rgba(255,200,0,.25);border-radius:9px;padding:10px 13px;font-size:.79rem;color:#FFD54F;margin-top:8px;line-height:1.65;">
+    <strong>Cómo guardar el PDF en tu celular:</strong><br>
+    Chrome Android: Menú ⋮ → Imprimir → destino "Guardar como PDF" → Guardar.<br>
+    Safari iOS: Botón compartir → Opciones → PDF → Guardar en archivos.<br>
+    El PDF incluye tu nombre, calificación y tabla completa de respuestas.
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// BANCO DE PREGUNTAS
+// ══════════════════════════════════════════════════════════
+var PREGUNTAS = [
+{id:'Q01',tipo:'omc',pts:.5,tema:'Tipos de energía',
+ p:'Carlos tiene un martes típico en el sur de la CDMX: su celular tiene batería al 80%, el microbús circula por Insurgentes a 50 km/h, y el tinaco de su edificio está lleno a 10 metros de altura. ¿Cuál de las siguientes describe <em>correctamente</em> el tipo de energía predominante en cada caso?',
+ ops:['Celular: eléctrica &nbsp;·&nbsp; Microbús: potencial &nbsp;·&nbsp; Tinaco: cinética',
+      'Celular: química &nbsp;·&nbsp; Microbús: cinética &nbsp;·&nbsp; Tinaco: potencial gravitacional',
+      'Celular: cinética &nbsp;·&nbsp; Microbús: química &nbsp;·&nbsp; Tinaco: térmica',
+      'Celular: térmica &nbsp;·&nbsp; Microbús: luminosa &nbsp;·&nbsp; Tinaco: eléctrica',
+      'Celular: química &nbsp;·&nbsp; Microbús: potencial &nbsp;·&nbsp; Tinaco: cinética'],
+ ok:1,
+ ex:'Celular sin usar: la energía está almacenada en enlaces químicos (Eq). Microbús en movimiento: Ec = ½mv². Tinaco a 10 m de altura: Ep = mgh, almacenada por su posición.'},
+
+{id:'Q02',tipo:'omc',pts:.5,tema:'Tipos de energía',
+ p:'¿Cuál de las siguientes afirmaciones sobre la energía es <em>correcta</em>?',
+ ops:['La energía cinética solo depende del peso del objeto',
+      'Un objeto en movimiento siempre tiene energía potencial gravitacional',
+      'La energía potencial depende únicamente de la velocidad del objeto',
+      'Un objeto puede tener energía potencial y cinética al mismo tiempo',
+      'Si un objeto está en el aire pero en reposo, no tiene ningún tipo de energía'],
+ ok:3,
+ ex:'Un objeto puede tener ambas simultáneamente. Ejemplo: un ave volando tiene Ep (por su altura) y Ec (por su velocidad). El error A confunde peso con masa; B es falso si el objeto va horizontal a altura 0; C es falso porque Ep depende de posición, no velocidad.'},
+
+{id:'Q03',tipo:'omc',pts:.5,tema:'Cadenas energéticas',
+ p:'<span class="story-box">El taquero de Av. Tláhuac abre el tanque de gas LP, enciende la flama, cocina la carne, un cliente come el taco y luego camina de regreso a casa.</span> ¿Cuál es la cadena energética <em>completa y correcta</em> de este proceso?',
+ ops:['Térmica → cinética → química → potencial',
+      'Eléctrica → cinética → química → luminosa',
+      'Química (gas LP) → térmica (flama) → química (alimento) → cinética (movimiento)',
+      'Cinética → química → térmica → luminosa',
+      'Química → luminosa → cinética → eléctrica'],
+ ok:2,
+ ex:'Cada flecha es una transformación: el gas LP almacena energía química → la combustión la libera como térmica + luminosa → el cuerpo la asimila como química (metabolismo) → al caminar se convierte en cinética + algo de térmica (calor corporal).'},
+
+{id:'Q04',tipo:'omc',pts:.5,tema:'Cadenas energéticas',
+ p:'El comal se calienta con la flama del gas y luego calienta la tortilla al contacto directo. En el paso <em>comal → tortilla</em>, ¿qué proceso energético ocurre exactamente?',
+ ops:['Transformación: la energía química del comal se convierte en térmica',
+      'Transferencia: la energía térmica pasa del comal a la tortilla sin cambiar de tipo',
+      'Creación: se genera nueva energía térmica en la tortilla al calentarse',
+      'Transformación: la energía térmica se convierte en cinética molecular',
+      'Destrucción: la energía del comal desaparece al pasar a la tortilla'],
+ ok:1,
+ ex:'Transformación = la energía CAMBIA de tipo. Transferencia = la energía del MISMO tipo pasa de un objeto a otro. Comal → tortilla es una transferencia de calor (térmica→térmica) hasta alcanzar equilibrio térmico.'},
+
+{id:'Q05',tipo:'omc',pts:.5,tema:'Conservación de la energía',
+ p:'<span class="story-box">Sofía observa tres situaciones: ① su café de 90°C está a 35°C después de una hora; ② su celular bajó de 100% a 4% en dos horas; ③ el tanque de gas de su casa duró un mes y ahora está vacío.</span> Le pregunta a su prof: <em>"¿Si la energía se conserva, por qué en los tres casos parece que desapareció?"</em> ¿Cuál es la respuesta correcta?',
+ ops:['En los tres casos la energía realmente se destruyó al usarse',
+      'La ley de conservación tiene excepciones para objetos cotidianos de uso diario',
+      'La energía se conservó: se transformó y dispersó al ambiente en forma de calor, luz y movimiento. No desapareció — ya no es útil pero sigue existiendo',
+      'La ley de conservación solo aplica en experimentos de laboratorio controlados',
+      'La energía se perdió porque los objetos cotidianos son imperfectos'],
+ ok:2,
+ ex:'La energía del café calentó el aire y los objetos cercanos. La energía del celular se convirtió en luz, sonido y calor del dispositivo. El gas se convirtió en calor que cocinó los alimentos y calentó el ambiente. En los tres casos la energía total se conservó, solo se dispersó.'},
+
+{id:'Q06',tipo:'omc',pts:.5,tema:'Conservación · Unidades',
+ p:'Un estudiante quema <em>250 calorías</em> caminando desde su casa hasta el metro en Taxqueña. ¿Cuántos Joules de energía química utilizó su cuerpo? <em>(1 cal = 4.18 J)</em>',
+ ops:['59.8 J',
+      '1,045 J',
+      '10,450 J',
+      '250 J',
+      '2,500 J'],
+ ok:1,
+ ex:'250 cal × 4.18 J/cal = 1,045 J. Para convertir calorías a Joules SIEMPRE multiplica por 4.18. Para ir de J a cal, divide entre 4.18. 1,045 J es aproximadamente la energía que contiene un taco pequeño.'},
+
+{id:'Q07',tipo:'omc',pts:.5,tema:'Fuerzas y fuerza neta',
+ p:'<span class="story-box">Andrea empuja una caja con 30 N hacia la derecha. Brenda empuja la misma caja con 30 N hacia la izquierda. Cindy empuja con 50 N hacia la derecha.</span> ¿Qué le ocurre a la caja y en qué dirección se mueve?',
+ ops:['No se mueve porque hay tres fuerzas actuando al mismo tiempo',
+      'Se mueve hacia la izquierda porque Brenda está sola en esa dirección',
+      'Se mueve hacia la derecha: fuerza neta = 30 + 50 − 30 = 50 N en ese sentido',
+      'Se mueve hacia la derecha con una fuerza total de 110 N',
+      'No se puede determinar sin conocer la masa de la caja'],
+ ok:2,
+ ex:'Fuerza neta = suma algebraica con signo. Derechas: +30+50 = +80 N. Izquierda: −30 N. Neta = +50 N hacia la derecha. La caja se mueve hacia la derecha. Error D: no se suman TODAS las fuerzas sin considerar dirección.'},
+
+{id:'Q08',tipo:'omc',pts:.5,tema:'Sistema de referencia',
+ p:'<span class="story-box">Valentina le manda un mensaje a Zadkiel: "El Oxxo está a 400 metros." Zadkiel responde: "¿400 metros desde dónde? No sé si ir a la izquierda o a la derecha."</span> ¿Por qué Zadkiel no puede ubicarse con esa información?',
+ ops:['Porque Valentina debió expresar la distancia en kilómetros',
+      'Porque hace falta saber cuántos minutos tarda caminando esa distancia',
+      'Porque Valentina no indicó el punto de referencia desde el cual mide la distancia',
+      'Porque en física toda distancia debe expresarse en coordenadas GPS',
+      'Porque la distancia no existe sin conocer también la velocidad de desplazamiento'],
+ ok:2,
+ ex:'Sin punto de referencia (¿400 metros desde dónde?), la posición no se puede describir. El sistema de referencia es el punto fijo desde el cual se mide. "A 400 metros de la entrada del metro Taxqueña" sí es una descripción completa.'},
+
+{id:'Q09',tipo:'omc',pts:.5,tema:'Movimiento y velocidad',
+ p:'Valentina recorre <em>400 metros en 80 segundos</em> corriendo. Zadkiel recorre <em>400 metros en 160 segundos</em> caminando. ¿Cuál es la velocidad de cada uno y cuánto más rápida va Valentina?',
+ ops:['Valentina: 5 m/s &nbsp;·&nbsp; Zadkiel: 2.5 m/s &nbsp;·&nbsp; Valentina va el doble de rápido',
+      'Valentina: 80 m/s &nbsp;·&nbsp; Zadkiel: 160 m/s &nbsp;·&nbsp; Zadkiel va el doble de rápido',
+      'Valentina: 4 m/s &nbsp;·&nbsp; Zadkiel: 2 m/s &nbsp;·&nbsp; Valentina va el doble de rápido',
+      'Ambos van a la misma velocidad porque recorren exactamente la misma distancia',
+      'No se puede comparar sin saber la fuerza que aplica cada uno'],
+ ok:0,
+ ex:'v = distancia / tiempo. Valentina: 400÷80 = 5 m/s. Zadkiel: 400÷160 = 2.5 m/s. Valentina va 5/2.5 = 2 veces más rápido. Recorrer la MISMA distancia no garantiza igual velocidad; lo que importa es el tiempo.'},
+
+{id:'Q10',tipo:'omc',pts:.5,tema:'Ec y velocidad al cuadrado',
+ p:'Si <em>duplicas la velocidad</em> de un objeto (con la misma masa), ¿qué le ocurre a su Energía Cinética? <em>Recuerda: Ec = ½mv²</em>',
+ ops:['Se duplica (×2) porque la velocidad se multiplicó por 2',
+      'Se triplica (×3) porque la energía siempre es proporcional al doble',
+      'Se cuadruplica (×4) porque la velocidad está elevada al cuadrado en la fórmula',
+      'No cambia porque la masa sigue siendo la misma',
+      'Se divide entre 2 porque la velocidad mayor reduce el tiempo de impacto'],
+ ok:2,
+ ex:'En Ec = ½mv², la v está al cuadrado. Si v se multiplica por 2 → v² se multiplica por 2² = 4. Entonces Ec se multiplica por 4. Este es el principio por el que a mayor velocidad en carretera, el impacto es exponencialmente más grave.'},
+
+{id:'Q11',tipo:'omc',pts:.5,tema:'Energía potencial Ep',
+ p:'El tinaco de Valentina tiene <em>200 kg</em> de agua a <em>6 metros</em> de altura. El de Zadkiel tiene <em>200 kg</em> de agua a <em>12 metros</em> de altura. ¿Cuánta Ep tiene cada tinaco y cuál es la relación entre ellas? <em>(g = 9.8 m/s²)</em>',
+ ops:['Valentina: 11,760 J &nbsp;·&nbsp; Zadkiel: 23,520 J &nbsp;·&nbsp; El de Zadkiel tiene el doble de Ep',
+      'Valentina: 1,200 J &nbsp;·&nbsp; Zadkiel: 2,400 J &nbsp;·&nbsp; El de Zadkiel tiene el doble de Ep',
+      'Son iguales porque tienen exactamente la misma masa de agua',
+      'Valentina: 11,760 J &nbsp;·&nbsp; Zadkiel: 47,040 J &nbsp;·&nbsp; El de Zadkiel tiene 4 veces más Ep',
+      'Valentina: 5,880 J &nbsp;·&nbsp; Zadkiel: 11,760 J &nbsp;·&nbsp; El de Zadkiel tiene el doble de Ep'],
+ ok:0,
+ ex:'Ep = m × g × h. Valentina: 200×9.8×6 = 11,760 J. Zadkiel: 200×9.8×12 = 23,520 J. Al duplicar la altura se duplica la Ep (relación lineal). Error B: olvidó multiplicar por g=9.8. Error D: calculó como si la altura se cuadrara. Error E: usó ½ incorrectamente.'},
+
+{id:'Q12',tipo:'omc',pts:.5,tema:'Em conservación sin fricción',
+ p:'Un patinador inicia en la cima de una rampa con <em>600 J de Ep y 0 J de Ec</em> (sin rozamiento). A la <em>mitad del descenso</em>, ¿cuál es la distribución correcta de su energía mecánica?',
+ ops:['Ep = 600 J y Ec = 600 J — la energía mecánica se duplicó al bajar',
+      'Ep = 300 J y Ec = 300 J — la Ep se repartió en Ec, la Em total sigue siendo 600 J',
+      'Ep = 0 J y Ec = 600 J — toda la Ep ya se convirtió en Ec a la mitad',
+      'Ep = 600 J y Ec = 0 J — aún no ha bajado suficiente para ganar velocidad',
+      'Ep = 300 J y Ec = 0 J — la energía se fue como calor al ambiente'],
+ ok:1,
+ ex:'Sin fricción, Em = Ec + Ep = constante = 600 J en todo momento. A la mitad: ha bajado la mitad de la altura → Ep se redujo a la mitad (300 J) → ese 50% se convirtió en Ec (300 J). Em = 300+300 = 600 J. La suma siempre es 600 J.'},
+
+{id:'Q13',tipo:'omc',pts:.5,tema:'Em con fricción',
+ p:'<span class="story-box">Sebastián baja una rampa en bicicleta. Su Ep inicial era <em>2,400 J</em>. Al llegar al fondo (h = 0), la fricción disipó <em>800 J</em> como calor.</span> ¿Cuál es su Energía Mecánica final y su Ec al llegar abajo?',
+ ops:['Em&#8236;f = 3,200 J y Ec = 3,200 J — la fricción sumó energía',
+      'Em&#8236;f = 1,600 J y Ec = 1,600 J — al fondo Ep = 0, toda la Em&#8236;f es Ec',
+      'Em&#8236;f = 2,400 J y Ec = 1,600 J — la Em no cambia con la fricción',
+      'Em&#8236;f = 800 J y Ec = 800 J — solo queda la energía de la fricción',
+      'Em&#8236;f = 2,400 J y Ec = 2,400 J — la fricción no afecta la Em total'],
+ ok:1,
+ ex:'Em&#8236;f = Ep&#8236;inicial − Et = 2,400 − 800 = 1,600 J. Al llegar al fondo, h=0 → Ep=0, entonces toda la Em&#8236;f se convirtió en Ec = 1,600 J. La fricción SÍ reduce la Em porque convierte parte de ella en calor (ya no es energía mecánica).'},
+
+{id:'Q14',tipo:'omc',pts:.5,tema:'Velocidad y masa en caída libre',
+ p:'Valentina (50 kg) y Zadkiel (80 kg) se lanzan desde la <em>misma altura</em> de una rampa sin rozamiento. ¿Cuál de los dos llega al fondo con mayor velocidad?',
+ ops:['Zadkiel, porque tiene más masa y por lo tanto mayor Ep inicial en la cima',
+      'Valentina, porque tiene menos masa y la rampa la impulsa con más fuerza relativa',
+      'Los dos llegan con la <em>misma velocidad</em>: v = √(2gh) y no depende de la masa',
+      'Zadkiel llega más rápido porque acumula más Ec al tener mayor peso',
+      'Depende de la inclinación de la rampa, no solo de la altura inicial'],
+ ok:2,
+ ex:'v = √(2×g×h). La velocidad final en una rampa sin rozamiento depende SOLO de la altura inicial y de g. La masa NO aparece en la fórmula final (se cancela). Zadkiel sí tiene más Ep y más Ec, pero también más masa — la velocidad resulta igual.'},
+
+{id:'Q15',tipo:'omc',pts:2,tema:'Problema numérico combinado',
+ p:'<strong style="color:#FFD54F;">PROBLEMA COMBINADO (2 pts)</strong><br><br>Un ave de <em>2 kg</em> vuela a <em>15 metros</em> de altura con una velocidad de <em>72 km/h</em>.<br><small style="color:rgba(255,255,255,.6);">Convierte primero la velocidad a m/s, luego calcula Ep y Ec por separado. Usa g = 9.8 m/s².</small><br><br>¿Cuál es la <em>Energía Mecánica total</em> (Ep + Ec) del ave?',
+ ops:['294 J (Ep) + 20 J (Ec) = <strong>314 J</strong>',
+      '294 J (Ep) + 400 J (Ec) = <strong>694 J</strong>',
+      '294 J (Ep) + 800 J (Ec) = <strong>1,094 J</strong>',
+      '147 J (Ep) + 400 J (Ec) = <strong>547 J</strong>',
+      '294 J (Ep) + 5,184 J (Ec) = <strong>5,478 J</strong>'],
+ ok:1,
+ ex:'Paso 1: 72 km/h ÷ 3.6 = 20 m/s. Paso 2: Ep = 2×9.8×15 = 294 J. Paso 3: Ec = ½×2×20² = ½×2×400 = 400 J. Em = 294+400 = 694 J. Errores típicos: A=olvidó elevar v al cuadrado; C=olvidó el ½; D=aplicó ½ a la Ep; E=no convirtió la velocidad.'},
+
+{id:'Q16',tipo:'canvas',pts:.5,tema:'Dibujo: cadena energética',
+ p:'En el lienzo, <em>dibuja la cadena completa de transformación energética</em> de <strong>UNO</strong> de estos escenarios (el que prefieras):<br><br>① El tinaco de tu casa: bomba eléctrica sube el agua → tinaco en azotea → agua baja por la tubería<br>② Sebastián baja la rampa en bicicleta con fricción hasta detenerse<br><br><small style="color:rgba(255,255,255,.55);">Incluye: tipo de energía en cada etapa, flechas de transformación y destino final. Puedes usar palabras + dibujos + flechas.</small>',
+ ex:'Tinaco: Eléctrica (bomba) → Cinética (agua subiendo) → Potencial (agua en azotea) → Cinética (agua bajando) → Presión/Cinética (en llave) → Térmica (fricción en tuberías).\nSebastián: Potencial (en la cima) → Cinética (bajando) → Mecánica mixta (en descenso) → Térmica (calor en frenos y ruedas al detenerse). La Em total disminuye por la fricción.'},
+
+{id:'Q17',tipo:'abierta',pts:1,tema:'Reflexión: Ley de Conservación',
+ minChars:130,
+ keywords:['conserva','transforma','transfiere','calor','ambiente','dispersa','destruy','pierde'],
+ keysMin:2,
+ p:'La Ley de Conservación de la Energía afirma que la energía <em>no se crea ni se destruye</em>. Sin embargo, en la vida cotidiana sentimos que la energía "se acaba" o "se pierde".<br><br>Usando <strong>al menos DOS situaciones específicas</strong> de las que vimos en clase (microbús frenando, café caliente, celular descargándose, gas LP, tinaco, Sebastián en la bicicleta), explica por qué la energía <em>no desaparece</em>, sino que se transforma y transfiere.',
+ ex:'Respuesta esperada incluye: (1) enunciar la ley de conservación, (2) al menos dos ejemplos concretos de clase, (3) explicar que la energía se transforma en calor disperso (no desaparece), (4) usar los términos transforma/transfiere/dispersa/conserva. Ej: "El celular no destruye la energía, la convierte en luz, sonido y calor. El calor se dispersa al ambiente y ya no es útil pero sigue existiendo."'}
+];
+
+// ══════════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════════
+var NOMBRE='', LISTA='';
+var pregActual=0;
+var respuestas={}; // idx → {tipo, valor, raw}
+var timerGlobal=null, timerSegundos=3300; // 55 min
+var timerPreguntaId=null; // 18s per question
+var sinRespuesta=0;
+var salidaCount=0;
+var examenEnviado=false;
+var canvasDrawing=null; // base64 del dibujo
+var canvasCtx=null, canvasEl=null;
+var canvasDrawing_isDrawing=false;
+var MODO_DOCENTE=false;
+var autoAvanzarCount=0; // veces que el timer disparó sin respuesta
+
+// ══════════════════════════════════════════════════════════
+// SALIDA COUNTER
+// ══════════════════════════════════════════════════════════
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden&&NOMBRE){
+    salidaCount++;
+    var b=document.getElementById('salida-badge');
+    if(b)b.innerHTML=salidaCount+' salida'+(salidaCount>1?'s':'');
+    var ds=document.getElementById('doc-salidas');
+    if(ds)ds.textContent=salidaCount;
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// TIMER GLOBAL
+// ══════════════════════════════════════════════════════════
+function startTimerGlobal(){
+  timerGlobal=setInterval(function(){
+    timerSegundos--;
+    var m=Math.floor(timerSegundos/60);
+    var s=timerSegundos%60;
+    var tn=document.getElementById('timer-num');
+    if(tn){
+      tn.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      if(timerSegundos<=300)tn.classList.add('urgent');
+    }
+    if(timerSegundos<=0){
+      clearInterval(timerGlobal);
+      enviarExamen();
+    }
+  },1000);
+}
+
+function stopTimerGlobal(){if(timerGlobal)clearInterval(timerGlobal);}
+
+// Polyfill Math.imul para Android antiguo
+if(!Math.imul){Math.imul=function(a,b){var ah=a>>>16,al=a&0xffff,bh=b>>>16,bl=b&0xffff;return(al*bl)+((ah*bl+al*bh)<<16)|0;};}
+
+// ══════════════════════════════════════════════════════════
+// ALEATORIZACIÓN POR SEMILLA DE NOMBRE
+// ══════════════════════════════════════════════════════════
+// Genera un número pseudoaleatorio determinista a partir de un string
+function hashStr(s){
+  var h=0;
+  for(var i=0;i<s.length;i++){h=(Math.imul(31,h)+s.charCodeAt(i))|0;}
+  return Math.abs(h);
+}
+function seededRand(seed){
+  var x=Math.sin(seed*127.1+311.7)*43758.5453;
+  return x-Math.floor(x);
+}
+// Fisher-Yates con semilla
+function shuffleSeeded(arr, seed){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(seededRand(seed+i*7)*( i+1));
+    var t=a[i];a[i]=a[j];a[j]=t;
+  }
+  return a;
+}
+
+// Grupo de preguntas OMC de bajo pts (0.5) — se pueden reordenar libremente
+// El Q15 (problema 2pts), Q16 (canvas) y Q17 (abierta) siempre van al final fijos
+function aleatorizar(nombre){
+  var seed=hashStr(nombre);
+  // Separar preguntas fijas (Q15, Q16, Q17) de las shuffleables (Q01–Q14)
+  var shuffleables=PREGUNTAS.slice(0,14); // índices 0-13
+  var fijas=PREGUNTAS.slice(14);          // índices 14-16 (Q15,Q16,Q17)
+  // Reordenar las 14 primeras
+  var reordenadas=shuffleSeeded(shuffleables, seed);
+  // Para cada pregunta OMC, reordenar también las opciones
+  for(var i=0;i<reordenadas.length;i++){
+    var q=reordenadas[i];
+    if(q.tipo==='omc'&&q.ops){
+      var opsSeed=seed+i*31+hashStr(q.id);
+      var indices=[0,1,2,3,4];
+      var newOrder=shuffleSeeded(indices, opsSeed);
+      var newOps=[];
+      var newOk=0;
+      for(var j=0;j<newOrder.length;j++){
+        newOps.push(q.ops[newOrder[j]]);
+        if(newOrder[j]===q.ok)newOk=j;
+      }
+      q.ops=newOps;
+      q.ok=newOk;
+    }
+  }
+  // También reordenar opciones de Q15 (fijas[0])
+  if(fijas[0]&&fijas[0].tipo==='omc'){
+    var q15=fijas[0];
+    var opsSeed15=seed+999;
+    var indices15=[0,1,2,3,4];
+    var newOrder15=shuffleSeeded(indices15, opsSeed15);
+    var newOps15=[];
+    var newOk15=0;
+    for(var j=0;j<newOrder15.length;j++){
+      newOps15.push(q15.ops[newOrder15[j]]);
+      if(newOrder15[j]===q15.ok)newOk15=j;
+    }
+    fijas[0].ops=newOps15;
+    fijas[0].ok=newOk15;
+  }
+  PREGUNTAS=reordenadas.concat(fijas);
+}
+
+// ══════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════
+function iniciarExamen(){
+  var n=document.getElementById('inp-nombre').value.trim();
+  var err=document.getElementById('login-err');
+  if(n.length<8){err.style.display='block';return;}
+  err.style.display='none';
+  NOMBRE=n; LISTA='';
+  // Aleatorizar el orden de las preguntas y opciones usando semilla del nombre
+  aleatorizar(n);
+  document.getElementById('screen-login').classList.remove('on');
+  document.getElementById('screen-pregunta').classList.add('on');
+  document.getElementById('timer-bar').classList.add('visible');
+  buildPills();
+  startTimerGlobal();
+  mostrarPregunta(0);
+  initSoluciones();
+}
+
+// ══════════════════════════════════════════════════════════
+// PILLS DE PROGRESO
+// ══════════════════════════════════════════════════════════
+function buildPills(){
+  var wrap=document.getElementById('pills-wrap');
+  if(!wrap)return;
+  var html='';
+  for(var i=0;i<PREGUNTAS.length;i++){
+    html+='<div class="pill-q" id="pill'+i+'"></div>';
+  }
+  wrap.innerHTML=html;
+}
+function updatePills(){
+  for(var i=0;i<PREGUNTAS.length;i++){
+    var p=document.getElementById('pill'+i);
+    if(!p)continue;
+    p.className='pill-q';
+    if(i===pregActual)p.classList.add('current');
+    else if(respuestas[i]!==undefined)p.classList.add('answered');
+  }
+  var qc=document.getElementById('q-counter');
+  if(qc)qc.textContent=Object.keys(respuestas).length+'/'+PREGUNTAS.length;
+  var dc=document.getElementById('doc-q-info');
+  if(dc)dc.textContent=(pregActual+1)+'/'+PREGUNTAS.length;
+}
+
+// ══════════════════════════════════════════════════════════
+// TIMER POR PREGUNTA — desactivado, botón siempre visible
+// ══════════════════════════════════════════════════════════
+function startTimerPregunta(){
+  // Sin límite por pregunta. El botón avanzar aparece siempre desde el inicio.
+  var btn=document.getElementById('btn-avanzar');
+  if(btn)btn.classList.add('visible');
+}
+
+// ══════════════════════════════════════════════════════════
+// MOSTRAR PREGUNTA
+// ══════════════════════════════════════════════════════════
+function mostrarPregunta(idx){
+  pregActual=idx;
+  clearTimeout(timerPreguntaId);
+  updatePills();
+  if(idx>=PREGUNTAS.length){enviarExamen();return;}
+  var q=PREGUNTAS[idx];
+  var cont=document.getElementById('contenido-pregunta');
+  if(!cont)return;
+  var html='';
+  html+='<div class="q-tema">'+q.tema+'</div>';
+  html+='<div class="q-num">Pregunta '+(idx+1)+' de '+PREGUNTAS.length+'<span class="puntos-tag">'+q.pts+' pt'+(q.pts>1?'s':'')+'</span></div>';
+  html+='<div class="q-texto">'+q.p+'</div>';
+
+  if(q.tipo==='omc'){
+    html+='<div class="opciones" id="opts-wrap">';
+    for(var i=0;i<q.ops.length;i++){
+      var sel=(respuestas[idx]&&respuestas[idx].valor===i)?'sel':'';
+      html+='<div class="opt '+sel+'" id="opt-'+i+'" onclick="selOpt('+i+')">';
+      html+='<div class="opt-letra">'+('ABCDE'[i])+'</div>';
+      html+='<div>'+q.ops[i]+'</div>';
+      html+='</div>';
+    }
+    html+='</div>';
+  } else if(q.tipo==='canvas'){
+    html+='<div class="canvas-tools">';
+    html+='<button class="ctool" onclick="setColor(\'#000000\')" style="background:#000;color:white;border-color:#555;">⬛ Negro</button>';
+    html+='<button class="ctool" onclick="setColor(\'#1565C0\')" style="background:#1565C0;color:white;border-color:#1565C0;">🔵 Azul</button>';
+    html+='<button class="ctool" onclick="setColor(\'#C62828\')" style="background:#C62828;color:white;border-color:#C62828;">🔴 Rojo</button>';
+    html+='<button class="ctool" onclick="setColor(\'#2E7D32\')" style="background:#2E7D32;color:white;border-color:#2E7D32;">🟢 Verde</button>';
+    html+='<button class="ctool" onclick="setColor(\'#F57F17\')" style="background:#F57F17;color:white;border-color:#F57F17;">🟡 Naranja</button>';
+    html+='<button class="ctool" onclick="clearCanvas()">🗑 Borrar todo</button>';
+    html+='</div>';
+    html+='<div class="canvas-wrap"><canvas id="draw-canvas" height="280"></canvas></div>';
+    html+='<div class="canvas-hint">Dibuja directamente en el lienzo. Usa los colores para distinguir tipos de energía y flechas para las transformaciones. El dibujo se guardará en tu resumen.</div>';
+  } else if(q.tipo==='abierta'){
+    var prevTxt=(respuestas[idx]&&respuestas[idx].valor)?respuestas[idx].valor:'';
+    html+='<textarea id="ta-resp" onpaste="return false;" oncopy="return false;" oncut="return false;" placeholder="Escribe aquí tu respuesta..." rows="5" oninput="onTextInput(this)">'+prevTxt+'</textarea>';
+    html+='<div class="char-counter" id="char-counter">0 / '+q.minChars+' caracteres mínimo</div>';
+    html+='<div class="keywords-badge" id="keywords-badge">Escribe un poco más sobre el tema</div>';
+  }
+
+  html+='<div class="auto-aviso" id="aviso-auto" style="display:none;"></div>';
+  html+='<button class="btn-avanzar visible" id="btn-avanzar" onclick="guardarYAvanzar()">'+
+    (idx<PREGUNTAS.length-1?'Guardar y continuar →':'Finalizar examen ✓')+'</button>';
+
+  cont.innerHTML=html;
+  window.scrollTo(0,0);
+
+  // Post-render setup
+  if(q.tipo==='canvas')initCanvas();
+  if(q.tipo==='abierta'){
+    var ta=document.getElementById('ta-resp');
+    if(ta&&prevTxt)onTextInput(ta);
+  }
+  startTimerPregunta();
+}
+
+// ══════════════════════════════════════════════════════════
+// SELECCIÓN OPCIÓN OMC
+// ══════════════════════════════════════════════════════════
+function selOpt(idx){
+  var q=PREGUNTAS[pregActual];
+  var opts=document.querySelectorAll('.opt');
+  for(var oi=0;oi<opts.length;oi++){opts[oi].classList.remove('sel');}
+  var el=document.getElementById('opt-'+idx);
+  if(el)el.classList.add('sel');
+  respuestas[pregActual]={tipo:'omc',valor:idx};
+  var btn=document.getElementById('btn-avanzar');
+  if(btn)btn.classList.add('visible');
+  updatePills();
+}
+
+// ══════════════════════════════════════════════════════════
+// TEXTAREA INPUT
+// ══════════════════════════════════════════════════════════
+function onTextInput(el){
+  var q=PREGUNTAS[pregActual];
+  if(!q||q.tipo!=='abierta')return;
+  var val=el.value.trim();
+  var len=val.length;
+  var cc=document.getElementById('char-counter');
+  var kb=document.getElementById('keywords-badge');
+  if(cc){
+    cc.textContent=len+' / '+q.minChars+' mínimo';
+    cc.style.color=len>=q.minChars?'#A5D6A7':(len>=q.minChars*.6?'#FFCC80':'#EF9A9A');
+  }
+  // Check keywords
+  var low=val.toLowerCase();
+  var kcount=0;
+  for(var k=0;k<q.keywords.length;k++){
+    if(low.indexOf(q.keywords[k])>=0)kcount++;
+  }
+  if(kb){
+    if(kcount>=q.keysMin&&len>=q.minChars){
+      kb.className='keywords-badge ok';
+      kb.textContent='✓ Respuesta con conceptos clave ('+kcount+' detectados)';
+    } else if(len>=q.minChars*.5){
+      kb.className='keywords-badge warn';
+      kb.textContent='Incluye más conceptos del tema (usa: conserva, transforma, calor, ambiente…)';
+    } else {
+      kb.style.display='none';
+    }
+  }
+  if(len>=q.minChars*.3){
+    respuestas[pregActual]={tipo:'abierta',valor:val,kcount:kcount,len:len};
+    var btn=document.getElementById('btn-avanzar');
+    if(btn)btn.classList.add('visible');
+    updatePills();
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// CANVAS
+// ══════════════════════════════════════════════════════════
+var drawColor='#000000';
+function setColor(c){drawColor=c;}
+function initCanvas(){
+  canvasEl=document.getElementById('draw-canvas');
+  if(!canvasEl)return;
+  var dpr=window.devicePixelRatio||1;
+  var w=canvasEl.offsetWidth||320;
+  canvasEl.width=w*dpr;
+  canvasEl.height=280*dpr;
+  canvasEl.style.width=w+'px';
+  canvasEl.style.height='280px';
+  canvasCtx=canvasEl.getContext('2d');
+  canvasCtx.scale(dpr,dpr);
+  canvasCtx.strokeStyle=drawColor;
+  canvasCtx.lineWidth=2.5;
+  canvasCtx.lineCap='round';
+  canvasCtx.lineJoin='round';
+  // Restore previous drawing if any
+  if(respuestas[pregActual]&&respuestas[pregActual].tipo==='canvas'){
+    var img=new Image();
+    img.onload=function(){canvasCtx.drawImage(img,0,0,w,280);};
+    img.src=respuestas[pregActual].valor;
+  }
+  // Events
+  canvasEl.addEventListener('mousedown',startDraw);
+  canvasEl.addEventListener('mousemove',moveDraw);
+  canvasEl.addEventListener('mouseup',endDraw);
+  canvasEl.addEventListener('touchstart',function(e){e.preventDefault();startDraw(e.touches[0]);},{passive:false});
+  canvasEl.addEventListener('touchmove',function(e){e.preventDefault();moveDraw(e.touches[0]);},{passive:false});
+  canvasEl.addEventListener('touchend',endDraw,{passive:false});
+}
+function getPos(e){
+  var r=canvasEl.getBoundingClientRect();
+  return{x:e.clientX-r.left,y:e.clientY-r.top};
+}
+function startDraw(e){
+  canvasDrawing_isDrawing=true;
+  canvasCtx.beginPath();
+  canvasCtx.strokeStyle=drawColor;
+  var p=getPos(e);
+  canvasCtx.moveTo(p.x,p.y);
+}
+function moveDraw(e){
+  if(!canvasDrawing_isDrawing)return;
+  canvasCtx.strokeStyle=drawColor;
+  var p=getPos(e);
+  canvasCtx.lineTo(p.x,p.y);
+  canvasCtx.stroke();
+  // Auto-save
+  saveCanvas();
+}
+function endDraw(){
+  canvasDrawing_isDrawing=false;
+  saveCanvas();
+}
+function saveCanvas(){
+  if(!canvasEl)return;
+  var dataURL=canvasEl.toDataURL('image/png');
+  respuestas[pregActual]={tipo:'canvas',valor:dataURL};
+  var btn=document.getElementById('btn-avanzar');
+  if(btn)btn.classList.add('visible');
+  updatePills();
+}
+function clearCanvas(){
+  if(!canvasCtx||!canvasEl)return;
+  canvasCtx.clearRect(0,0,canvasEl.width,canvasEl.height);
+  delete respuestas[pregActual];
+  var btn=document.getElementById('btn-avanzar');
+  if(btn)btn.classList.add('visible');// keep visible so they can advance
+}
+
+// ══════════════════════════════════════════════════════════
+// GUARDAR Y AVANZAR
+// ══════════════════════════════════════════════════════════
+function guardarYAvanzar(){
+  clearTimeout(timerPreguntaId);
+  // If abierta: try to save current text
+  if(PREGUNTAS[pregActual]&&PREGUNTAS[pregActual].tipo==='abierta'){
+    var ta=document.getElementById('ta-resp');
+    if(ta&&ta.value.trim().length>5){
+      var q=PREGUNTAS[pregActual];
+      var val=ta.value.trim();
+      var low=val.toLowerCase();
+      var kcount=0;
+      for(var k=0;k<q.keywords.length;k++){if(low.indexOf(q.keywords[k])>=0)kcount++;}
+      respuestas[pregActual]={tipo:'abierta',valor:val,kcount:kcount,len:val.length};
+    }
+  }
+  var siguiente=pregActual+1;
+  if(siguiente>=PREGUNTAS.length){
+    enviarExamen();
+  } else {
+    mostrarPregunta(siguiente);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ENVIAR EXAMEN
+// ══════════════════════════════════════════════════════════
+function enviarExamen(){
+  if(examenEnviado)return;
+  examenEnviado=true;
+  stopTimerGlobal();
+  clearTimeout(timerPreguntaId);
+  document.getElementById('screen-pregunta').classList.remove('on');
+  document.getElementById('screen-resumen').classList.add('on');
+  document.getElementById('timer-bar').classList.remove('visible');
+  generarResumen();
+}
+
+// ══════════════════════════════════════════════════════════
+// CALIFICAR
+// ══════════════════════════════════════════════════════════
+function calificarPregunta(idx){
+  var q=PREGUNTAS[idx];
+  var r=respuestas[idx];
+  if(!r)return 0;
+  if(q.tipo==='omc'){
+    return (r.valor===q.ok)?q.pts:0;
+  } else if(q.tipo==='abierta'){
+    var pts=0;
+    if(r.len>=q.minChars)pts+=q.pts*0.5;
+    if(r.kcount>=q.keysMin)pts+=q.pts*0.5;
+    return Math.min(pts,q.pts);
+  } else if(q.tipo==='canvas'){
+    // 0.5 pts if drawing exists and has content
+    return r.valor&&r.valor.length>5000?q.pts:0;
+  }
+  return 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// GENERAR RESUMEN
+// ══════════════════════════════════════════════════════════
+function generarResumen(){
+  // Watermark
+  var wm=document.getElementById('watermark');
+  if(wm){
+    var html='';
+    for(var wi=0;wi<12;wi++){
+      html+='<span style="top:'+(10+wi*12)+'%;left:'+(wi%2===0?-5:30)+'%">'+NOMBRE+'</span>';
+    }
+    wm.innerHTML=html;
+  }
+  // Score
+  var total=0, maxTotal=0;
+  for(var i=0;i<PREGUNTAS.length;i++){
+    total+=calificarPregunta(i);
+    maxTotal+=PREGUNTAS[i].pts;
+  }
+  var cal=Math.round(total/maxTotal*100)/10;
+  var gc=cal>=7?'#2E7D32':(cal>=5?'#E65100':'#C62828');
+  var gl=cal>=9?'¡Excelente!':cal>=7?'Aprobado':cal>=5?'Suficiente':'A reforzar';
+  var banner=document.getElementById('res-banner-box');
+  if(banner){
+    banner.style.background=gc;
+    banner.innerHTML='<div class="res-nombre">'+NOMBRE+'</div>'+
+      '<div class="res-cal" style="color:white;">'+cal.toFixed(1)+'</div>'+
+      '<div class="res-lbl">'+gl+' · '+total.toFixed(1)+' / '+maxTotal.toFixed(1)+' pts</div>';
+  }
+  // Desglose
+  var dgrid=document.getElementById('desglose-grid');
+  if(dgrid){
+    var omc=0,omcmax=0,prob=0,probmax=0,aberta=0,abimax=0;
+    for(var i=0;i<PREGUNTAS.length;i++){
+      var t=PREGUNTAS[i].tipo;
+      var pts=calificarPregunta(i);
+      if(t==='omc'&&PREGUNTAS[i].pts===.5){omc+=pts;omcmax+=.5;}
+      else if(t==='omc'&&PREGUNTAS[i].pts===2){prob+=pts;probmax+=2;}
+      else if(t==='abierta'){aberta+=pts;abimax+=1;}
+    }
+    dgrid.innerHTML=
+      '<div class="dg-item"><div class="dg-val">'+omc.toFixed(1)+'/'+omcmax.toFixed(1)+'</div><div class="dg-lbl">OMC (×0.5)</div></div>'+
+      '<div class="dg-item"><div class="dg-val">'+prob.toFixed(1)+'/'+probmax+'</div><div class="dg-lbl">Problema</div></div>'+
+      '<div class="dg-item"><div class="dg-val">'+aberta.toFixed(1)+'/'+abimax+'</div><div class="dg-lbl">Reflexión</div></div>';
+  }
+  // Tabla
+  var tbody=document.getElementById('tbody-resumen');
+  if(!tbody)return;
+  var thtml='';
+  for(var i=0;i<PREGUNTAS.length;i++){
+    var q=PREGUNTAS[i];
+    var r=respuestas[i];
+    var pts=calificarPregunta(i);
+    var tuResp='<span class="badge-skip">Sin respuesta</span>';
+    var espResp='';
+    var badge='<span class="badge-skip">0</span>';
+    if(q.tipo==='omc'){
+      espResp='<strong>'+('ABCDE'[q.ok])+')</strong> '+q.ops[q.ok].replace(/<[^>]+>/g,'').substring(0,60)+'…<br><em style="font-size:.7rem;color:#666;">'+q.ex.replace(/<[^>]+>/g,'').substring(0,80)+'…</em>';
+      if(r){
+        tuResp='<strong>'+('ABCDE'[r.valor])+')</strong> '+(q.ops[r.valor]||'').replace(/<[^>]+>/g,'').substring(0,50);
+        badge=pts>0?'<span class="badge-ok">'+pts+'</span>':'<span class="badge-err">0</span>';
+      }
+    } else if(q.tipo==='canvas'){
+      espResp='<em style="font-size:.73rem;color:#555;">'+q.ex.split('\n')[0].substring(0,80)+'…</em>';
+      if(r&&r.valor){
+        tuResp='<img class="canvas-preview" src="'+r.valor+'" alt="Tu dibujo">';
+        badge='<span class="badge-ok">'+(pts>0?pts:'—')+'</span>';
+      }
+    } else if(q.tipo==='abierta'){
+      espResp='<em style="font-size:.73rem;color:#555;">Debe incluir: '+q.ex.substring(0,100)+'…</em>';
+      if(r&&r.valor){
+        tuResp='<span style="font-size:.78rem;line-height:1.55;color:#1A1A2E;">'+r.valor.substring(0,120)+(r.valor.length>120?'…':'')+'</span>';
+        badge=pts>0?'<span class="badge-ok">'+pts.toFixed(1)+'</span>':'<span class="badge-err">0</span>';
+      }
+    }
+    thtml+='<tr><td style="font-weight:800;color:#666;">'+(i+1)+'</td>'+
+      '<td style="font-size:.72rem;color:#444;">'+q.tema+'</td>'+
+      '<td>'+tuResp+'</td>'+
+      '<td>'+espResp+'</td>'+
+      '<td>'+badge+'</td></tr>';
+  }
+  tbody.innerHTML=thtml;
+  // Indicadores
+  var ind=document.getElementById('indicadores-res');
+  if(ind){
+    var mins=Math.round((3300-timerSegundos)/60);
+    ind.innerHTML=
+      '⏱ Tiempo usado: <strong>~'+mins+' min</strong><br>'+
+      '📤 Salidas detectadas: <strong>'+salidaCount+'</strong><br>'+
+      '✅ Preguntas contestadas: <strong>'+Object.keys(respuestas).length+' / '+PREGUNTAS.length+'</strong><br>'+
+      '⚠ Avances sin respuesta: <strong>'+autoAvanzarCount+'</strong>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// PDF
+// ══════════════════════════════════════════════════════════
+function imprimirResumen(){
+  window.print();
+}
+
+// ══════════════════════════════════════════════════════════
+// PANEL DOCENTE
+// ══════════════════════════════════════════════════════════
+function abrirModal(){
+  if(MODO_DOCENTE)return;
+  document.getElementById('modal-acc').classList.add('on');
+  setTimeout(function(){var i=document.getElementById('modal-cod');if(i)i.focus();},80);
+}
+function cerrarModal(){
+  document.getElementById('modal-acc').classList.remove('on');
+  document.getElementById('modal-cod').value='';
+  document.getElementById('modal-err').style.display='none';
+}
+function validarModal(){
+  var v=document.getElementById('modal-cod').value.trim();
+  if(v==='890'){
+    cerrarModal();MODO_DOCENTE=true;
+    document.body.classList.add('teacher');
+    document.getElementById('salida-badge').style.display='inline-block';
+  } else {
+    document.getElementById('modal-err').style.display='block';
+    document.getElementById('modal-cod').value='';
+  }
+}
+function saltarPregunta(){
+  clearTimeout(timerPreguntaId);
+  var sig=pregActual+1;
+  if(sig>=PREGUNTAS.length)enviarExamen();
+  else mostrarPregunta(sig);
+}
+function irResumenDirecto(){
+  enviarExamen();
+}
+function initSoluciones(){
+  var sp=document.getElementById('sol-panel');
+  if(!sp)return;
+  var html='<strong>Clave de respuestas:</strong><br>';
+  for(var i=0;i<PREGUNTAS.length;i++){
+    var q=PREGUNTAS[i];
+    if(q.tipo==='omc'){
+      html+='Q'+(i+1)+': <strong style="color:#93C5FD;">'+('ABCDE'[q.ok])+'</strong>';
+      if(i===14)html+=' (2pts)';
+      html+=' · ';
+    }
+  }
+  html+='<br>Q16: Dibujo · Q17: Reflexión';
+  sp.innerHTML=html;
+}
+function simularAlumno(){
+  for(var i=0;i<PREGUNTAS.length;i++){
+    var q=PREGUNTAS[i];
+    if(q.tipo==='omc'){
+      respuestas[i]={tipo:'omc',valor:q.ok};
+    } else if(q.tipo==='abierta'){
+      respuestas[i]={tipo:'abierta',valor:'La energía no se crea ni se destruye, se transforma y transfiere. Por ejemplo, el celular convierte energía química en luz y calor. El café caliente transfiere calor al ambiente hasta el equilibrio térmico. La Ley de Conservación se cumple siempre aunque no recuperemos toda la energía útil.',kcount:5,len:220};
+    } else if(q.tipo==='canvas'){
+      respuestas[i]={tipo:'canvas',valor:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='};
+    }
+  }
+  enviarExamen();
+}
+function toggleSoluciones(){
+  var sp=document.getElementById('sol-panel');
+  if(!sp)return;
+  sp.style.display=(sp.style.display==='none'||sp.style.display==='')?'block':'none';
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+window.addEventListener('load',function(){
+  document.getElementById('screen-login').classList.add('on');
+});
+</script>
+</body>
+</html>
