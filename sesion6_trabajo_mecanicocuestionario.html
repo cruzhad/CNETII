@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Laboratorio de Física: Trabajo Mecánico y Calor | Prof. Adrián Cruz H.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Anti-copy global: evita selección de texto en toda la interfaz */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Excepciones mínimas para inputs numéricos y selects: permiten escribir pero bloqueamos eventos copy/paste por JS */
+        input, select, textarea {
+            user-select: text; /* se puede escribir pero copiar/pegar será bloqueado por JS */
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
+            font-family: 'Segoe UI', 'Poppins', 'Roboto', 'Inter', system-ui, -apple-system, 'Segoe UI', monospace;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #eef5ff;
+        }
+
+        /* Contenedor Principal */
+        .app-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(12, 20, 30, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 180, 255, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Panel de identificación */
+        .id-panel {
+            padding: 2rem;
+            background: linear-gradient(135deg, #0a1428, #010514);
+            text-align: center;
+            border-bottom: 2px solid cyan;
+        }
+
+        .id-panel h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #aaffff, #2a9df4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .id-panel .prof {
+            font-family: monospace;
+            background: #0f212e;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            border-left: 4px solid cyan;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group input {
+            width: 80%;
+            padding: 14px 20px;
+            border-radius: 60px;
+            border: none;
+            background: #0e1a24;
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            border: 1px solid #2c5f7a;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #0ef;
+            box-shadow: 0 0 12px cyan;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #0b8f9c, #0a5c6e);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 5px 0 #003d4d;
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #003d4d;
+        }
+
+        /* Panel Cuestionario */
+        .quiz-panel {
+            padding: 1.5rem 2rem;
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid cyan;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .student-name-badge {
+            background: #0a1820;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .progress {
+            font-family: monospace;
+            font-size: 1rem;
+            background: #07121c;
+            padding: 5px 12px;
+            border-radius: 30px;
+        }
+
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .question-card {
+            background: rgba(0, 15, 25, 0.7);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border-left: 6px solid #0ef;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .options-area {
+            margin: 0.8rem 0;
+            padding-left: 10px;
+        }
+
+        .option-radio, .option-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .relation-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            align-items: center;
+            gap: 15px;
+            background: #05121c;
+            padding: 8px 12px;
+            border-radius: 50px;
+        }
+
+        select {
+            background: #0b1b26;
+            color: white;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid cyan;
+        }
+
+        input[type="number"] {
+            background: #0b1b26;
+            border: 1px solid #2a8faa;
+            padding: 10px;
+            border-radius: 20px;
+            color: white;
+            width: 130px;
+        }
+
+        .save-btn {
+            background: #1a3f4b;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            transition: 0.1s;
+        }
+
+        .save-btn:hover {
+            background: #0d8ba0;
+        }
+
+        .saved-badge {
+            margin-left: 15px;
+            font-size: 0.75rem;
+            color: #0ef;
+        }
+
+        .finalize-btn {
+            background: linear-gradient(90deg, #eb6b2c, #c4450c);
+            display: block;
+            width: 250px;
+            margin: 30px auto 10px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        /* Reporte final */
+        .report-panel {
+            padding: 2rem;
+            background: #07121cd9;
+            display: none;
+            border-top: 2px solid cyan;
+        }
+
+        .report-content {
+            background: #021018;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .boton-pdf {
+            background: #2c5a74;
+            margin: 15px 5px;
+        }
+
+        /* Botón flotante de eventos */
+        .floating-stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000000cc;
+            backdrop-filter: blur(12px);
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            border: 1px solid cyan;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0,255,255,0.3);
+        }
+
+        .floating-stats:hover {
+            background: #0f2a33;
+        }
+
+        .badge-warning {
+            background: red;
+            border-radius: 20px;
+            padding: 2px 8px;
+            color: white;
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 12px;
+            border-top: 1px solid #2a5a6e;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #011015;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: cyan;
+            border-radius: 10px;
+        }
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    <!-- Panel identificación -->
+    <div id="idPanel" class="id-panel">
+        <h1>🔬 TRABAJO MECÁNICO → CALOR ⚡</h1>
+        <div class="prof">👨‍🔬 Prof. Adrián Cruz H. | Física experimental</div>
+        <div class="input-group">
+            <input type="text" id="studentNameInput" placeholder="Ingresa tu nombre completo" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="startQuizBtn">▶ INGRESAR AL LABORATORIO</button>
+        <p style="margin-top: 20px; font-size: 12px; opacity:0.7">Una vez iniciado, no podrás volver atrás.<br>Se registran eventos de integridad académica.</p>
+    </div>
+
+    <!-- Cuestionario -->
+    <div id="quizPanel" class="quiz-panel">
+        <div class="quiz-header">
+            <span class="student-name-badge" id="displayStudentName"></span>
+            <span class="progress" id="progressIndicator">📋 0/15 guardadas</span>
+        </div>
+        <div class="questions-container" id="questionsContainer"></div>
+        <button class="btn-primary finalize-btn" id="finalizeQuizBtn">📊 FINALIZAR Y VERIFICAR</button>
+    </div>
+
+    <!-- Panel Informe Final -->
+    <div id="reportPanel" class="report-panel">
+        <div class="report-content" id="reportContent">
+            <!-- resultados dinámicos -->
+        </div>
+        <button id="downloadPdfBtn" class="btn-primary boton-pdf">📄 GUARDAR INFORME EN PDF</button>
+        <button id="resetViewBtn" style="background:#2e5f5f; margin-left:10px;">⟳ Nueva sesión (solo profesor)</button>
+    </div>
+</div>
+
+<div class="floating-stats" id="floatingStatsBtn">
+    📡 SEGURIDAD | 🛡️ <span id="eventCounterDisplay">0</span> eventos
+</div>
+
+<script>
+    // ----------------------------- DEFINICIÓN DE PREGUNTAS (15) -------------------------
+    const MASTER_QUESTIONS = [
+        { id: 0, type: "mcq", text: "¿Cuál es la condición fundamental para que exista trabajo mecánico según la física?", options: ["Que haya fuerza aplicada", "Que haya desplazamiento en la misma dirección de la fuerza", "Que el objeto tenga gran masa", "Que la fuerza sea mayor a 10N"], correct: "Que haya desplazamiento en la misma dirección de la fuerza" },
+        { id: 1, type: "mcq", text: "Unidad de medida del trabajo en el Sistema Internacional, equivalente también a la unidad de calor:", options: ["Newton", "Joule", "Caloría", "Watt"], correct: "Joule" },
+        { id: 2, type: "truefalse", text: "Una persona empuja una pared fija con una fuerza de 200N durante 10 segundos. ¿Realiza trabajo mecánico?", options: ["Sí", "No"], correct: "No" },
+        { id: 3, type: "mcq", text: "¿Qué ocurre con la energía del trabajo mecánico cuando actúan fuerzas de fricción?", options: ["Se pierde irremediablemente", "Se transforma en energía térmica (calor)", "Se convierte en energía potencial", "Se anula completamente"], correct: "Se transforma en energía térmica (calor)" },
+        { id: 4, type: "match_situations", text: "Relaciona cada situación con 'Sí hay trabajo' (S) o 'No hay trabajo' (N)", matchItems: ["Deslizar un libro sobre la mesa", "Frenar una bicicleta", "Sostener una lámpara colgando", "Frotar las manos"], matchPairs: ["Sí", "Sí", "No", "Sí"], subType: "work_yesno" },
+        { id: 5, type: "mcq", text: "El experimento de Joule con pesas y paletas demostró principalmente que:", options: ["El calor es un fluido invisible", "El trabajo mecánico puede convertirse en calor", "El agua hierve con fricción", "La energía se destruye"], correct: "El trabajo mecánico puede convertirse en calor" },
+        { id: 6, type: "numeric", text: "Problema: Calcula el trabajo (en Joules) al aplicar una fuerza constante de 40 N en la misma dirección del desplazamiento, moviendo un objeto 2.5 metros.", correct: 100, tolerance: 0.5 },
+        { id: 7, type: "numeric", text: "Una fuerza de fricción de 15 N actúa sobre una caja mientras se desliza 4 metros. ¿Cuánto trabajo (en Joules) se convierte en calor?", correct: 60, tolerance: 0.5 },
+        { id: 8, type: "mcq", text: "Si la fuerza aplicada sobre un objeto es perfectamente perpendicular al desplazamiento, ¿cuánto trabajo se realiza?", options: ["Trabajo máximo", "Trabajo negativo", "Cero trabajo", "Depende de la velocidad"], correct: "Cero trabajo" },
+        { id: 9, type: "mcq", text: "¿Cuál de los siguientes ejemplos NO representa conversión de trabajo mecánico en calor?", options: ["Frenos de auto calientes", "Taladro que quema madera", "Frotar las manos", "Un libro cayendo al vacío sin fricción"], correct: "Un libro cayendo al vacío sin fricción" },
+        { id: 10, type: "truefalse", text: "El trabajo mecánico se mide en Newtons por metro (N·m), unidad equivalente al Joule.", options: ["Verdadero", "Falso"], correct: "Verdadero" },
+        { id: 11, type: "numeric", text: "Un estudiante aplica una fuerza horizontal de 8 N para deslizar un borrador 0.3 metros. ¿Qué trabajo realizó? (Joules)", correct: 2.4, tolerance: 0.05 },
+        { id: 12, type: "numeric", text: "Si el trabajo realizado sobre un objeto es de 500 J y la fuerza aplicada fue de 100 N en la misma dirección, ¿cuál fue la distancia recorrida en metros?", correct: 5, tolerance: 0.1 },
+        { id: 13, type: "match_concepts", text: "Relaciona cada término con su descripción correcta.", matchItems: ["Joule", "Trabajo mecánico", "Calor por fricción", "Experimento de paletas"], matchPairs: ["Unidad de energía", "Fuerza × desplazamiento", "Conversión de energía cinética en térmica", "Demostró equivalencia trabajo-calor"], subType: "concepts" },
+        { id: 14, type: "mcq", text: "¿Cuál es la unidad derivada que permite igualar directamente calor y trabajo mecánico?", options: ["Caloría", "Joule", "BTU", "Ergio"], correct: "Joule" }
+    ];
+
+    // Variables globales estado
+    let shuffledQuestions = [];
+    let userAnswers = {};    // { qIndex: respuestaGuardada (string o number o objeto para match) }
+    let savedStatus = {};    // para UI
+    let studentName = "";
+    let quizActive = false;
+    let eventLog = {
+        minimize: 0, changeScreen: 0, copy: 0, paste: 0, splitScreen: 0, multitask: 0, otherApps: 0
+    };
+    let screenResizeCount = 0;
+    let visibilityLostCount = 0;
+    let windowBlurCount = 0;
+
+    // ===================== ANTICOPY / ANTIPASTE TOTAL =====================
+    function blockCopyPasteAndContext() {
+        // Bloquear eventos de copiar, cortar, pegar en todo el documento
+        const blockEvent = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Registramos evento también en el contador de integridad
+            if (e.type === 'copy') eventLog.copy++;
+            if (e.type === 'paste') eventLog.paste++;
+            if (e.type === 'cut') eventLog.copy++; // como intento de manipulación
+            updateFloatingCounterStatic();
+            return false;
+        };
+        document.addEventListener('copy', blockEvent);
+        document.addEventListener('cut', blockEvent);
+        document.addEventListener('paste', blockEvent);
+        
+        // Bloquear menú contextual (clic derecho)
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Prevenir combinaciones de teclado: Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+U, F12, Ctrl+Shift+I, etc.
+        document.addEventListener('keydown', (e) => {
+            // Ctrl / Meta + C, V, X
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (e.key === 'c' || e.key === 'C') eventLog.copy++;
+                if (e.key === 'v' || e.key === 'V') eventLog.paste++;
+                if (e.key === 'x' || e.key === 'X') eventLog.copy++;
+                updateFloatingCounterStatic();
+                return false;
+            }
+            // Bloquear F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (código fuente)
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                eventLog.copy++; // registrar como intento
+                updateFloatingCounterStatic();
+                return false;
+            }
+        });
+        
+        // Bloquear arrastrar y soltar texto/imágenes para evitar copia indirecta
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+            return false;
+        });
+        // Deshabilitar selección de texto mediante doble click o selección masiva (ya cubierto con CSS, pero reforzamos)
+        document.addEventListener('selectstart', (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
+                e.preventDefault();
+            }
+        });
+    }
+    
+    function updateFloatingCounterStatic() {
+        let totalEvents = Object.values(eventLog).reduce((a,b)=>a+b,0);
+        let counterSpan = document.getElementById("eventCounterDisplay");
+        if (counterSpan) counterSpan.innerText = totalEvents;
+    }
+    // =======================================================================
+
+    // Helper: aleatorizar preguntas
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // Inicialización de preguntas aleatorias
+    function initShuffledQuestions() {
+        shuffledQuestions = shuffleArray([...MASTER_QUESTIONS]);
+        userAnswers = {};
+        savedStatus = {};
+        // inicializar estructuras para match
+        shuffledQuestions.forEach((q, idx) => {
+            if (q.type === "match_situations" || q.type === "match_concepts") {
+                let defaultMatches = {};
+                if (q.matchItems) {
+                    q.matchItems.forEach((item, i) => { defaultMatches[item] = ""; });
+                }
+                userAnswers[idx] = defaultMatches;
+                savedStatus[idx] = false;
+            } else {
+                userAnswers[idx] = "";
+                savedStatus[idx] = false;
+            }
+        });
+    }
+
+    // Renderizar todas las preguntas en el contenedor
+    function renderQuestions() {
+        const container = document.getElementById("questionsContainer");
+        if (!container) return;
+        container.innerHTML = "";
+        shuffledQuestions.forEach((q, idx) => {
+            const card = document.createElement("div");
+            card.className = "question-card";
+            card.setAttribute("data-qidx", idx);
+            const qNumber = idx+1;
+            let html = `<div class="question-text"><strong>${qNumber}.</strong> ${q.text}</div>`;
+            html += `<div class="options-area" id="options-area-${idx}">`;
+            // Dependiendo del tipo
+            if (q.type === "mcq") {
+                q.options.forEach(opt => {
+                    const checkedAttr = (userAnswers[idx] === opt) ? 'checked' : '';
+                    html += `<div class="option-radio"><input type="radio" name="q${idx}" value="${opt.replace(/"/g, '&quot;')}" ${checkedAttr}> <label>${opt}</label></div>`;
+                });
+            } else if (q.type === "truefalse") {
+                q.options.forEach(opt => {
+                    const checkedAttr = (userAnswers[idx] === opt) ? 'checked' : '';
+                    html += `<div class="option-radio"><input type="radio" name="q${idx}" value="${opt}" ${checkedAttr}> <label>${opt}</label></div>`;
+                });
+            } else if (q.type === "numeric") {
+                const val = userAnswers[idx] !== "" ? userAnswers[idx] : "";
+                html += `<input type="number" step="any" id="numInput_${idx}" value="${val}" placeholder="Ingresa el valor numérico" style="width:180px;"> <span style="margin-left:10px;">Joules o metros según corresponda</span>`;
+            } else if (q.type === "match_situations" || q.type === "match_concepts") {
+                // Relación de columnas con selects
+                const items = q.matchItems;
+                const pairsOptions = (q.subType === "work_yesno") ? ["Sí", "No"] : (q.subType === "concepts") ? ["Unidad de energía", "Fuerza × desplazamiento", "Conversión de energía cinética en térmica", "Demostró equivalencia trabajo-calor"] : ["Sí","No"];
+                html += `<div style="display:flex; flex-direction:column; gap:12px;">`;
+                items.forEach((item, ix) => {
+                    const savedVal = (userAnswers[idx] && userAnswers[idx][item]) ? userAnswers[idx][item] : "";
+                    html += `<div class="relation-row"><span style="min-width:180px;">🔹 ${item}</span>
+                             <select data-item="${item.replace(/"/g, '&quot;')}" class="match-select-${idx}">
+                             <option value="">-- Seleccionar --</option>`;
+                    for (let pairOpt of pairsOptions) {
+                        const selected = (savedVal === pairOpt) ? 'selected' : '';
+                        html += `<option value="${pairOpt}" ${selected}>${pairOpt}</option>`;
+                    }
+                    html += `</select></div>`;
+                });
+                html += `</div>`;
+            }
+            html += `</div><div><button class="save-btn" data-idx="${idx}">💾 Guardar respuesta</button>`;
+            if (savedStatus[idx]) html += `<span class="saved-badge">✓ Respuesta guardada</span>`;
+            html += `</div>`;
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+        attachDynamicEvents();
+        updateProgressIndicator();
+    }
+
+    function attachDynamicEvents() {
+        // Botones guardar
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.removeEventListener('click', window._saveHandler);
+            const idx = parseInt(btn.getAttribute('data-idx'));
+            const handler = (e) => {
+                saveSpecificAnswer(idx);
+            };
+            btn.addEventListener('click', handler);
+            btn._handler = handler;
+        });
+        // Para numeric también capturar pero guardar manual
+    }
+
+    function saveSpecificAnswer(qIdx) {
+        const q = shuffledQuestions[qIdx];
+        if (!q) return;
+        let answer = null;
+        if (q.type === "mcq" || q.type === "truefalse") {
+            const selectedRadio = document.querySelector(`input[name="q${qIdx}"]:checked`);
+            answer = selectedRadio ? selectedRadio.value : "";
+        } else if (q.type === "numeric") {
+            const inputNum = document.getElementById(`numInput_${qIdx}`);
+            answer = inputNum ? parseFloat(inputNum.value) : "";
+            if (isNaN(answer)) answer = "";
+        } else if (q.type === "match_situations" || q.type === "match_concepts") {
+            const selects = document.querySelectorAll(`.match-select-${qIdx}`);
+            let matchObj = {};
+            selects.forEach(sel => {
+                const itemKey = sel.getAttribute('data-item');
+                matchObj[itemKey] = sel.value;
+            });
+            answer = matchObj;
+        }
+        if (answer !== null && answer !== "") {
+            userAnswers[qIdx] = answer;
+            savedStatus[qIdx] = true;
+            // actualizar badge visual
+            const card = document.querySelector(`.question-card[data-qidx="${qIdx}"]`);
+            if (card) {
+                let badgeSpan = card.querySelector('.saved-badge');
+                if (!badgeSpan) {
+                    const btnDiv = card.querySelector('.save-btn').parentNode;
+                    const newBadge = document.createElement('span');
+                    newBadge.className = 'saved-badge';
+                    newBadge.innerText = '✓ Respuesta guardada';
+                    btnDiv.appendChild(newBadge);
+                } else {
+                    badgeSpan.innerText = '✓ Respuesta guardada';
+                }
+            }
+            updateProgressIndicator();
+            showTempToast("Respuesta guardada ✅");
+        } else {
+            alert("Por favor selecciona/ingresa una respuesta antes de guardar.");
+        }
+    }
+
+    function updateProgressIndicator() {
+        const savedCount = Object.values(savedStatus).filter(v => v === true).length;
+        document.getElementById("progressIndicator").innerText = `📌 ${savedCount}/${shuffledQuestions.length} guardadas`;
+    }
+
+    function showTempToast(msg) {
+        let toast = document.createElement('div');
+        toast.innerText = msg;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '80px';
+        toast.style.right = '20px';
+        toast.style.backgroundColor = '#0a4b5e';
+        toast.style.padding = '8px 18px';
+        toast.style.borderRadius = '40px';
+        toast.style.zIndex = 9999;
+        toast.style.color = 'white';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1400);
+    }
+
+    // Calificación final
+    function computeScore() {
+        let total = 0;
+        for (let i = 0; i < shuffledQuestions.length; i++) {
+            const q = shuffledQuestions[i];
+            const userAns = userAnswers[i];
+            if (!userAns && userAns !== 0) continue;
+            let correctFlag = false;
+            if (q.type === "mcq" || q.type === "truefalse") {
+                if (userAns === q.correct) correctFlag = true;
+            } else if (q.type === "numeric") {
+                let numericUser = parseFloat(userAns);
+                if (!isNaN(numericUser) && Math.abs(numericUser - q.correct) <= (q.tolerance || 0.01)) correctFlag = true;
+            } else if (q.type === "match_situations") {
+                if (typeof userAns === 'object') {
+                    let allMatch = true;
+                    for (let idxItem = 0; idxItem < q.matchItems.length; idxItem++) {
+                        const item = q.matchItems[idxItem];
+                        const expected = q.matchPairs[idxItem];
+                        if (userAns[item] !== expected) { allMatch = false; break; }
+                    }
+                    if (allMatch) correctFlag = true;
+                }
+            } else if (q.type === "match_concepts") {
+                if (typeof userAns === 'object') {
+                    let allMatch = true;
+                    const expectedPairs = ["Unidad de energía", "Fuerza × desplazamiento", "Conversión de energía cinética en térmica", "Demostró equivalencia trabajo-calor"];
+                    for (let idxItem = 0; idxItem < q.matchItems.length; idxItem++) {
+                        const item = q.matchItems[idxItem];
+                        if (userAns[item] !== expectedPairs[idxItem]) { allMatch = false; break; }
+                    }
+                    if (allMatch) correctFlag = true;
+                }
+            }
+            if (correctFlag) total++;
+        }
+        return (total / shuffledQuestions.length) * 10;
+    }
+
+    // GENERAR INFORME FINAL
+    function showReport() {
+        const score = computeScore();
+        const percentage = (score / 10) * 100;
+        document.getElementById("quizPanel").style.display = "none";
+        const reportDiv = document.getElementById("reportContent");
+        let correctCount = (score / 10) * shuffledQuestions.length;
+        let eventSummary = `<strong>📊 REGISTRO DE SEGURIDAD:</strong><br>
+        🪟 Minimización pantalla: ${eventLog.minimize}<br>
+        🖥️ Cambio de pantalla/foco: ${eventLog.multitask}<br>
+        📋 Intentos de copiar: ${eventLog.copy}<br>
+        📎 Intentos de pegar: ${eventLog.paste}<br>
+        ⬜ Pantalla dividida / resize significativo: ${eventLog.splitScreen}<br>
+        🔄 Multitasking / cambio de app: ${eventLog.otherApps}<br>
+        🧪 Otras detecciones: ${windowBlurCount + visibilityLostCount} eventos extra`;
+        reportDiv.innerHTML = `
+            <h2>🔬 INFORME FINAL DE LABORATORIO</h2>
+            <p><strong>👩‍🎓 Estudiante:</strong> ${studentName}</p>
+            <p><strong>📐 Calificación obtenida:</strong> ${score.toFixed(2)} / 10.0</p>
+            <p><strong>✅ Porcentaje de aciertos:</strong> ${percentage.toFixed(1)}%</p>
+            <p><strong>📝 Respuestas correctas:</strong> ${Math.round(correctCount)} de ${shuffledQuestions.length}</p>
+            <hr>
+            <div style="background:#02222e; border-radius: 16px; padding:10px;">${eventSummary}</div>
+            <p style="margin-top:15px; font-size:12px;">Prof. Adrián Cruz H. - Principios de Termodinámica y Trabajo Mecánico</p>
+        `;
+        document.getElementById("reportPanel").style.display = "block";
+    }
+
+    // Detección de eventos de seguridad (adicionales)
+    function initSecurityMonitors() {
+        const incrementEvent = (evType) => {
+            if (eventLog.hasOwnProperty(evType)) eventLog[evType]++;
+            else eventLog[evType] = 1;
+            updateFloatingCounterStatic();
+        };
+        // Ya manejamos copy/paste desde blockCopyPaste, aquí solo otros eventos no duplicados
+        window.addEventListener('blur', () => { incrementEvent('multitask'); incrementEvent('otherApps'); });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) incrementEvent('minimize');
+        });
+        let lastWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+            if (Math.abs(window.innerWidth - lastWidth) > 100) {
+                incrementEvent('splitScreen');
+            }
+            lastWidth = window.innerWidth;
+        });
+        setInterval(() => updateFloatingCounterStatic(), 500);
+        updateFloatingCounterStatic();
+    }
+
+    // PDF
+    function setupPdf() {
+        document.getElementById("downloadPdfBtn")?.addEventListener("click", () => {
+            window.print();
+        });
+    }
+
+    // --- FLUJO PRINCIPAL ---
+    document.getElementById("startQuizBtn").addEventListener("click", () => {
+        const nameInput = document.getElementById("studentNameInput").value.trim();
+        if (nameInput === "") {
+            alert("⚠️ Por favor ingresa tu nombre para acceder al laboratorio.");
+            return;
+        }
+        studentName = nameInput;
+        document.getElementById("displayStudentName").innerText = `🧪 ${studentName}`;
+        document.getElementById("idPanel").style.display = "none";
+        document.getElementById("quizPanel").style.display = "block";
+        initShuffledQuestions();
+        renderQuestions();
+        quizActive = true;
+        sessionStorage.setItem("physics_lab_active", "true");
+        sessionStorage.setItem("student_name", studentName);
+        sessionStorage.setItem("questions_seed", JSON.stringify(shuffledQuestions.map(q=>q.id)));
+    });
+
+    document.getElementById("finalizeQuizBtn").addEventListener("click", () => {
+        let someUnsaved = Object.values(savedStatus).some(v => v === false);
+        if (someUnsaved) {
+            if (!confirm("Aún hay preguntas sin guardar. Si continúas, las respuestas vacías se considerarán incorrectas. ¿Deseas finalizar de todas formas?")) return;
+        }
+        showReport();
+    });
+
+    document.getElementById("resetViewBtn")?.addEventListener("click", () => {
+        location.reload();
+    });
+
+    // ACTIVAR ANTICOPY/ANTIPASTE DE INICIO
+    blockCopyPasteAndContext();
+    initSecurityMonitors();
+    setupPdf();
+
+    // Evitar volver al panel de identificación desde estado
+    window.addEventListener('load', () => {
+        if (sessionStorage.getItem("physics_lab_active") === "true") {
+            const storedName = sessionStorage.getItem("student_name");
+            if (storedName) {
+                studentName = storedName;
+                document.getElementById("displayStudentName").innerText = `🧪 ${studentName}`;
+                document.getElementById("idPanel").style.display = "none";
+                document.getElementById("quizPanel").style.display = "block";
+                initShuffledQuestions();
+                renderQuestions();
+                quizActive = true;
+            }
+        }
+    });
+</script>
+</body>
+</html>
