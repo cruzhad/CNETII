@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>EQUIVALENCIA TERMODINÁMICA | CNEyT II</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+        input,select,textarea{user-select:text}
+        body{
+            background:radial-gradient(circle at 20% 30%,#0a0f1e,#03060c);
+            font-family:'Segoe UI','Poppins','Roboto','Inter',system-ui,sans-serif;
+            min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:center;color:#eef5ff
+        }
+        .app-container{
+            max-width:1000px;width:100%;
+            background:rgba(12,20,30,.75);backdrop-filter:blur(10px);
+            border-radius:2rem;border:1px solid rgba(0,255,255,.3);
+            box-shadow:0 25px 45px rgba(0,0,0,.5),0 0 20px rgba(0,180,255,.2);
+            overflow:hidden;transition:all .3s ease
+        }
+        /* ---- ID PANEL ---- */
+        .id-panel{padding:2rem;background:linear-gradient(135deg,#0a1428,#010514);text-align:center;border-bottom:2px solid cyan}
+        .id-panel h1{
+            font-size:2rem;font-weight:600;
+            background:linear-gradient(135deg,#aaffff,#2a9df4);
+            -webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px
+        }
+        .id-panel .asig{
+            font-family:monospace;background:#0f212e;display:inline-block;padding:5px 15px;
+            border-radius:40px;font-size:.85rem;margin:10px 0 4px;border-left:4px solid cyan;font-weight:bold;color:#0ef
+        }
+        .id-panel .prof{
+            font-family:monospace;background:#1a2a1a;display:inline-block;padding:5px 15px;
+            border-radius:40px;font-size:.85rem;margin:4px 0 15px;border-left:4px solid #0f0;color:#8f8
+        }
+        .input-group{margin:20px 0}
+        .input-group input{
+            width:80%;padding:14px 20px;border-radius:60px;border:none;
+            background:#0e1a24;color:#fff;font-size:1.1rem;text-align:center;
+            border:1px solid #2c5f7a;transition:.2s
+        }
+        .input-group input:focus{outline:none;border-color:#0ef;box-shadow:0 0 12px cyan}
+        .btn-primary{
+            background:linear-gradient(90deg,#0b8f9c,#0a5c6e);border:none;padding:12px 28px;
+            font-size:1.2rem;font-weight:bold;border-radius:60px;color:#fff;cursor:pointer;
+            transition:.2s;margin-top:10px;box-shadow:0 5px 0 #003d4d
+        }
+        .btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #003d4d}
+        /* ---- QUIZ PANEL ---- */
+        .quiz-panel{padding:1.5rem 2rem;display:none}
+        .quiz-header{
+            display:flex;justify-content:space-between;align-items:baseline;
+            border-bottom:2px solid cyan;padding-bottom:10px;margin-bottom:25px;flex-wrap:wrap
+        }
+        .student-name-badge{background:#0a1820;padding:5px 12px;border-radius:20px;font-weight:bold}
+        .progress{font-family:monospace;font-size:1rem;background:#07121c;padding:5px 12px;border-radius:30px}
+        .questions-container{
+            display:flex;flex-direction:column;gap:2rem;max-height:65vh;overflow-y:auto;padding-right:8px
+        }
+        .question-card{
+            background:rgba(0,15,25,.7);border-radius:1.5rem;padding:1.5rem;
+            border-left:6px solid #0ef;backdrop-filter:blur(4px);transition:.2s
+        }
+        .question-text{font-size:1.15rem;font-weight:500;margin-bottom:1rem}
+        .options-area{margin:.8rem 0;padding-left:10px}
+        .option-radio{margin:8px 0;display:flex;align-items:center;gap:12px}
+        .relation-row{
+            display:flex;flex-wrap:wrap;margin:10px 0;align-items:center;gap:15px;
+            background:#05121c;padding:8px 12px;border-radius:50px
+        }
+        select{
+            background:#0b1b26;color:#fff;padding:8px;border-radius:20px;border:1px solid cyan
+        }
+        input[type="number"]{
+            background:#0b1b26;border:1px solid #2a8faa;padding:10px;border-radius:20px;color:#fff;width:130px
+        }
+        .save-btn{
+            background:#1a3f4b;border:none;padding:8px 20px;border-radius:40px;
+            color:#fff;cursor:pointer;font-size:.8rem;margin-top:10px;transition:.1s
+        }
+        .save-btn:hover{background:#0d8ba0}
+        .saved-badge{margin-left:15px;font-size:.75rem;color:#0ef}
+        .finalize-btn{
+            background:linear-gradient(90deg,#eb6b2c,#c4450c);
+            display:block;width:250px;margin:30px auto 10px;text-align:center;font-size:1.2rem
+        }
+        /* ---- REPORT ---- */
+        .report-panel{padding:2rem;background:#07121cd9;display:none;border-top:2px solid cyan}
+        .report-content{background:#021018;padding:20px;border-radius:20px}
+        .boton-pdf{background:#2c5a74;margin:15px 5px}
+        /* ---- FLOATING STATS ---- */
+        .floating-stats{
+            position:fixed;bottom:20px;right:20px;background:#000000cc;backdrop-filter:blur(12px);
+            border-radius:50px;padding:10px 18px;font-family:monospace;font-size:.8rem;
+            border:1px solid cyan;cursor:pointer;z-index:1000;display:flex;gap:8px;align-items:center;
+            font-weight:bold;box-shadow:0 0 15px rgba(0,255,255,.3)
+        }
+        .floating-stats:hover{background:#0f2a33}
+        .badge-warning{background:red;border-radius:20px;padding:2px 8px;color:#fff}
+        footer{font-size:.7rem;text-align:center;padding:12px;border-top:1px solid #2a5a6e}
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:#011015}
+        ::-webkit-scrollbar-thumb{background:cyan;border-radius:10px}
+        button{cursor:pointer}
+        .alert-msg{
+            display:none;padding:11px 15px;border-radius:10px;font-size:.84rem;
+            font-weight:600;text-align:center;margin-top:10px;
+            background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:#ff5252
+        }
+        .alert-msg.show{display:block}
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+        .shake{animation:shake .4s ease}
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    <!-- ===== PANEL IDENTIFICACIÓN ===== -->
+    <div id="idPanel" class="id-panel">
+        <h1>🔥 EQUIVALENCIA TERMODINÁMICA 🧊</h1>
+        <div class="asig">📚 CNEyT II</div>
+        <div class="prof">👨‍🔬 Prof. Adrián Cruz H.</div>
+        <div class="input-group">
+            <input type="text" id="studentNameInput" placeholder="Ingresa tu nombre completo" autocomplete="off">
+        </div>
+        <div id="nameAlert" class="alert-msg">⚠️ Por favor ingresa tu nombre para acceder.</div>
+        <button class="btn-primary" id="startQuizBtn">▶ COMENZAR ACTIVIDAD</button>
+        <p style="margin-top:20px;font-size:12px;opacity:.7">
+            Responde preguntas sobre las imágenes 1, 2 y 3 del material de clase.<br>
+            Incluye problemas de conversión y ejercicios de relación.<br>
+            Una vez iniciado, no podrás volver atrás.
+        </p>
+    </div>
+
+    <!-- ===== CUESTIONARIO ===== -->
+    <div id="quizPanel" class="quiz-panel">
+        <div class="quiz-header">
+            <span class="student-name-badge" id="displayStudentName"></span>
+            <span class="progress" id="progressIndicator">📋 0/13 guardadas</span>
+        </div>
+        <div class="questions-container" id="questionsContainer"></div>
+        <button class="btn-primary finalize-btn" id="finalizeQuizBtn">📊 FINALIZAR Y VERIFICAR</button>
+    </div>
+
+    <!-- ===== INFORME FINAL ===== -->
+    <div id="reportPanel" class="report-panel">
+        <div class="report-content" id="reportContent"></div>
+        <button id="downloadPdfBtn" class="btn-primary boton-pdf">📄 GUARDAR INFORME EN PDF</button>
+        <button id="resetViewBtn" style="background:#2e5f5f;margin-left:10px;">⟳ Nueva sesión (solo profesor)</button>
+    </div>
+</div>
+
+<!-- ===== CONTADOR FLOTANTE DE EVENTOS ===== -->
+<div class="floating-stats" id="floatingStatsBtn">
+    📡 SEGURIDAD | 🛡️ <span id="eventCounterDisplay">0</span> eventos
+</div>
+
+<script>
+/* ============================================================
+   PREGUNTAS — 13 en total
+   - Sección A (Imagen 1): 3 preguntas — tipos variados
+   - Sección B (Imagen 2): 3 preguntas — tipos variados
+   - Sección C (Imagen 3): 3 preguntas — tipos variados (sin variables de estado)
+   - Sección D: 2 problemas de conversión + 2 de relación
+   ============================================================ */
+
+const MASTER_QUESTIONS = [
+    // ---- IMAGEN 1: ¿Qué es la Termodinámica? ----
+    {
+        id:0, type:"mcq",
+        text:"Cuando una persona pedalea una bicicleta, su cuerpo transforma la energía química de los alimentos en movimiento y calor. ¿Qué concepto de la termodinámica describe este proceso?",
+        options:[
+            "La conservación de la masa en sistemas biológicos",
+            "La transformación de energía, donde una forma (química) se convierte en otra (cinética y térmica)",
+            "La creación de energía a partir de la materia",
+            "La destrucción de energía por el esfuerzo físico"
+        ],
+        correct:"La transformación de energía, donde una forma (química) se convierte en otra (cinética y térmica)"
+    },
+    {
+        id:1, type:"truefalse",
+        text:"Según el contenido, el refrigerador crea frío a partir de la electricidad. ¿Es verdadera esta afirmación?",
+        options:["Verdadero","Falso"],
+        correct:"Falso"
+    },
+    {
+        id:2, type:"mcq",
+        text:"En una máquina de vapor, el vapor de agua empuja el pistón. ¿Qué transformación de energía ocurre en este proceso?",
+        options:[
+            "De energía eléctrica a energía química",
+            "De energía cinética a energía potencial",
+            "De energía térmica a energía mecánica",
+            "De energía mecánica a energía térmica"
+        ],
+        correct:"De energía térmica a energía mecánica"
+    },
+
+    // ---- IMAGEN 2: Equivalencia Energética ----
+    {
+        id:3, type:"numeric",
+        text:"Problema: Si consumes una barra energética etiquetada con 200 Cal (kilocalorías), ¿cuántos joules de energía ingiere tu cuerpo? (Usa: 1 Cal = 1 kcal = 4,184 J)",
+        correct:836800, tolerance:10
+    },
+    {
+        id:4, type:"mcq",
+        text:"El joule se definió como unidad en 1843 y es la unidad del Sistema Internacional. ¿Por qué se adoptó universalmente en lugar de la caloría?",
+        options:[
+            "Porque la caloría solo existe en México",
+            "Porque el joule no depende de las propiedades de una sustancia específica como el agua, a diferencia de la caloría",
+            "Porque la caloría mide temperatura y no energía",
+            "Porque el joule es más grande que la caloría"
+        ],
+        correct:"Porque el joule no depende de las propiedades de una sustancia específica como el agua, a diferencia de la caloría"
+    },
+    {
+        id:5, type:"match_concepts",
+        text:"Relaciona cada unidad o concepto con su descripción correcta.",
+        matchItems:["Caloría (cal)","Joule (J)","Caloría (Cal) en etiquetas de México","1 kcal"],
+        matchPairs:[
+            "Cantidad de calor para elevar 1 °C el agua",
+            "Unidad del Sistema Internacional de energía",
+            "Equivale a 1 kilocaloría",
+            "Equivale a 4,184 J"
+        ],
+        subType:"concepts"
+    },
+
+    // ---- IMAGEN 3: Sistemas Termodinámicos (sin variables de estado) ----
+    {
+        id:6, type:"mcq",
+        text:"En una olla destapada con agua hirviendo, el vapor escapa y se pierde calor al ambiente. ¿Qué tipo de sistema termodinámico es esta olla?",
+        options:[
+            "Sistema cerrado, porque el agua no cambia de lugar",
+            "Sistema aislado, porque la olla contiene el agua",
+            "Sistema abierto, porque intercambia tanto masa (vapor) como energía (calor) con los alrededores",
+            "No es un sistema termodinámico porque es un objeto cotidiano"
+        ],
+        correct:"Sistema abierto, porque intercambia tanto masa (vapor) como energía (calor) con los alrededores"
+    },
+    {
+        id:7, type:"truefalse",
+        text:"Una olla a presión sellada intercambia calor con los alrededores a través de sus paredes metálicas, pero no permite que escape masa. ¿Es un sistema cerrado?",
+        options:["Verdadero","Falso"],
+        correct:"Verdadero"
+    },
+    {
+        id:8, type:"match_situations",
+        text:"Relaciona cada ejemplo con su tipo de sistema termodinámico.",
+        matchItems:["Olla destapada con agua hirviendo","Olla a presión sellada","Termo ideal","Vaso de agua abierto"],
+        matchPairs:["Abierto","Cerrado","Aislado","Abierto"],
+        subType:"systems"
+    },
+
+    // ---- SECCIÓN D: Conversión y relación ----
+    {
+        id:9, type:"numeric",
+        text:"Problema: Un motor eléctrico genera 3,347 J de calor por fricción interna durante su funcionamiento. ¿Cuántas calorías equivalen a esa energía? (Usa: 1 J = 0.239 cal)",
+        correct:800, tolerance:2
+    },
+    {
+        id:10, type:"mcq",
+        text:"¿Cuál es la diferencia fundamental entre un sistema abierto y uno cerrado?",
+        options:[
+            "El abierto no intercambia nada; el cerrado intercambia todo",
+            "El abierto intercambia masa y energía; el cerrado solo intercambia energía",
+            "El cerrado intercambia masa y energía; el abierto solo energía",
+            "No hay diferencia entre ambos"
+        ],
+        correct:"El abierto intercambia masa y energía; el cerrado solo intercambia energía"
+    },
+    {
+        id:11, type:"numeric",
+        text:"Problema: Si una persona quema 0.5 kcal durante un ejercicio breve, ¿cuántos joules de energía transformó su cuerpo? (Usa: 1 kcal = 4,184 J)",
+        correct:2092, tolerance:5
+    },
+    {
+        id:12, type:"truefalse",
+        text:"Según el contenido, un sistema aislado ideal intercambia energía pero no masa con los alrededores. ¿Es correcto?",
+        options:["Verdadero","Falso"],
+        correct:"Falso"
+    }
+];
+
+/* ===== VARIABLES GLOBALES ===== */
+let shuffledQuestions = [];
+let userAnswers = {};
+let savedStatus = {};
+let studentName = "";
+let quizActive = false;
+let eventLog = { minimize:0, changeScreen:0, copy:0, paste:0, splitScreen:0, multitask:0, otherApps:0 };
+let windowBlurCount = 0;
+let visibilityLostCount = 0;
+
+/* ===== ANTICOPY / ANTIPASTE ===== */
+function blockCopyPasteAndContext(){
+    const block=(e)=>{
+        e.preventDefault();e.stopPropagation();
+        if(e.type==='copy')eventLog.copy++;
+        if(e.type==='paste')eventLog.paste++;
+        if(e.type==='cut')eventLog.copy++;
+        updateFloatingCounterStatic();return false
+    };
+    document.addEventListener('copy',block);
+    document.addEventListener('cut',block);
+    document.addEventListener('paste',block);
+    document.addEventListener('contextmenu',e=>{e.preventDefault();return false});
+    document.addEventListener('keydown',e=>{
+        if((e.ctrlKey||e.metaKey)&&(e.key==='c'||e.key==='C'||e.key==='v'||e.key==='V'||e.key==='x'||e.key==='X')){
+            e.preventDefault();e.stopPropagation();
+            if(e.key==='c'||e.key==='C')eventLog.copy++;
+            if(e.key==='v'||e.key==='V')eventLog.paste++;
+            if(e.key==='x'||e.key==='X')eventLog.copy++;
+            updateFloatingCounterStatic();return false
+        }
+        if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'))||(e.ctrlKey&&e.key==='u')){
+            e.preventDefault();eventLog.copy++;updateFloatingCounterStatic();return false
+        }
+    });
+    document.addEventListener('dragstart',e=>{e.preventDefault();return false});
+    document.addEventListener('selectstart',e=>{
+        if(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT')e.preventDefault()
+    })
+}
+
+function updateFloatingCounterStatic(){
+    let total=Object.values(eventLog).reduce((a,b)=>a+b,0);
+    let el=document.getElementById("eventCounterDisplay");
+    if(el)el.innerText=total
+}
+
+/* ===== SEGURIDAD ADICIONAL ===== */
+function initSecurityMonitors(){
+    const inc=evType=>{
+        if(eventLog.hasOwnProperty(evType))eventLog[evType]++;else eventLog[evType]=1;
+        updateFloatingCounterStatic()
+    };
+    window.addEventListener('blur',()=>{inc('multitask');inc('otherApps')});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)inc('minimize')});
+    let lastW=window.innerWidth;
+    window.addEventListener('resize',()=>{if(Math.abs(window.innerWidth-lastW)>100)inc('splitScreen');lastW=window.innerWidth});
+    setInterval(()=>updateFloatingCounterStatic(),500);
+    updateFloatingCounterStatic()
+}
+
+/* ===== UTILIDADES ===== */
+function shuffleArray(arr){
+    for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
+    return arr
+}
+
+function initShuffledQuestions(){
+    shuffledQuestions=shuffleArray([...MASTER_QUESTIONS]);
+    userAnswers={};savedStatus={};
+    shuffledQuestions.forEach((q,idx)=>{
+        if(q.type==="match_situations"||q.type==="match_concepts"){
+            let dm={};
+            if(q.matchItems)q.matchItems.forEach(item=>{dm[item]=""});
+            userAnswers[idx]=dm;savedStatus[idx]=false
+        }else{userAnswers[idx]="";savedStatus[idx]=false}
+    })
+}
+
+/* ===== RENDERIZAR PREGUNTAS ===== */
+function renderQuestions(){
+    const container=document.getElementById("questionsContainer");
+    if(!container)return;
+    container.innerHTML="";
+    shuffledQuestions.forEach((q,idx)=>{
+        const card=document.createElement("div");
+        card.className="question-card";card.setAttribute("data-qidx",idx);
+        let html=`<div class="question-text"><strong>${idx+1}.</strong> ${q.text}</div>`;
+        html+=`<div class="options-area" id="options-area-${idx}">`;
+
+        if(q.type==="mcq"||q.type==="truefalse"){
+            q.options.forEach(opt=>{
+                const chk=(userAnswers[idx]===opt)?'checked':'';
+                html+=`<div class="option-radio"><input type="radio" name="q${idx}" value="${opt.replace(/"/g,'&quot;')}" ${chk}> <label>${opt}</label></div>`
+            })
+        }else if(q.type==="numeric"){
+            const val=userAnswers[idx]!==""?userAnswers[idx]:"";
+            html+=`<input type="number" step="any" id="numInput_${idx}" value="${val}" placeholder="Ingresa el valor numérico" style="width:180px;"> <span style="margin-left:10px;font-size:.85rem;">(Joules o calorías según corresponda)</span>`
+        }else if(q.type==="match_situations"||q.type==="match_concepts"){
+            const items=q.matchItems;
+            let pairsOptions=[];
+            if(q.subType==="systems")pairsOptions=["Abierto","Cerrado","Aislado"];
+            else if(q.subType==="concepts")pairsOptions=[...q.matchPairs];
+            html+=`<div style="display:flex;flex-direction:column;gap:12px;">`;
+            items.forEach((item,ix)=>{
+                const sv=(userAnswers[idx]&&userAnswers[idx][item])?userAnswers[idx][item]:"";
+                html+=`<div class="relation-row"><span style="min-width:180px;">🔹 ${item}</span>
+                    <select data-item="${item.replace(/"/g,'&quot;')}" class="match-select-${idx}">
+                    <option value="">-- Seleccionar --</option>`;
+                for(let po of pairsOptions){
+                    const sel=(sv===po)?'selected':'';
+                    html+=`<option value="${po}" ${sel}>${po}</option>`
+                }
+                html+=`</select></div>`
+            });
+            html+=`</div>`
+        }
+        html+=`</div><div><button class="save-btn" data-idx="${idx}">💾 Guardar respuesta</button>`;
+        if(savedStatus[idx])html+=`<span class="saved-badge">✓ Guardada</span>`;
+        html+=`</div>`;
+        card.innerHTML=html;container.appendChild(card)
+    });
+    attachDynamicEvents();updateProgressIndicator()
+}
+
+function attachDynamicEvents(){
+    document.querySelectorAll('.save-btn').forEach(btn=>{
+        const idx=parseInt(btn.getAttribute('data-idx'));
+        btn.addEventListener('click',()=>saveSpecificAnswer(idx))
+    })
+}
+
+function saveSpecificAnswer(qIdx){
+    const q=shuffledQuestions[qIdx];if(!q)return;
+    let answer=null;
+    if(q.type==="mcq"||q.type==="truefalse"){
+        const r=document.querySelector(`input[name="q${qIdx}"]:checked`);
+        answer=r?r.value:""
+    }else if(q.type==="numeric"){
+        const inp=document.getElementById(`numInput_${qIdx}`);
+        answer=inp?parseFloat(inp.value):"";
+        if(isNaN(answer))answer=""
+    }else if(q.type==="match_situations"||q.type==="match_concepts"){
+        const sels=document.querySelectorAll(`.match-select-${qIdx}`);
+        let m={};
+        sels.forEach(s=>{m[s.getAttribute('data-item')]=s.value});
+        answer=m
+    }
+    if(answer!==null&&answer!==""){
+        userAnswers[qIdx]=answer;savedStatus[qIdx]=true;
+        const card=document.querySelector(`.question-card[data-qidx="${qIdx}"]`);
+        if(card){
+            let badge=card.querySelector('.saved-badge');
+            if(!badge){
+                const bd=card.querySelector('.save-btn').parentNode;
+                const nb=document.createElement('span');nb.className='saved-badge';nb.innerText='✓ Guardada';
+                bd.appendChild(nb)
+            }else{badge.innerText='✓ Guardada'}
+        }
+        updateProgressIndicator();showTempToast("Respuesta guardada ✅")
+    }else{alert("Por favor selecciona/ingresa una respuesta antes de guardar.")}
+}
+
+function updateProgressIndicator(){
+    const c=Object.values(savedStatus).filter(v=>v===true).length;
+    document.getElementById("progressIndicator").innerText=`📌 ${c}/${shuffledQuestions.length} guardadas`
+}
+
+function showTempToast(msg){
+    let t=document.createElement('div');
+    t.innerText=msg;t.style.cssText='position:fixed;bottom:80px;right:20px;background:#0a4b5e;padding:8px 18px;border-radius:40px;z-index:9999;color:#fff';
+    document.body.appendChild(t);setTimeout(()=>t.remove(),1400)
+}
+
+/* ===== CALIFICACIÓN ===== */
+function computeScore(){
+    let total=0;
+    for(let i=0;i<shuffledQuestions.length;i++){
+        const q=shuffledQuestions[i];const ua=userAnswers[i];
+        if(!ua&&ua!==0)continue;
+        let ok=false;
+        if(q.type==="mcq"||q.type==="truefalse"){
+            if(ua===q.correct)ok=true
+        }else if(q.type==="numeric"){
+            let nu=parseFloat(ua);
+            if(!isNaN(nu)&&Math.abs(nu-q.correct)<=(q.tolerance||0.01))ok=true
+        }else if(q.type==="match_situations"){
+            if(typeof ua==='object'){
+                let all=true;
+                for(let ii=0;ii<q.matchItems.length;ii++){
+                    if(ua[q.matchItems[ii]]!==q.matchPairs[ii]){all=false;break}
+                }
+                if(all)ok=true
+            }
+        }else if(q.type==="match_concepts"){
+            if(typeof ua==='object'){
+                let all=true;
+                for(let ii=0;ii<q.matchItems.length;ii++){
+                    if(ua[q.matchItems[ii]]!==q.matchPairs[ii]){all=false;break}
+                }
+                if(all)ok=true
+            }
+        }
+        if(ok)total++
+    }
+    return(total/shuffledQuestions.length)*10
+}
+
+/* ===== INFORME FINAL ===== */
+function showReport(){
+    const score=computeScore();
+    const pct=(score/10)*100;
+    document.getElementById("quizPanel").style.display="none";
+    const rd=document.getElementById("reportContent");
+    let correctCount=(score/10)*shuffledQuestions.length;
+
+    let evSummary=`<strong>📊 REGISTRO DE SEGURIDAD:</strong><br>
+        🪟 Minimización pantalla: ${eventLog.minimize}<br>
+        🖥️ Cambio de pantalla/foco: ${eventLog.multitask}<br>
+        📋 Intentos de copiar: ${eventLog.copy}<br>
+        📎 Intentos de pegar: ${eventLog.paste}<br>
+        ⬜ Pantalla dividida / resize: ${eventLog.splitScreen}<br>
+        🔄 Multitasking / cambio de app: ${eventLog.otherApps}<br>
+        🧪 Otras detecciones: ${windowBlurCount+visibilityLostCount} eventos extra`;
+
+    let detailsHTML='';
+    for(let i=0;i<shuffledQuestions.length;i++){
+        const q=shuffledQuestions[i];const ua=userAnswers[i];
+        let ok=false;let userText='Sin respuesta';let correctText='';
+        if(q.type==="mcq"||q.type==="truefalse"){
+            userText=ua||'Sin respuesta';correctText=q.correct;
+            if(ua===q.correct)ok=true
+        }else if(q.type==="numeric"){
+            userText=ua!==""?ua:'Sin respuesta';correctText=q.correct;
+            let nu=parseFloat(ua);
+            if(!isNaN(nu)&&Math.abs(nu-q.correct)<=(q.tolerance||0.01))ok=true
+        }else if(q.type==="match_situations"||q.type==="match_concepts"){
+            if(typeof ua==='object'){
+                let parts=[];let all=true;
+                for(let ii=0;ii<q.matchItems.length;ii++){
+                    const item=q.matchItems[ii];const exp=q.matchPairs[ii];
+                    const got=ua[item]||'(vacío)';
+                    parts.push(`${item}: ${got}`);
+                    if(ua[item]!==exp)all=false
+                }
+                userText=parts.join(' | ');
+                correctText=q.matchItems.map((it,ii)=>`${it}: ${q.matchPairs[ii]}`).join(' | ');
+                ok=all
+            }else{correctText=q.matchPairs.join(' | ')}
+        }
+        detailsHTML+=`<div style="padding:10px 12px;margin:6px 0;border-radius:8px;background:${ok?'rgba(0,230,118,.08)':'rgba(255,82,82,.08)'};border-left:4px solid ${ok?'#00e676':'#ff5252'}">
+            <p style="font-weight:bold;margin:0 0 4px;font-size:.85rem;">${i+1}. ${q.text}</p>
+            <p style="margin:0;font-size:.78rem;color:${ok?'#00e676':'#ff5252'}">${ok?'✓':'✗'} Tu respuesta: ${userText}</p>
+            ${!ok?`<p style="margin:2px 0 0;font-size:.78rem;color:#00e676">✓ Correcta: ${correctText}</p>`:''}
+        </div>`
+    }
+
+    rd.innerHTML=`
+        <h2 style="color:#0ef;">🔬 INFORME FINAL — EQUIVALENCIA TERMODINÁMICA</h2>
+        <p><strong>👩‍🎓 Estudiante:</strong> ${studentName}</p>
+        <p><strong>📚 Asignatura:</strong> CNEyT II — Prof. Adrián Cruz H.</p>
+        <p><strong>📐 Calificación:</strong> ${score.toFixed(2)} / 10.0</p>
+        <p><strong>✅ Porcentaje de aciertos:</strong> ${pct.toFixed(1)}%</p>
+        <p><strong>📝 Respuestas correctas:</strong> ${Math.round(correctCount)} de ${shuffledQuestions.length}</p>
+        <hr style="margin:12px 0;border-color:#1a3a4a;">
+        <div style="background:#02222e;border-radius:16px;padding:10px;margin-bottom:15px;">${evSummary}</div>
+        <hr style="margin:12px 0;border-color:#1a3a4a;">
+        <h3 style="color:#0ef;margin-bottom:10px;">📋 Detalle de respuestas</h3>
+        ${detailsHTML}
+        <p style="margin-top:20px;font-size:11px;color:#556;">CNEyT II — Prof. Adrián Cruz H. — Equivalencia Termodinámica</p>
+    `;
+    document.getElementById("reportPanel").style.display="block"
+}
+
+/* ===== PDF ===== */
+function setupPdf(){
+    document.getElementById("downloadPdfBtn")?.addEventListener("click",()=>{window.print()})
+}
+
+/* ===== FLUJO PRINCIPAL ===== */
+document.getElementById("startQuizBtn").addEventListener("click",()=>{
+    const nameInput=document.getElementById("studentNameInput").value.trim();
+    if(nameInput===""){
+        document.getElementById("nameAlert").classList.add("show","shake");
+        setTimeout(()=>document.getElementById("nameAlert").classList.remove("show","shake"),2000);
+        return
+    }
+    studentName=nameInput;
+    document.getElementById("displayStudentName").innerText=`🧪 ${studentName}`;
+    document.getElementById("idPanel").style.display="none";
+    document.getElementById("quizPanel").style.display="block";
+    initShuffledQuestions();renderQuestions();
+    quizActive=true;
+    sessionStorage.setItem("thermo_active","true");
+    sessionStorage.setItem("student_name",studentName)
+});
+
+document.getElementById("finalizeQuizBtn").addEventListener("click",()=>{
+    let someUnsaved=Object.values(savedStatus).some(v=>v===false);
+    if(someUnsaved){
+        if(!confirm("Aún hay preguntas sin guardar. Si continúas, las respuestas vacías se considerarán incorrectas. ¿Deseas finalizar de todas formas?"))return
+    }
+    showReport()
+});
+
+document.getElementById("resetViewBtn")?.addEventListener("click",()=>{location.reload()});
+
+/* ===== ACTIVAR ===== */
+blockCopyPasteAndContext();
+initSecurityMonitors();
+setupPdf();
+
+window.addEventListener('load',()=>{
+    if(sessionStorage.getItem("thermo_active")==="true"){
+        const sn=sessionStorage.getItem("student_name");
+        if(sn){
+            studentName=sn;
+            document.getElementById("displayStudentName").innerText=`🧪 ${studentName}`;
+            document.getElementById("idPanel").style.display="none";
+            document.getElementById("quizPanel").style.display="block";
+            initShuffledQuestions();renderQuestions();quizActive=true
+        }
+    }
+});
+</script>
+</body>
+</html>
