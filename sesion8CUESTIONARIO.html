@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ENERGÍA, CALOR Y TRABAJO | CNEyT II</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+        input,select,textarea{user-select:text}
+        body{
+            background:radial-gradient(circle at 20% 30%,#0a0f1e,#03060c);
+            font-family:'Segoe UI','Poppins','Roboto','Inter',system-ui,sans-serif;
+            min-height:100vh;padding:10px;display:flex;justify-content:center;align-items:flex-start;color:#eef5ff
+        }
+        .app-container{
+            max-width:900px;width:100%;background:rgba(12,20,30,.75);backdrop-filter:blur(10px);
+            border-radius:2rem;border:1px solid rgba(0,255,255,.3);
+            box-shadow:0 25px 45px rgba(0,0,0,.5),0 0 20px rgba(0,180,255,.2);
+            overflow:hidden;margin:8px auto
+        }
+        .id-panel{padding:2rem;background:linear-gradient(135deg,#0a1428,#010514);text-align:center;border-bottom:2px solid cyan}
+        .id-panel h1{
+            font-size:clamp(1.2rem,5vw,2.1rem);font-weight:600;
+            background:linear-gradient(135deg,#aaffff,#2a9df4);
+            -webkit-background-clip:text;background-clip:text;color:transparent
+        }
+        .id-panel .asig{font-family:monospace;background:#0f212e;display:inline-block;padding:5px 15px;border-radius:40px;font-size:.85rem;margin:10px 0 4px;border-left:4px solid cyan;font-weight:bold;color:#0ef}
+        .id-panel .prof{font-family:monospace;background:#1a2a1a;display:inline-block;padding:5px 15px;border-radius:40px;font-size:.85rem;margin:4px 0 15px;border-left:4px solid #0f0;color:#8f8}
+        .input-group{margin:20px 0}
+        .input-group input{
+            width:85%;max-width:400px;padding:14px 20px;border-radius:60px;border:none;
+            background:#0e1a24;color:#fff;font-size:1.1rem;text-align:center;
+            border:1px solid #2c5f7a;transition:.2s
+        }
+        .input-group input:focus{outline:none;border-color:#0ef;box-shadow:0 0 12px cyan}
+        .btn-primary{
+            background:linear-gradient(90deg,#0b8f9c,#0a5c6e);border:none;padding:12px 28px;
+            font-size:1.1rem;font-weight:bold;border-radius:60px;color:#fff;cursor:pointer;
+            transition:.2s;margin-top:10px;box-shadow:0 5px 0 #003d4d
+        }
+        .btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #003d4d}
+        .quiz-panel{padding:1rem 1.2rem;display:none}
+        .quiz-header{
+            display:flex;justify-content:space-between;align-items:center;
+            border-bottom:2px solid cyan;padding-bottom:8px;margin-bottom:8px;flex-wrap:wrap;gap:6px
+        }
+        .student-name-badge{background:#0a1820;padding:5px 12px;border-radius:20px;font-weight:bold;font-size:.85rem}
+        .progress{font-family:monospace;font-size:.8rem;background:#07121c;padding:5px 12px;border-radius:30px}
+        .progress-bar-wrap{width:100%;height:4px;background:#0a1a24;border-radius:2px;margin-bottom:8px;overflow:hidden}
+        .progress-bar-fill{height:100%;background:linear-gradient(90deg,#0ef,#2a9df4);border-radius:2px;transition:width .3s;width:0%}
+        .question-map{display:flex;flex-wrap:nowrap;gap:4px;justify-content:flex-start;margin-bottom:12px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
+        .q-dot{
+            min-width:26px;height:26px;border-radius:50%;background:#0a1a24;border:2px solid #1a3a4a;
+            display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:bold;
+            cursor:pointer;transition:.2s;color:#556;flex-shrink:0
+        }
+        .q-dot.saved{background:#0a3a2a;border-color:#00e676;color:#00e676}
+        .q-dot.current{border-color:#0ef;color:#0ef;box-shadow:0 0 8px rgba(0,255,255,.3)}
+        .question-card{
+            background:rgba(0,15,25,.7);border-radius:1.1rem;padding:1.2rem;
+            border-left:5px solid #0ef;backdrop-filter:blur(4px);animation:fadeUp .3s ease
+        }
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .question-text{font-size:.97rem;font-weight:500;margin-bottom:.7rem;line-height:1.5}
+        .options-area{margin:.5rem 0}
+        .option-radio{
+            margin:6px 0;display:flex;align-items:flex-start;gap:10px;
+            padding:9px 12px;border-radius:10px;transition:background .2s;cursor:pointer
+        }
+        .option-radio:hover{background:rgba(0,255,255,.05)}
+        .option-radio input[type="radio"]{accent-color:cyan;width:17px;height:17px;cursor:pointer;margin-top:2px;flex-shrink:0}
+        .option-radio label{cursor:pointer;font-size:.9rem;line-height:1.4}
+        .relation-row{
+            display:flex;flex-wrap:wrap;margin:7px 0;align-items:center;gap:10px;
+            background:#05121c;padding:9px 12px;border-radius:12px
+        }
+        .relation-row span{min-width:150px;font-size:.84rem;flex:1}
+        select{background:#0b1b26;color:#fff;padding:8px 10px;border-radius:14px;border:1px solid cyan;font-size:.83rem;cursor:pointer;flex:1;min-width:130px}
+        input[type="number"]{
+            background:#0b1b26;border:1px solid #2a8faa;padding:10px 14px;
+            border-radius:20px;color:#fff;width:160px;font-size:1rem
+        }
+        input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+        input[type="number"]{-moz-appearance:textfield}
+        .type-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:bold;margin-bottom:7px}
+        .type-mcq{background:#0a2a3a;color:#0ef;border:1px solid #0ef}
+        .type-tf{background:#2a1a0a;color:#ffa726;border:1px solid #ffa726}
+        .type-num{background:#1a0a2a;color:#ce93d8;border:1px solid #ce93d8}
+        .type-match{background:#0a2a1a;color:#66bb6a;border:1px solid #66bb6a}
+        .nav-bar{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:6px}
+        .nav-btn{background:#1a3f4b;border:none;padding:10px 16px;border-radius:40px;color:#fff;cursor:pointer;font-size:.82rem;transition:.15s;white-space:nowrap}
+        .nav-btn:hover{background:#0d8ba0}
+        .nav-btn:disabled{opacity:.35;cursor:not-allowed}
+        .question-counter{font-family:monospace;font-size:.85rem;color:#0ef;text-align:center;flex-shrink:0}
+        .save-btn{background:#1a3f4b;border:none;padding:8px 18px;border-radius:40px;color:#fff;cursor:pointer;font-size:.8rem;transition:.1s;margin-top:10px}
+        .save-btn:hover{background:#0d8ba0}
+        .saved-badge{margin-left:10px;font-size:.7rem;color:#0ef}
+        .finalize-btn{
+            background:linear-gradient(90deg,#eb6b2c,#c4450c);display:block;
+            width:230px;margin:22px auto 8px;text-align:center;font-size:1rem;
+            padding:13px 22px;border:none;border-radius:60px;color:#fff;cursor:pointer;
+            font-weight:bold;box-shadow:0 5px 0 #7a2a06
+        }
+        .finalize-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #7a2a06}
+        .report-panel{padding:1.2rem;display:none;border-top:2px solid cyan}
+        .report-content{background:#021018;padding:14px;border-radius:14px;font-size:.88rem;line-height:1.5}
+        .report-content h2{font-size:1.15rem;margin-bottom:10px}
+        .report-content h3{font-size:.95rem;margin-bottom:8px}
+        .floating-stats{
+            position:fixed;bottom:12px;right:12px;background:#000000dd;backdrop-filter:blur(12px);
+            border-radius:50px;padding:7px 13px;font-family:monospace;font-size:.68rem;
+            border:1px solid cyan;z-index:1000;display:flex;gap:5px;align-items:center;
+            font-weight:bold;box-shadow:0 0 12px rgba(0,255,255,.25)
+        }
+        ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:#011015}::-webkit-scrollbar-thumb{background:cyan;border-radius:10px}
+        button{cursor:pointer}
+        .alert-msg{
+            display:none;padding:10px 14px;border-radius:10px;font-size:.8rem;font-weight:600;
+            text-align:center;margin-top:10px;background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);color:#ff5252
+        }
+        .alert-msg.show{display:block}
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+        .shake{animation:shake .4s ease}
+        footer{font-size:.6rem;text-align:center;padding:8px;border-top:1px solid #1a3a4a;color:#445}
+        @media(max-width:500px){
+            body{padding:4px}.app-container{border-radius:1rem}
+            .id-panel{padding:1.2rem .8rem}.quiz-panel{padding:.7rem .8rem}
+            .question-card{padding:.9rem}.relation-row{flex-direction:column;gap:6px}.relation-row span{min-width:auto}
+            select{width:100%}.nav-btn{padding:8px 12px;font-size:.75rem}
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <div id="idPanel" class="id-panel">
+        <h1>⚡ ENERGÍA, CALOR Y TRABAJO 🔥</h1>
+        <div class="asig">📚 CNEyT II</div>
+        <div class="prof">👨‍🔬 Prof. Adrián Cruz H.</div>
+        <div class="input-group">
+            <input type="text" id="studentNameInput" placeholder="Ingresa tu nombre completo" autocomplete="off">
+        </div>
+        <div id="nameAlert" class="alert-msg">⚠️ Por favor ingresa tu nombre para acceder.</div>
+        <button class="btn-primary" id="startQuizBtn">▶ COMENZAR ACTIVIDAD</button>
+        <p style="margin-top:18px;font-size:11px;opacity:.7;line-height:1.5">
+            Responde 20 preguntas sobre energía, calor y trabajo.<br>
+            Incluye reflexiones, interpretaciones y problemas de conversión.<br>
+            Una vez iniciado, no podrás volver atrás.
+        </p>
+    </div>
+    <div id="quizPanel" class="quiz-panel">
+        <div class="quiz-header">
+            <span class="student-name-badge" id="displayStudentName"></span>
+            <span class="progress" id="progressIndicator">📌 0/20</span>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill"></div></div>
+        <div class="question-map" id="questionMap"></div>
+        <div id="questionContainer"></div>
+        <div class="nav-bar">
+            <button class="nav-btn" id="prevBtn">← Anterior</button>
+            <span class="question-counter" id="questionCounter">1 / 20</span>
+            <button class="nav-btn" id="nextBtn">Siguiente →</button>
+        </div>
+        <button class="finalize-btn" id="finalizeBtn">📊 FINALIZAR Y VERIFICAR</button>
+    </div>
+    <div id="reportPanel" class="report-panel">
+        <div class="report-content" id="reportContent"></div>
+        <div style="text-align:center;margin-top:14px;">
+            <button id="downloadPdfBtn" class="btn-primary" style="background:#2c5a74;font-size:1rem;">📄 GUARDAR INFORME EN PDF</button>
+            <button id="resetViewBtn" style="background:#2e5f5f;font-size:.85rem;padding:12px 22px;border:none;border-radius:60px;color:#fff;margin-left:8px;margin-top:10px;">⟳ Nueva sesión</button>
+        </div>
+    </div>
+    <footer>CNEyT II — Prof. Adrián Cruz H. — Energía, Calor y Trabajo</footer>
+</div>
+<div class="floating-stats">📡 <span id="eventCounterDisplay">0</span> eventos</div>
+
+<script>
+const EXAM_A=[
+    {type:"mcq",text:"Un estudiante afirma: «Cuando empujo una pared pesada y no se mueve, igual estoy haciendo trabajo porque me esfuerzo y sudo.» Con base en la definición W = F × d, evalúa esta afirmación.",
+     options:["Tiene razón; el esfuerzo siempre equivale a trabajo físico","Está equivocado; sin desplazamiento no hay trabajo en el sentido físico","Tiene razón parcialmente; la pared hace trabajo negativo sobre él","Está equivocado solo si no aplica suficiente fuerza"],
+     correct:"Está equivocado; sin desplazamiento no hay trabajo en el sentido físico"},
+    {type:"truefalse",text:"El joule (J) es la unidad del Sistema Internacional tanto para trabajo como para calor, lo que demuestra que ambos se miden con la misma unidad porque ambos son formas de energía.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"En México, una etiqueta muestra «150 Cal». Un estudiante interpreta esto como 150 calorías pequeñas (150 cal). ¿Qué error comete según la equivalencia energética?",
+     options:["Confunde temperatura con energía","Subestima la energía real por un factor de 1,000","Sobrestima la energía real por un factor de 1,000","No comete error; Cal y cal son exactamente lo mismo"],
+     correct:"Subestima la energía real por un factor de 1,000"},
+    {type:"numeric",text:"Problema: Una barra energética está etiquetada con 200 Cal (kilocalorías). ¿Cuántos joules de energía aporta al cuerpo? (Usa: 1 kcal = 4,184 J). Escribe solo el número, sin comas.",
+     correct:836800,tolerance:50},
+    {type:"mcq",text:"Al frenar una bicicleta, las pastillas de freno se calientan considerablemente. El contenido explica este fenómeno como:",
+     options:["Transformación de energía potencial en energía eléctrica","Conversión de trabajo mecánico en energía térmica mediante la fricción","Creación de nueva energía térmica por el mecanismo del freno","Transferencia de energía química de las pastillas al metal"],
+     correct:"Conversión de trabajo mecánico en energía térmica mediante la fricción"},
+    {type:"mcq",text:"En el experimento de Joule, pesas que caían movían paletas dentro de un recipiente con agua. ¿Qué demuestra fundamentalmente este experimento?",
+     options:["Que el agua tiene una alta capacidad para absorber calor","Que la gravedad crea energía térmica de forma directa","Que el trabajo mecánico puede convertirse cuantitativamente en energía térmica","Que cualquier objeto que cae genera calor sin importar el medio"],
+     correct:"Que el trabajo mecánico puede convertirse cuantitativamente en energía térmica"},
+    {type:"numeric",text:"Problema: Un motor eléctrico genera 3,347 J de calor por fricción interna. ¿Cuántas calorías equivalen a esa energía? (Usa: 1 J = 0.239 cal). Escribe solo el número.",
+     correct:800,tolerance:5},
+    {type:"mcq",text:"La caloría se definió históricamente como la cantidad de calor para elevar 1 °C la temperatura del agua. ¿Por qué esto hace que la caloría sea menos adecuada como unidad universal que el joule?",
+     options:["Porque la caloría es demasiado pequeña para mediciones prácticas","Porque su definición depende de las propiedades específicas del agua","Porque la caloría se definió cronológicamente después que el joule","Porque la caloría solo mide diferencias de temperatura, no energía"],
+     correct:"Porque su definición depende de las propiedades específicas del agua"},
+    {type:"truefalse",text:"Deslizar un libro sobre una mesa constituye trabajo en el sentido físico, ya que una fuerza horizontal produce desplazamiento en la misma dirección.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"El contenido afirma que «el calor siempre fluye de lo caliente a lo frío». Un refrigerador mantiene fríos los alimentos. ¿Cómo es posible sin violar este principio?",
+     options:["El refrigerador crea frío a partir de electricidad","Usa trabajo (energía eléctrica) para extraer calor del interior y transferirlo al exterior más caliente","Invierte espontáneamente la dirección natural del flujo de calor","El principio solo aplica a objetos sin mecanismos eléctricos"],
+     correct:"Usa trabajo (energía eléctrica) para extraer calor del interior y transferirlo al exterior más caliente"},
+    {type:"numeric",text:"Problema: Una persona quema 0.5 kcal durante un ejercicio breve. ¿Cuántos joules de energía transformó su cuerpo? (Usa: 1 kcal = 4,184 J). Escribe solo el número.",
+     correct:2092,tolerance:5},
+    {type:"mcq",text:"Aplicando W = F × d: si empujas un objeto con 50 N durante 3 metros y luego otro con 100 N durante 1 metro, ¿cuál enunciado es correcto?",
+     options:["Se hizo más trabajo en el primer caso (150 J vs 100 J)","Se hizo más trabajo en el segundo caso (100 J vs 150 J)","Se hizo exactamente el mismo trabajo en ambos (150 J)","No se puede comparar porque las fuerzas son diferentes"],
+     correct:"Se hizo más trabajo en el primer caso (150 J vs 100 J)"},
+    {type:"mcq",text:"Cuando frotas tus manos en un día frío, se genera calor. ¿De dónde proviene esa energía térmica?",
+     options:["Del aire circundante que se comprime entre las palmas","De la conversión del esfuerzo mecánico (trabajo) en calor a través de la fricción","Se crea nueva energía térmica a partir del movimiento","Del calor corporal que se concentra en las palmas"],
+     correct:"De la conversión del esfuerzo mecánico (trabajo) en calor a través de la fricción"},
+    {type:"truefalse",text:"Según el principio de conservación, la energía total se mantiene constante: no se crea ni se destruye, solo se transforma de una forma a otra.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"Un estudiante lee que 1 cal = 4.184 J y concluye que un alimento de «200 Cal» proporciona solo 200 × 4.184 = 836.8 J. ¿Qué error cometió?",
+     options:["Usó el factor de conversión incorrecto","Confundió Cal (kilocaloría de etiquetas) con cal (caloría pequeña), subestimando la energía por un factor de 1,000","Debió dividir entre 4.184 en lugar de multiplicar","No cometió ningún error; el cálculo es correcto"],
+     correct:"Confundió Cal (kilocaloría de etiquetas) con cal (caloría pequeña), subestimando la energía por un factor de 1,000"},
+    {type:"match",text:"Relaciona cada ejemplo con el tipo de conversión de energía que describe.",
+     matchItems:["Frotarse las manos en invierno","Frenos de una bicicleta al detenerse","Pesas cayendo en el experimento de Joule","Digestión de alimentos en el cuerpo"],
+     matchPairs:["Energía mecánica → Energía térmica","Energía cinética → Energía térmica","Energía potencial gravitacional → Energía térmica","Energía química → Energía cinética y térmica"],
+     matchOptions:["Energía mecánica → Energía térmica","Energía cinética → Energía térmica","Energía potencial gravitacional → Energía térmica","Energía química → Energía cinética y térmica"]},
+    {type:"numeric",text:"Problema: Convierte 3,500 calorías a joules. (Usa: 1 cal = 4.184 J). Escribe solo el número, sin comas.",
+     correct:14644,tolerance:10},
+    {type:"mcq",text:"El contenido describe el trabajo (W) como «el camino para mover o transferir energía». Esto significa que el trabajo es:",
+     options:["Una forma de energía que se almacena en los objetos","Un proceso o mecanismo mediante el cual la energía cambia de sistema","Una sustancia física que transporta energía entre objetos","Un sinónimo exacto de calor"],
+     correct:"Un proceso o mecanismo mediante el cual la energía cambia de sistema"},
+    {type:"truefalse",text:"Sostener una caja pesada sobre tu cabeza sin moverte durante 5 minutos constituye trabajo en el sentido físico, ya que aplicas una fuerza considerable durante un tiempo prolongado.",
+     options:["Verdadero","Falso"],correct:"Falso"},
+    {type:"mcq",text:"El contenido concluye que «Ciencia + Observación + Curiosidad = Comprender el mundo». Esta fórmula sugiere que la comprensión científica surge de:",
+     options:["Memorizar fórmulas y resolver ejercicios repetitivos","Combinar el estudio teórico con la observación empírica y la curiosidad intelectual","Únicamente de la experimentación en laboratorios","Leer libros de texto sin necesidad de experimentar"],
+     correct:"Combinar el estudio teórico con la observación empírica y la curiosidad intelectual"}
+];
+
+const EXAM_B=[
+    {type:"mcq",text:"Una persona empuja un auto averiado durante 10 metros por una carretera plana y el auto se mueve. Según W = F × d, esta situación:",
+     options:["No involucra trabajo porque la persona no es una máquina","Sí involucra trabajo porque una fuerza produce desplazamiento","Solo involucra trabajo si el auto acelera","Solo hay trabajo si no existe fricción"],
+     correct:"Sí involucra trabajo porque una fuerza produce desplazamiento"},
+    {type:"truefalse",text:"El joule fue definido como unidad de energía en 1843 y actualmente es la unidad del Sistema Internacional para energía y trabajo.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"Un nutricionista dice que «un plátano tiene aproximadamente 105 Calorías». Usando la equivalencia 1 Cal = 1 kcal = 4,184 J, ¿cuántos joules de energía aporta?",
+     options:["105 joules","105 × 4,184 = 439,320 joules","Solo 105 calorías pequeñas","105 × 1,000 = 105,000 joules"],
+     correct:"105 × 4,184 = 439,320 joules"},
+    {type:"numeric",text:"Problema: Una barra de cereal contiene 300 Cal (kilocalorías). ¿Cuántos joules de energía contiene? (Usa: 1 kcal = 4,184 J). Escribe solo el número, sin comas.",
+     correct:1255200,tolerance:50},
+    {type:"mcq",text:"Cuando una broca gira rápidamente contra metal, se calienta tanto que puede quemar. El contenido explica que esto ocurre porque:",
+     options:["El metal transfiere su energía química a la broca","La broca convierte energía eléctrica directamente en térmica","La fricción entre broca y metal convierte trabajo mecánico en energía térmica","La resistencia del aire calienta la broca en rotación"],
+     correct:"La fricción entre broca y metal convierte trabajo mecánico en energía térmica"},
+    {type:"truefalse",text:"La caloría se definió históricamente como la cantidad de calor necesaria para elevar 1 °C la temperatura del agua, lo que significa que su valor depende de las propiedades de esa sustancia.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"En el experimento de Joule, si se usaran pesas con el doble de masa cayendo desde la misma altura, ¿qué predicción es la más razonable?",
+     options:["La temperatura del agua subiría aproximadamente lo mismo","El agua se calentaría aproximadamente el doble, porque se realiza el doble de trabajo","El agua no se calentaría porque las pesas más pesadas absorben calor","El experimento no funcionaría con pesas más pesadas"],
+     correct:"El agua se calentaría aproximadamente el doble, porque se realiza el doble de trabajo"},
+    {type:"numeric",text:"Problema: Un componente eléctrico disipa 836.8 J de energía como calor. ¿A cuántas calorías equivale? (Usa: 1 J = 0.239 cal). Escribe solo el número.",
+     correct:200,tolerance:3},
+    {type:"mcq",text:"El contenido afirma que «el calor (Q) es energía». Un estudiante dice que el calor es una sustancia invisible que se transfiere entre objetos. ¿Cuál es la interpretación correcta?",
+     options:["Tiene razón; el calor es una sustancia llamada calórico","Está equivocado; el calor es una forma de energía, no una sustancia material","Está parcialmente en lo correcto; el calor es energía que se comporta como sustancia","No se puede determinar; el contenido no define qué es el calor"],
+     correct:"Está equivocado; el calor es una forma de energía, no una sustancia material"},
+    {type:"truefalse",text:"Según el contenido, el trabajo (W) es un proceso de transferencia de energía, no una forma de energía en sí misma.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"Un estudiante lee que 1 cal = 4.184 J y calcula que un alimento de «200 Cal» da 200 × 4.184 = 836.8 J. Otro estudiante dice que da 200 × 4,184 = 836,800 J. ¿Quién tiene razón?",
+     options:["El primero; Cal y cal son iguales","El segundo; Cal = kcal = 1,000 cal, así que 200 Cal = 200 × 4,184 J","Ninguno; el valor correcto es 200 J","Ambos; depende del país donde se lea la etiqueta"],
+     correct:"El segundo; Cal = kcal = 1,000 cal, así que 200 Cal = 200 × 4,184 J"},
+    {type:"numeric",text:"Problema: Un corredor gasta 2.5 kcal durante un sprint. ¿Cuántos joules de energía utilizó? (Usa: 1 kcal = 4,184 J). Escribe solo el número.",
+     correct:10460,tolerance:5},
+    {type:"mcq",text:"El contenido establece que «el trabajo cambia la energía de un sistema». ¿Cuál de estas situaciones ilustra mejor ese principio?",
+     options:["Una batería pierde carga lentamente sobre una repisa","Un martillo golpea un clavo, convirtiendo energía cinética en trabajo que deforma la madera","Un espejo refleja la luz del sol sin cambiar su propia energía","Un libro permanece en reposo sobre una mesa"],
+     correct:"Un martillo golpea un clavo, convirtiendo energía cinética en trabajo que deforma la madera"},
+    {type:"match",text:"Relaciona cada concepto con su descripción correcta según el contenido.",
+     matchItems:["Trabajo (W)","Calor (Q)","Primera ley de conservación","Joule (J)"],
+     matchPairs:["Mecanismo para transferir o cambiar la energía de un sistema","Forma de energía que fluye espontáneamente de lo caliente a lo frío","La energía no se crea ni se destruye, solo se transforma","Unidad del Sistema Internacional de energía, definida en 1843"],
+     matchOptions:["Mecanismo para transferir o cambiar la energía de un sistema","Forma de energía que fluye espontáneamente de lo caliente a lo frío","La energía no se crea ni se destruye, solo se transforma","Unidad del Sistema Internacional de energía, definida en 1843"]},
+    {type:"mcq",text:"Un estudiante afirma que un horno de microondas «crea» calor. Aplicando el principio de conservación de energía, ¿cuál es la interpretación correcta?",
+     options:["Tiene razón; las microondas generan calor de la nada","Está equivocado; el microondas convierte energía eléctrica en radiación que los alimentos transforman en térmica","Tiene razón solo para alimentos con agua","El microondas no involucra ninguna transformación de energía"],
+     correct:"Está equivocado; el microondas convierte energía eléctrica en radiación que los alimentos transforman en térmica"},
+    {type:"truefalse",text:"Cuando empujas una pared con toda tu fuerza y no se mueve, el trabajo realizado es cero porque el desplazamiento (d) es cero.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"Si una bicicleta frena y su energía cinética se convierte en calor en los frenos, según el principio de conservación de energía:",
+     options:["La energía cinética se destruye y se reemplaza por calor","La energía total se mantiene; la cinética se transformó en térmica","Se crea energía adicional en forma de calor","La energía total del universo disminuye ligeramente"],
+     correct:"La energía total se mantiene; la cinética se transformó en térmica"},
+    {type:"numeric",text:"Problema: Convierte 7,000 calorías a joules. (Usa: 1 cal = 4.184 J). Escribe solo el número, sin comas.",
+     correct:29288,tolerance:10},
+    {type:"mcq",text:"El contenido dice que «la termodinámica explica y predice estas interacciones». Esto implica que la termodinámica es:",
+     options:["Un tipo de energía que conecta el calor y el trabajo","Un marco científico con principios para comprender las transformaciones energéticas","Una herramienta de medición exclusiva para temperatura","Una rama de la biología que estudia el metabolismo"],
+     correct:"Un marco científico con principios para comprender las transformaciones energéticas"},
+    {type:"truefalse",text:"La equivalencia 1 cal = 4.184 J indica que una caloría es una cantidad de energía más grande que un joule.",
+     options:["Verdadero","Falso"],correct:"Verdadero"}
+];
+
+const EXAM_C=[
+    {type:"mcq",text:"Al deslizar un libro sobre una mesa, este se detiene después de un tramo. ¿Qué ocurrió con su energía cinética?",
+     options:["Se destruyó por efecto de la fricción","Se transformó en energía térmica a través de la fricción entre el libro y la mesa","Se convirtió en energía potencial almacenada en la mesa","Desapareció porque los objetos en reposo no tienen energía"],
+     correct:"Se transformó en energía térmica a través de la fricción entre el libro y la mesa"},
+    {type:"truefalse",text:"Para que exista trabajo en el sentido físico, la fuerza debe producir desplazamiento en su misma dirección. Si no hay desplazamiento, no hay trabajo.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"El contenido muestra que 150 Cal (etiqueta) = 150 kcal = 627,600 J. Verificando: ¿es correcto que 150 × 4,184 = 627,600?",
+     options:["Sí, el cálculo es correcto","No, el valor correcto es 627.6 J","No, el valor correcto es 6,276,000 J","El factor de conversión correcto es 1 Cal = 4.184 J (no 4,184)"],
+     correct:"Sí, el cálculo es correcto"},
+    {type:"numeric",text:"Problema: Una dieta diaria aporta 2,200 kcal de energía. ¿Cuántos joules representa? (Usa: 1 kcal = 4,184 J). Escribe solo el número, sin comas.",
+     correct:9204800,tolerance:100},
+    {type:"mcq",text:"Cuando frotas tus manos rápidamente en un día frío, sientes calor. La fuente de esa energía térmica es:",
+     options:["El aire que se comprime entre tus palmas","La conversión del trabajo mecánico en calor por fricción","Energía creada por el movimiento rápido de tus manos","La transferencia de calor del exterior hacia tus manos"],
+     correct:"La conversión del trabajo mecánico en calor por fricción"},
+    {type:"truefalse",text:"Según la fórmula W = F × d, el trabajo depende tanto de la magnitud de la fuerza como del desplazamiento. Una fuerza enorme sin desplazamiento produce cero trabajo.",
+     options:["Verdadero","Falso"],correct:"Verdadero"},
+    {type:"mcq",text:"En el experimento de Joule, las pesas caen desde cierta altura y mueven paletas que calientan agua. Si las pesas cayeran desde el doble de altura, ¿qué esperarías?",
+     options:["El agua se calentaría aproximadamente igual","El agua se calentaría aproximadamente el doble, porque se realiza el doble de trabajo","El agua se enfriaría porque las pesas absorberían calor","No habría cambio porque la altura no afecta el calor"],
+     correct:"El agua se calentaría aproximadamente el doble, porque se realiza el doble de trabajo"},
+    {type:"numeric",text:"Problema: Un motor produce 1,255.2 J de calor por fricción. ¿A cuántas calorías equivale? (Usa: 1 J = 0.239 cal). Escribe solo el número.",
+     correct:300,tolerance:3},
+    {type:"mcq",text:"El contenido afirma que «el calor siempre fluye de lo caliente a lo frío». Un refrigerador mantiene fríos los alimentos. ¿Cómo funciona sin violar este principio?",
+     options:["El refrigerador enfría el interior creando frío a partir de electricidad","Usa trabajo (electricidad) para extraer calor del interior y expulsarlo al exterior más caliente","Invierte la dirección natural del flujo de calor sin gastar energía","El principio no aplica a aparatos eléctricos"],
+     correct:"Usa trabajo (electricidad) para extraer calor del interior y expulsarlo al exterior más caliente"},
+    {type:"truefalse",text:"La termodinámica solo se aplica a máquinas y motores industriales, no a fenómenos cotidianos como cocinar, hacer ejercicio o frenar una bicicleta.",
+     options:["Verdadero","Falso"],correct:"Falso"},
+    {type:"mcq",text:"La caloría se definió como el calor necesario para elevar 1 °C la temperatura de 1 gramo de agua. ¿Por qué esta definición limita a la caloría como unidad universal?",
+     options:["Porque es demasiado pequeña para usos prácticos","Porque depende de las propiedades específicas del agua, una sustancia particular","Porque se definió después que el joule","Porque solo funciona a presión atmosférica estándar"],
+     correct:"Porque depende de las propiedades específicas del agua, una sustancia particular"},
+    {type:"numeric",text:"Problema: Una persona necesita 2,000 kcal diarias. ¿Cuántos joules de energía es eso? (Usa: 1 kcal = 4,184 J). Escribe solo el número, sin comas.",
+     correct:8368000,tolerance:100},
+    {type:"mcq",text:"El contenido dice que el trabajo (W) es «el camino para mover o transferir energía». Esto significa que:",
+     options:["El trabajo y la energía son conceptos completamente diferentes","El trabajo es el proceso mediante el cual la energía se transfiere de un sistema a otro","El trabajo solo puede transferir calor, no otras formas de energía","El trabajo es una forma de energía almacenada en los objetos"],
+     correct:"El trabajo es el proceso mediante el cual la energía se transfiere de un sistema a otro"},
+    {type:"match",text:"Relaciona cada fenómeno con la transformación de energía que lo describe.",
+     matchItems:["Frenos de bicicleta calientes","Taladro que perfora y quema","Manos frotándose en invierno","Pesas cayendo en agua (Joule)"],
+     matchPairs:["Energía cinética → Energía térmica","Trabajo mecánico → Energía térmica","Energía mecánica → Energía térmica","Energía potencial gravitacional → Energía térmica"],
+     matchOptions:["Energía cinética → Energía térmica","Trabajo mecánico → Energía térmica","Energía mecánica → Energía térmica","Energía potencial gravitacional → Energía térmica"]},
+    {type:"mcq",text:"El contenido concluye que comprender la termodinámica «nos ayuda a entender y diseñar mejor el mundo que nos rodea». ¿Por qué?",
+     options:["Porque la termodinámica solo se aplica al diseño de motores","Porque todos los procesos físicos, químicos y biológicos involucran transformaciones energéticas","Porque la termodinámica reemplaza a todas las demás ciencias","Porque permite crear energía de la nada"],
+     correct:"Porque todos los procesos físicos, químicos y biológicos involucran transformaciones energéticas"},
+    {type:"truefalse",text:"Sostener una caja pesada sobre tu cabeza sin moverte durante 10 minutos constituye trabajo en el sentido físico, porque aplicas una fuerza grande durante un tiempo prolongado.",
+     options:["Verdadero","Falso"],correct:"Falso"},
+    {type:"mcq",text:"Si una bicicleta frena y toda su energía cinética se convierte en calor en los frenos, según el principio de conservación de energía:",
+     options:["La energía cinética se destruye y se reemplaza por calor nuevo","La energía total se conserva; la cinética simplemente se transformó en térmica","Se genera energía adicional además de la cinética original","La energía total del sistema disminuye ligeramente"],
+     correct:"La energía total se conserva; la cinética simplemente se transformó en térmica"},
+    {type:"numeric",text:"Problema: Convierte 500 calorías a joules. (Usa: 1 cal = 4.184 J). Escribe solo el número.",
+     correct:2092,tolerance:5},
+    {type:"mcq",text:"El contenido presenta los principios clave de la termodinámica. ¿Cuál resume correctamente los tres primeros?",
+     options:["La energía se crea y se destruye; el calor fluye en ambas direcciones; el trabajo no afecta los sistemas","La energía se transforma pero se conserva; el calor fluye de lo caliente a lo frío; el trabajo cambia la energía de un sistema","Solo el calor es energía; el trabajo es fuerza pura; la temperatura es constante","La energía solo existe como calor; el trabajo es independiente de la energía; la temperatura siempre sube"],
+     correct:"La energía se transforma pero se conserva; el calor fluye de lo caliente a lo frío; el trabajo cambia la energía de un sistema"},
+    {type:"truefalse",text:"La equivalencia 1 J = 0.239 cal indica que un joule es una cantidad de energía más pequeña que una caloría.",
+     options:["Verdadero","Falso"],correct:"Verdadero"}
+];
+
+let currentExam=null,examLabel="",currentIdx=0;
+let userAnswers={},savedStatus={},shuffledOpts={};
+let studentName="",quizActive=false;
+let eventLog={minimize:0,multitask:0,copy:0,paste:0,splitScreen:0,otherApps:0};
+
+function blockCopyPasteAndContext(){
+    const block=e=>{e.preventDefault();e.stopPropagation();
+        if(e.type==='copy'||e.type==='cut')eventLog.copy++;
+        if(e.type==='paste')eventLog.paste++;updCtr();return false};
+    document.addEventListener('copy',block);document.addEventListener('cut',block);
+    document.addEventListener('paste',block);
+    document.addEventListener('contextmenu',e=>{e.preventDefault();return false});
+    document.addEventListener('keydown',e=>{
+        if((e.ctrlKey||e.metaKey)&&['c','C','v','V','x','X'].includes(e.key)){
+            e.preventDefault();e.stopPropagation();
+            if('cC'.includes(e.key))eventLog.copy++;
+            if('vV'.includes(e.key))eventLog.paste++;
+            if('xX'.includes(e.key))eventLog.copy++;
+            updCtr();return false}
+        if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&'iIjJ'.includes(e.key))||(e.ctrlKey&&e.key==='u')){
+            e.preventDefault();eventLog.copy++;updCtr();return false}});
+    document.addEventListener('dragstart',e=>{e.preventDefault();return false});
+    document.addEventListener('selectstart',e=>{
+        if(!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))e.preventDefault()})}
+function initSecurityMonitors(){
+    const inc=t=>{if(eventLog.hasOwnProperty(t))eventLog[t]++;updCtr()};
+    window.addEventListener('blur',()=>{inc('multitask');inc('otherApps')});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)inc('minimize')});
+    let lw=window.innerWidth;
+    window.addEventListener('resize',()=>{if(Math.abs(window.innerWidth-lw)>100)inc('splitScreen');lw=window.innerWidth});
+    setInterval(updCtr,500)}
+function updCtr(){let el=document.getElementById("eventCounterDisplay");
+    if(el)el.innerText=Object.values(eventLog).reduce((a,b)=>a+b,0)}
+
+function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function showToast(m){let t=document.createElement('div');t.innerText=m;
+    t.style.cssText='position:fixed;bottom:60px;right:12px;background:#0a4b5e;padding:8px 16px;border-radius:40px;z-index:9999;color:#fff;font-size:.82rem;transition:opacity .3s';
+    document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},1200)}
+
+function assignRandomExam(){
+    const r=Math.floor(Math.random()*3);
+    if(r===0){currentExam=EXAM_A;examLabel="A"}
+    else if(r===1){currentExam=EXAM_B;examLabel="B"}
+    else{currentExam=EXAM_C;examLabel="C"}}
+
+function initQuiz(){
+    assignRandomExam();userAnswers={};savedStatus={};shuffledOpts={};
+    currentExam.forEach((q,i)=>{
+        if(q.type==="match"){let dm={};q.matchItems.forEach(it=>{dm[it]=""});userAnswers[i]=dm}
+        else userAnswers[i]="";
+        savedStatus[i]=false;
+        if(q.type==="mcq")shuffledOpts[i]=shuffleArray([...q.options])});
+    currentIdx=0;renderQuestion()}
+
+function renderQuestion(){
+    const c=document.getElementById("questionContainer"),q=currentExam[currentIdx];
+    if(!c||!q)return;
+    let tl="",tc="";
+    switch(q.type){
+        case"mcq":tl="Opción múltiple";tc="type-mcq";break;
+        case"truefalse":tl="Verdadero / Falso";tc="type-tf";break;
+        case"numeric":tl="Valor numérico";tc="type-num";break;
+        case"match":tl="Relacionar columnas";tc="type-match";break}
+    let h=`<div class="question-card"><span class="type-badge ${tc}">${tl}</span>`;
+    h+=`<div class="question-text"><strong>${currentIdx+1}.</strong> ${q.text}</div><div class="options-area">`;
+    if(q.type==="mcq"){
+        (shuffledOpts[currentIdx]||q.options).forEach(o=>{
+            const ck=userAnswers[currentIdx]===o?'checked':'';
+            h+=`<div class="option-radio"><input type="radio" name="q_cur" value="${o.replace(/"/g,'&quot;')}" ${ck}> <label>${o}</label></div>`})
+    }else if(q.type==="truefalse"){
+        q.options.forEach(o=>{
+            const ck=userAnswers[currentIdx]===o?'checked':'';
+            h+=`<div class="option-radio"><input type="radio" name="q_cur" value="${o}" ${ck}> <label>${o}</label></div>`})
+    }else if(q.type==="numeric"){
+        const v=userAnswers[currentIdx]!==""?userAnswers[currentIdx]:"";
+        h+=`<input type="number" step="any" id="numInput" value="${v}" placeholder="Tu respuesta">`;
+        h+=` <span style="margin-left:6px;font-size:.75rem;color:#7788aa;">(sin comas ni espacios)</span>`
+    }else if(q.type==="match"){
+        q.matchItems.forEach(it=>{
+            const sv=(userAnswers[currentIdx]&&userAnswers[currentIdx][it])?userAnswers[currentIdx][it]:"";
+            h+=`<div class="relation-row"><span>🔹 ${it}</span><select data-item="${it.replace(/"/g,'&quot;')}" class="match-sel"><option value="">-- Seleccionar --</option>`;
+            q.matchOptions.forEach(o=>{h+=`<option value="${o}" ${sv===o?'selected':''}>${o}</option>`});
+            h+=`</select></div>`})}
+    h+=`</div><div style="margin-top:10px;"><button class="save-btn" id="saveBtn">💾 Guardar respuesta</button>`;
+    if(savedStatus[currentIdx])h+=`<span class="saved-badge">✓ Guardada</span>`;
+    h+=`</div></div>`;
+    c.innerHTML=h;
+    document.getElementById("saveBtn").addEventListener("click",saveAnswer);
+    updateNav();updateProgress();updateQMap()}
+
+function updateQMap(){
+    const m=document.getElementById("questionMap");if(!m)return;let h='';
+    currentExam.forEach((_,i)=>{
+        let cls='q-dot';if(savedStatus[i])cls+=' saved';if(i===currentIdx)cls+=' current';
+        h+=`<div class="${cls}" data-qi="${i}">${i+1}</div>`});
+    m.innerHTML=h;
+    m.querySelectorAll('.q-dot').forEach(d=>{
+        d.addEventListener('click',()=>{collectAnswer();currentIdx=parseInt(d.getAttribute('data-qi'));renderQuestion()})})}
+
+function updateNav(){
+    document.getElementById("prevBtn").disabled=(currentIdx===0);
+    document.getElementById("nextBtn").disabled=(currentIdx===currentExam.length-1);
+    document.getElementById("questionCounter").textContent=`${currentIdx+1} / ${currentExam.length}`}
+
+function updateProgress(){
+    const s=Object.values(savedStatus).filter(v=>v).length,t=currentExam.length;
+    document.getElementById("progressIndicator").textContent=`📌 ${s}/${t}`;
+    document.getElementById("progressBarFill").style.width=`${(s/t)*100}%`}
+
+function goNext(){collectAnswer();if(currentIdx<currentExam.length-1){currentIdx++;renderQuestion()}}
+function goPrev(){collectAnswer();if(currentIdx>0){currentIdx--;renderQuestion()}}
+
+function collectAnswer(){
+    const q=currentExam[currentIdx];
+    if(q.type==="mcq"||q.type==="truefalse"){
+        const r=document.querySelector('input[name="q_cur"]:checked');userAnswers[currentIdx]=r?r.value:""}
+    else if(q.type==="numeric"){
+        const inp=document.getElementById("numInput");let v=inp?parseFloat(inp.value):NaN;
+        userAnswers[currentIdx]=isNaN(v)?"":v}
+    else if(q.type==="match"){
+        const sels=document.querySelectorAll('.match-sel');let m={};
+        sels.forEach(s=>{m[s.getAttribute("data-item")]=s.value});userAnswers[currentIdx]=m}
+    if(q.type==="match"){
+        if(Object.values(userAnswers[currentIdx]).every(v=>v!==""))savedStatus[currentIdx]=true}
+    else if(userAnswers[currentIdx]!=="")savedStatus[currentIdx]=true}
+
+function saveAnswer(){
+    collectAnswer();const q=currentExam[currentIdx];let ok=false;
+    if(q.type==="match")ok=Object.values(userAnswers[currentIdx]).every(v=>v!=="");
+    else ok=(userAnswers[currentIdx]!=="");
+    if(ok){savedStatus[currentIdx]=true;renderQuestion();showToast("Respuesta guardada ✅")}
+    else alert("Por favor completa la respuesta antes de guardar.")}
+
+function computeScore(){
+    let correct=0;
+    for(let i=0;i<currentExam.length;i++){
+        const q=currentExam[i],ua=userAnswers[i];
+        if((ua===""||ua===null||ua===undefined)&&ua!==0)continue;
+        let ok=false;
+        if(q.type==="mcq"||q.type==="truefalse"){if(ua===q.correct)ok=true}
+        else if(q.type==="numeric"){
+            let nu=parseFloat(ua);if(!isNaN(nu)&&Math.abs(nu-q.correct)<=(q.tolerance||0.01))ok=true}
+        else if(q.type==="match"){
+            if(typeof ua==='object'){ok=true;
+                for(let j=0;j<q.matchItems.length;j++){if(ua[q.matchItems[j]]!==q.matchPairs[j]){ok=false;break}}}}
+        if(ok)correct++}
+    return(correct/currentExam.length)*10}
+
+function showReport(){
+    collectAnswer();const score=computeScore(),pct=(score/10)*100;
+    const cc=Math.round((score/10)*currentExam.length);
+    document.getElementById("quizPanel").style.display="none";
+    const rd=document.getElementById("reportContent");
+    let det='';
+    for(let i=0;i<currentExam.length;i++){
+        const q=currentExam[i],ua=userAnswers[i];
+        let ok=false,ut='Sin respuesta',ct='';
+        if(q.type==="mcq"||q.type==="truefalse"){ut=ua||'Sin respuesta';ct=q.correct;if(ua===q.correct)ok=true}
+        else if(q.type==="numeric"){ut=ua!==""?ua:'Sin respuesta';ct=q.correct;
+            let nu=parseFloat(ua);if(!isNaN(nu)&&Math.abs(nu-q.correct)<=(q.tolerance||0.01))ok=true}
+        else if(q.type==="match"){
+            if(typeof ua==='object'){let pts=[];ok=true;
+                for(let j=0;j<q.matchItems.length;j++){
+                    const it=q.matchItems[j],exp=q.matchPairs[j],got=ua[it]||'(vacío)';
+                    pts.push(`${it}: ${got}`);if(ua[it]!==exp)ok=false}
+                ut=pts.join(' | ');ct=q.matchItems.map((it,j)=>`${it}: ${q.matchPairs[j]}`).join(' | ')}
+            else{ct=q.matchPairs.join(' | ')}}
+        det+=`<div style="padding:8px 10px;margin:4px 0;border-radius:8px;background:${ok?'rgba(0,230,118,.08)':'rgba(255,82,82,.08)'};border-left:4px solid ${ok?'#00e676':'#ff5252'}">
+            <p style="font-weight:bold;margin:0 0 3px;font-size:.8rem;">${i+1}. ${q.text}</p>
+            <p style="margin:0;font-size:.73rem;color:${ok?'#00e676':'#ff5252'}">${ok?'✓':'✗'} Tu respuesta: ${ut}</p>
+            ${!ok?`<p style="margin:2px 0 0;font-size:.73rem;color:#00e676">✓ Correcta: ${ct}</p>`:''}</div>`}
+    let ev=`<div style="background:#02222e;border-radius:12px;padding:12px;margin-top:14px;">
+        <strong style="color:#0ef;">📊 REGISTRO DE SEGURIDAD</strong><br>
+        <span style="font-size:.8rem;">
+        🪟 Minimización pantalla: ${eventLog.minimize}<br>
+        🖥️ Cambio de pantalla/foco: ${eventLog.multitask}<br>
+        📋 Intentos de copiar: ${eventLog.copy}<br>
+        📎 Intentos de pegar: ${eventLog.paste}<br>
+        ⬜ Pantalla dividida / resize: ${eventLog.splitScreen}<br>
+        🔄 Cambio de app: ${eventLog.otherApps}</span></div>`;
+    rd.innerHTML=`
+        <h2 style="color:#0ef;">🔬 INFORME FINAL — ENERGÍA, CALOR Y TRABAJO</h2>
+        <p><strong>👩‍🎓 Estudiante:</strong> ${studentName}</p>
+        <p><strong>📚 Asignatura:</strong> CNEyT II — Prof. Adrián Cruz H.</p>
+        <p><strong>📋 Examen:</strong> Versión ${examLabel}</p>
+        <p><strong>📐 Calificación:</strong> ${score.toFixed(2)} / 10.0</p>
+        <p><strong>✅ Aciertos:</strong> ${pct.toFixed(1)}% (${cc} de ${currentExam.length})</p>
+        <hr style="margin:10px 0;border-color:#1a3a4a;">
+        <h3 style="color:#0ef;margin-bottom:6px;">📋 Detalle de respuestas</h3>${det}${ev}`;
+    document.getElementById("reportPanel").style.display="block";
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+
+function downloadPDF(){
+    const el=document.getElementById('reportContent');
+    const name=studentName.replace(/\s+/g,'_');
+    if(typeof html2pdf!=='undefined'){
+        const btn=document.getElementById('downloadPdfBtn');
+        btn.textContent='⏳ Generando PDF...';btn.disabled=true;
+        html2pdf().set({
+            margin:[8,6,8,6],
+            filename:`Informe_${name}_Examen${examLabel}.pdf`,
+            image:{type:'jpeg',quality:0.95},
+            html2canvas:{scale:2,useCORS:true,backgroundColor:'#021018',logging:false,windowWidth:el.scrollWidth},
+            jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+            pagebreak:{mode:['avoid-all','css','legacy']}
+        }).from(el).save().then(()=>{
+            btn.textContent='📄 GUARDAR INFORME EN PDF';btn.disabled=false
+        }).catch(()=>{
+            btn.textContent='📄 GUARDAR INFORME EN PDF';btn.disabled=false;
+            window.print()
+        })
+    }else{window.print()}}
+
+document.getElementById("startQuizBtn").addEventListener("click",()=>{
+    const nv=document.getElementById("studentNameInput").value.trim();
+    if(nv===""){document.getElementById("nameAlert").classList.add("show","shake");
+        setTimeout(()=>document.getElementById("nameAlert").classList.remove("show","shake"),2000);return}
+    studentName=nv;document.getElementById("displayStudentName").textContent=`🧪 ${studentName}`;
+    document.getElementById("idPanel").style.display="none";
+    document.getElementById("quizPanel").style.display="block";
+    initQuiz();quizActive=true;
+    sessionStorage.setItem("thermo_active","true");
+    sessionStorage.setItem("student_name",studentName);
+    sessionStorage.setItem("exam_label",examLabel)});
+document.getElementById("prevBtn").addEventListener("click",goPrev);
+document.getElementById("nextBtn").addEventListener("click",goNext);
+document.getElementById("finalizeBtn").addEventListener("click",()=>{
+    collectAnswer();
+    let uns=Object.values(savedStatus).some(v=>v===false);
+    if(uns&&!confirm("Hay preguntas sin guardar. Las respuestas vacías se contarán como incorrectas. ¿Finalizar?"))return;
+    showReport()});
+document.getElementById("downloadPdfBtn").addEventListener("click",downloadPDF);
+document.getElementById("resetViewBtn").addEventListener("click",()=>{sessionStorage.clear();location.reload()});
+
+blockCopyPasteAndContext();initSecurityMonitors();
+window.addEventListener('load',()=>{
+    if(sessionStorage.getItem("thermo_active")==="true"){
+        const sn=sessionStorage.getItem("student_name"),el=sessionStorage.getItem("exam_label");
+        if(sn&&el){
+            studentName=sn;examLabel=el;
+            if(el==="A")currentExam=EXAM_A;else if(el==="B")currentExam=EXAM_B;else currentExam=EXAM_C;
+            document.getElementById("displayStudentName").textContent=`🧪 ${studentName}`;
+            document.getElementById("idPanel").style.display="none";
+            document.getElementById("quizPanel").style.display="block";
+            userAnswers={};savedStatus={};shuffledOpts={};
+            currentExam.forEach((q,i)=>{
+                if(q.type==="match"){let dm={};q.matchItems.forEach(it=>{dm[it]=""});userAnswers[i]=dm}
+                else userAnswers[i]="";savedStatus[i]=false;
+                if(q.type==="mcq")shuffledOpts[i]=shuffleArray([...q.options])});
+            currentIdx=0;renderQuestion();quizActive=true}}});
+</script>
+</body>
+</html>
