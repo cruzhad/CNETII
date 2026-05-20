@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Examen Fase 3 - Seguridad y tiempos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #121212;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            color: #eeeeee;
+        }
+        .screen {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #1e1e2f;
+            border-radius: 32px;
+            padding: 20px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        .hidden {
+            display: none;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #bb86fc, #03dac6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .card {
+            background: #2c2c3a;
+            border-radius: 28px;
+            padding: 18px;
+            margin: 16px 0;
+        }
+        input, .radio-group {
+            width: 100%;
+            padding: 12px;
+            background: #3a3a4a;
+            border: none;
+            border-radius: 48px;
+            color: white;
+            font-size: 1rem;
+            margin: 8px 0;
+        }
+        input:focus {
+            outline: 2px solid #bb86fc;
+            background: #2f2f3f;
+        }
+        button {
+            background: #bb86fc;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #121212;
+            width: 100%;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.97);
+            background: #9b6bdc;
+        }
+        .btn-secondary {
+            background: #3a3a4a;
+            color: #eee;
+        }
+        .timer {
+            background: #000000aa;
+            backdrop-filter: blur(8px);
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 8px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .warning {
+            color: #ffb86c;
+        }
+        .danger {
+            color: #ff5e5e;
+        }
+        .radio-group label {
+            display: block;
+            background: #2a2a38;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 48px;
+            border: 1px solid #444;
+            transition: 0.1s;
+        }
+        .radio-group input {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.1);
+            vertical-align: middle;
+        }
+        .progress {
+            font-size: 0.85rem;
+            background: #2a2a38;
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .nav-buttons button {
+            flex: 1;
+            margin-top: 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        .result-table th, .result-table td {
+            border-bottom: 1px solid #444;
+            padding: 8px 4px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .correcto {
+            color: #8bc34a;
+        }
+        .incorrecto {
+            color: #ff8a80;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            color: #777;
+        }
+        .event-counter {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: #000000cc;
+            backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #ffb86c;
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid #ffb86c66;
+        }
+        @media (max-width: 500px) {
+            body {
+                padding: 8px;
+            }
+            .screen {
+                padding: 16px;
+            }
+            .event-counter {
+                bottom: 8px;
+                right: 8px;
+                padding: 6px 10px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="inicioScreen" class="screen">
+    <h1>⚡ Examen Fase 3</h1>
+    <div class="card">
+        <p style="margin:0 0 12px 0;"><strong>Ciencias Naturales Experimentales y Tecnología II</strong><br>Prof. Adrián Cruz H.</p>
+        <label>📝 Nombre del alumno:</label>
+        <input type="text" id="nombreAlumno" placeholder="Escribe tu nombre completo" autocomplete="off">
+        <button id="btnComenzar">▶ COMENZAR EXAMEN</button>
+        <p style="font-size:12px; margin-top:16px;">⏰ 40 minutos • Una pregunta a la vez • Sin apuntes</p>
+        <p style="font-size:11px; color:#aaa;">🔒 Sistema anti-trampas activo: se registrarán cambios de pestaña, minimizar, copiar/pegar y pantalla dividida.</p>
+    </div>
+    <footer>© Examen interactivo | Seguridad monitoreada</footer>
+</div>
+
+<div id="examenScreen" class="screen hidden">
+    <div class="timer" id="timerDisplay">40:00</div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span class="progress" id="preguntaCounter">Pregunta 1 / 30</span>
+        <span style="font-size: 12px;">🔒 seguridad activa</span>
+    </div>
+    <div id="preguntaContainer" class="card" style="margin-top: 8px;"></div>
+    <div class="nav-buttons">
+        <button id="btnAnterior" class="btn-secondary">◀ Anterior</button>
+        <button id="btnSiguiente">Siguiente ▶</button>
+    </div>
+    <button id="btnFinalizarExamen" class="btn-secondary" style="background:#5a3a7a;">🏁 Finalizar y calificar</button>
+</div>
+
+<div id="resultadosScreen" class="screen hidden">
+    <h2>📋 Resultado Final</h2>
+    <div id="resumenNombre" class="card" style="background:#2c2c3a;"></div>
+    <div class="card">
+        <h3>📊 Calificación</h3>
+        <p id="puntuacionFinal" style="font-size:1.8rem; font-weight:bold;"></p>
+        <button id="btnGuardarPDF">📄 Guardar como PDF</button>
+        <button id="btnReiniciar">🔄 Volver a inicio</button>
+    </div>
+    <div class="card">
+        <h3>📌 Detalle de respuestas</h3>
+        <div style="overflow-x:auto;">
+            <table class="result-table" id="tablaDetalle">
+                <thead><tr><th>#</th><th>Pregunta</th><th>Tu respuesta</th><th>Valor</th><th>Estado</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card" id="eventosDesglose">
+        <h3>⚠️ Registro de actividad (seguridad)</h3>
+        <div id="eventosDetalleInfo"></div>
+    </div>
+</div>
+
+<div id="floatingEventCounter" class="event-counter hidden">0</div>
+
+<script>
+    // ==================== BANCO DE PREGUNTAS ====================
+    const QUESTION_SET = [
+        { text: "1. ¿Cuál es la distinción fundamental entre calor y temperatura?", options: ["La temperatura se expresa en °C y el calor en Joules", "La temperatura refleja la agitación de las partículas; el calor constituye energía en tránsito", "El calor siempre es menor que la temperatura", "Son conceptos idénticos sin diferencia alguna"], correct: "La temperatura refleja la agitación de las partículas; el calor constituye energía en tránsito" },
+        { text: "2. Un iceberg a 0°C contiene mayor cantidad de calor interno que un cubo de hielo a 0°C. La razón es que:", options: ["El iceberg se encuentra a menor temperatura", "El iceberg posee una masa considerablemente mayor", "El cubo de hielo presenta mayor densidad", "Es incorrecto, ambos contienen la misma cantidad de calor"], correct: "El iceberg posee una masa considerablemente mayor" },
+        { text: "3. ¿En qué escala de temperatura el valor cero indica la ausencia total de agitación molecular?", options: ["Celsius", "Fahrenheit", "Kelvin", "Centígrados"], correct: "Kelvin" },
+        { text: "4. Cuando dos objetos logran el equilibrio térmico, esto implica que:", options: ["Poseen la misma cantidad de materia", "Comparten la misma temperatura y ya no existe transferencia neta de calor", "Tienen volúmenes iguales", "Se encuentran a la temperatura del ambiente"], correct: "Comparten la misma temperatura y ya no existe transferencia neta de calor" },
+        { text: "5. El sentido en que se transfiere el calor SIEMPRE va:", options: ["Del objeto de mayor tamaño al de menor tamaño", "Desde el cuerpo de temperatura superior hacia el de temperatura inferior", "Del objeto más denso al menos denso", "De manera uniforme en todas las direcciones"], correct: "Desde el cuerpo de temperatura superior hacia el de temperatura inferior" },
+        { text: "6. ¿Cuál de estas unidades NO corresponde a una medida de calor?", options: ["Joule (J)", "Caloría (cal)", "Kelvin (K)", "Kilocaloría (kcal)"], correct: "Kelvin (K)" },
+        { text: "7. El calor específico (c) de un material indica:", options: ["La masa del material", "La energía requerida para aumentar en 1°C la temperatura de 1g de dicho material", "La temperatura máxima alcanzable", "Su punto de ebullición"], correct: "La energía requerida para aumentar en 1°C la temperatura de 1g de dicho material" },
+        { text: "8. Si dos objetos presentan la misma temperatura pero uno duplica la masa del otro, entonces:", options: ["Ambos contienen igual cantidad total de calor", "El de mayor masa acumula más calor en total", "El de menor masa posee más calor total", "No es posible determinarlo sin conocer el tipo de material"], correct: "El de mayor masa acumula más calor en total" },
+        { text: "9. Si el agua posee un calor específico de 4.18 J/g°C y el hierro de 0.45 J/g°C, esto indica que:", options: ["El agua se calienta con mayor rapidez que el hierro", "El hierro requiere más energía para elevar su temperatura", "El agua demanda más energía para modificar su temperatura", "Ambos materiales se calientan de igual forma"], correct: "El agua demanda más energía para modificar su temperatura" },
+        { text: "10. ¿Qué aparato se emplea para medir la cantidad de calor?", options: ["Termómetro", "Calorímetro", "Barómetro", "Dinamómetro"], correct: "Calorímetro" },
+        { text: "11. ¿Qué cantidad de calor se requiere para subir la temperatura de 200g de agua desde 20°C hasta 80°C? (c_agua = 4.18 J/g°C)", options: ["50,160 J", "16,720 J", "6,688 J", "100,320 J"], correct: "50,160 J" },
+        { text: "12. Un bloque de hierro de 500g se calienta de 25°C a 125°C. Si absorbió 22,500 J, ¿qué valor tiene el calor específico del hierro?", options: ["0.45 J/g°C", "4.5 J/g°C", "0.045 J/g°C", "45 J/g°C"], correct: "0.45 J/g°C" },
+        { text: "13. Si se mezclan 300g de agua a 80°C con 200g de agua a 20°C, ¿cuál será la temperatura de equilibrio aproximada? (Sin pérdidas de calor)", options: ["50°C", "56°C", "60°C", "45°C"], correct: "56°C" },
+        { text: "14. ¿Cuánta masa de agua se puede elevar de 15°C a 75°C empleando 125,400 J de energía? (c_agua = 4.18 J/g°C)", options: ["500 g", "250 g", "750 g", "1000 g"], correct: "500 g" },
+        { text: "15. Dispones de dos ollas iguales con 500g de agua cada una. La primera marca 30°C y la segunda contiene aceite a 120°C. ¿Cuál afirmación es CORRECTA si ambas reciben calor de la misma estufa durante 5 minutos?", options: ["La de 30°C llegará primero a 100°C", "Las dos aumentarán su temperatura en la misma cantidad", "La de 120°C ya no puede subir más de temperatura", "Tras 5 minutos solo importa cuánto calor recibe cada una, no la temperatura inicial"], correct: "Tras 5 minutos solo importa cuánto calor recibe cada una, no la temperatura inicial" },
+        { text: "16. En el caso del material (500g de agua alcanza 30°C y 500g de aceite llega a 120°C tras 5 minutos), ¿a qué se debe que el aceite alcance mayor temperatura?", options: ["El aceite tiene más masa", "El aceite posee menor calor específico, por lo que necesita menos energía para calentarse", "El agua se evapora rápidamente", "La estufa transfiere más calor al aceite"], correct: "El aceite posee menor calor específico, por lo que necesita menos energía para calentarse" },
+        { text: "17. La conducción de calor se presenta principalmente en:", options: ["Líquidos y gases", "Sólidos", "El vacío", "Plasma"], correct: "Sólidos" },
+        { text: "18. Al calentar una cuchara metálica por un extremo y observar que el calor se propaga a lo largo de toda ella, estamos ante un caso de:", options: ["Convección", "Radiación", "Conducción", "Evaporación"], correct: "Conducción" },
+        { text: "19. El agua en ebullición dentro de una olla genera corrientes ascendentes de agua caliente y descendentes de agua fría. Este proceso corresponde a:", options: ["Conducción", "Convección", "Radiación", "Condensación"], correct: "Convección" },
+        { text: "20. La forma de transmisión de calor que NO requiere un medio material para propagarse es:", options: ["Conducción", "Convección", "Radiación", "Todas requieren un medio material"], correct: "Radiación" },
+        { text: "21. La principal vía por la cual el Sol transfiere calor a la Tierra es:", options: ["Conducción a través del espacio", "Convección del aire atmosférico", "Radiación electromagnética", "Contacto físico directo"], correct: "Radiación electromagnética" },
+        { text: "22. ¿Por qué al tocar un objeto metálico y uno de madera a la misma temperatura, el metal se percibe más frío?", options: ["El metal realmente está a menor temperatura", "El metal posee mayor conductividad térmica y extrae calor de tu mano con mayor rapidez", "La madera genera su propio calor", "El metal tiene mayor peso"], correct: "El metal posee mayor conductividad térmica y extrae calor de tu mano con mayor rapidez" },
+        { text: "23. En una ciudad costera, durante el día la brisa marina sopla desde el mar (más fresco) hacia la tierra (más caliente). Este fenómeno se clasifica como:", options: ["Conducción", "Convección natural", "Radiación solar", "Equilibrio térmico"], correct: "Convección natural" },
+        { text: "24. ¿Cuál de estos materiales es el MEJOR aislante del calor?", options: ["Aluminio", "Cobre", "Madera", "Acero"], correct: "Madera" },
+        { text: "25. Un termo conserva el café caliente debido a que:", options: ["Produce calor de manera continua", "Reduce al mínimo los tres mecanismos de transferencia de calor (conducción, convección, radiación)", "Únicamente bloquea la radiación", "Calienta automáticamente el líquido contenido"], correct: "Reduce al mínimo los tres mecanismos de transferencia de calor (conducción, convección, radiación)" },
+        { text: "26. En el experimento de Joule (pesas que caen y calientan agua mediante paletas giratorias), se demuestra que:", options: ["Es imposible calentar agua por medios mecánicos", "La energía mecánica puede transformarse en calor", "La gravedad genera calor directamente", "Las pesas se encuentran previamente calientes"], correct: "La energía mecánica puede transformarse en calor" },
+        { text: "27. ¿Cuál de los siguientes NO constituye un ejemplo válido de trabajo mecánico convertido en calor?", options: ["Frotar ambas manos entre sí", "Frenar una bicicleta (los frenos se calientan)", "Perforar madera con un taladro", "El agua que se evapora bajo la luz del sol"], correct: "El agua que se evapora bajo la luz del sol" },
+        { text: "28. El Principio Cero de la Termodinámica establece que:", options: ["La energía no se crea ni se destruye", "Si A está en equilibrio térmico con C, y B está en equilibrio con C, entonces A y B se encuentran en equilibrio térmico entre sí", "El calor siempre viaja del cuerpo caliente al frío", "A 0 K cesa todo movimiento molecular"], correct: "Si A está en equilibrio térmico con C, y B está en equilibrio con C, entonces A y B se encuentran en equilibrio térmico entre sí" },
+        { text: "29. ¿Por qué en zonas de clima cálido se sugiere utilizar ropa de tonos claros?", options: ["Los tonos claros captan más radiación", "Los tonos claros reflejan mayor radiación y absorben menos calor", "Los tonos oscuros mantienen la frescura", "El color de la ropa no influye en nada"], correct: "Los tonos claros reflejan mayor radiación y absorben menos calor" },
+        { text: "30. Colocas tres recipientes en serie: agua fría (A), agua a temperatura intermedia (C) y agua caliente (B). Si los dejas hasta que alcancen equilibrio térmico, ¿qué ocurrirá?", options: ["A, C y B conservarán sus temperaturas iniciales", "A, C y B llegarán a compartir la misma temperatura", "Solo A y C alcanzarán el equilibrio", "El agua se desplazará de un recipiente a otro"], correct: "A, C y B llegarán a compartir la misma temperatura" }
+    ];
+
+    // ==================== VARIABLES GLOBALES ====================
+    const TOTAL_PUNTAJE = 1.5;
+    const NUM_PREGUNTAS = 30;
+    const PUNTOS_POR_PREGUNTA = TOTAL_PUNTAJE / NUM_PREGUNTAS; // 0.05
+
+    let shuffledQuestions = [];
+    let userAnswers = new Array(NUM_PREGUNTAS).fill(null);
+    let currentIndex = 0;
+    let examActive = false;
+    let timerInterval = null;
+    let timeSeconds = 40 * 60;
+    let nombreAlumno = "";
+
+    let fechaHoraInicio = null;
+    let fechaHoraFin = null;
+
+    let securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+    let totalSecurityEvents = 0;
+    let lastSplitTime = 0;
+    let initialWindowWidth = window.innerWidth;
+
+    const inicioScreen = document.getElementById('inicioScreen');
+    const examenScreen = document.getElementById('examenScreen');
+    const resultadosScreen = document.getElementById('resultadosScreen');
+    const btnComenzar = document.getElementById('btnComenzar');
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnFinalizar = document.getElementById('btnFinalizarExamen');
+    const btnGuardarPDF = document.getElementById('btnGuardarPDF');
+    const btnReiniciar = document.getElementById('btnReiniciar');
+    const preguntaContainer = document.getElementById('preguntaContainer');
+    const preguntaCounter = document.getElementById('preguntaCounter');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const nombreInput = document.getElementById('nombreAlumno');
+    const floatingCounterDiv = document.getElementById('floatingEventCounter');
+
+    function formatDateTime(date) {
+        if (!date) return "---";
+        const day = date.getDate().toString().padStart(2,'0');
+        const month = (date.getMonth()+1).toString().padStart(2,'0');
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2,'0');
+        const minutes = date.getMinutes().toString().padStart(2,'0');
+        const seconds = date.getSeconds().toString().padStart(2,'0');
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+
+    function updateFloatingCounter() {
+        if (floatingCounterDiv) floatingCounterDiv.innerText = totalSecurityEvents;
+    }
+
+    function incrementEvent(type) {
+        if (!examActive) return;
+        if (type === 'visibility') { securityEvents.visibility++; totalSecurityEvents++; }
+        else if (type === 'copy') { securityEvents.copy++; totalSecurityEvents++; }
+        else if (type === 'paste') { securityEvents.paste++; totalSecurityEvents++; }
+        else if (type === 'splitscreen') { securityEvents.splitscreen++; totalSecurityEvents++; }
+        updateFloatingCounter();
+    }
+
+    function handleResizeEvent() {
+        if (!examActive) return;
+        const now = Date.now();
+        if (now - lastSplitTime < 800) return;
+        const currentWidth = window.innerWidth;
+        let isSplit = false;
+        if (window.screen.width && currentWidth / window.screen.width < 0.7) isSplit = true;
+        else if (initialWindowWidth && currentWidth < initialWindowWidth * 0.7) isSplit = true;
+        if (isSplit) {
+            incrementEvent('splitscreen');
+            lastSplitTime = now;
+        }
+    }
+
+    function handleVisibilityChange() {
+        if (!examActive) return;
+        if (document.hidden) incrementEvent('visibility');
+    }
+
+    function handleCopy(e) { if (examActive) { incrementEvent('copy'); e.preventDefault(); return false; } }
+    function handlePaste(e) { if (examActive) { incrementEvent('paste'); e.preventDefault(); return false; } }
+
+    function attachSecurityListeners() {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        document.addEventListener('copy', handleCopy);
+        document.addEventListener('paste', handlePaste);
+        window.addEventListener('resize', handleResizeEvent);
+    }
+
+    function detachSecurityListeners() {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('copy', handleCopy);
+        document.removeEventListener('paste', handlePaste);
+        window.removeEventListener('resize', handleResizeEvent);
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function prepareShuffledExamen() {
+        let indices = [...Array(QUESTION_SET.length).keys()];
+        shuffleArray(indices);
+        let newSet = [];
+        for (let idx of indices) {
+            const original = QUESTION_SET[idx];
+            let optsCopy = [...original.options];
+            shuffleArray(optsCopy);
+            newSet.push({
+                text: original.text,
+                optionsShuffled: optsCopy,
+                correctAnswerText: original.correct,
+            });
+        }
+        return newSet;
+    }
+
+    function escapeHtml(str) { return str ? str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])) : ''; }
+
+    function renderCurrentQuestion() {
+        if (!shuffledQuestions.length) return;
+        const q = shuffledQuestions[currentIndex];
+        const saved = userAnswers[currentIndex];
+        let html = `<h3 style="margin-top:0;">${escapeHtml(q.text)}</h3><div class="radio-group">`;
+        q.optionsShuffled.forEach(opt => {
+            const checked = (saved === opt) ? 'checked' : '';
+            html += `<label style="display:flex; align-items:center;">
+                        <input type="radio" name="preguntaActual" value="${escapeHtml(opt)}" ${checked}>
+                        <span style="margin-left:10px;">${escapeHtml(opt)}</span>
+                     </label>`;
+        });
+        html += `</div>`;
+        preguntaContainer.innerHTML = html;
+        document.querySelectorAll('input[name="preguntaActual"]').forEach(radio => {
+            radio.addEventListener('change', (e) => { userAnswers[currentIndex] = e.target.value; });
+        });
+        preguntaCounter.innerText = `Pregunta ${currentIndex+1} / ${shuffledQuestions.length}`;
+    }
+
+    function goPrev() { if (currentIndex > 0) { currentIndex--; renderCurrentQuestion(); } }
+    function goNext() { if (currentIndex < shuffledQuestions.length - 1) { currentIndex++; renderCurrentQuestion(); } else { alert("Última pregunta. Presiona 'Finalizar' para calificar."); } }
+
+    function formatearTiempo(seg) { return `${Math.floor(seg/60).toString().padStart(2,'0')}:${(seg%60).toString().padStart(2,'0')}`; }
+
+    function iniciarTemporizador() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!examActive) return;
+            if (timeSeconds <= 0) {
+                clearInterval(timerInterval);
+                examActive = false;
+                timerDisplay.innerText = "00:00";
+                alert("⏰ Tiempo agotado. El examen se calificará automáticamente.");
+                calcularResultados();
+            } else {
+                timeSeconds--;
+                timerDisplay.innerText = formatearTiempo(timeSeconds);
+                if (timeSeconds <= 60) timerDisplay.classList.add('danger');
+            }
+        }, 1000);
+    }
+
+    function calcularResultados() {
+        fechaHoraFin = new Date();
+        let correctCount = 0;
+        let detalles = [];
+        for (let i = 0; i < shuffledQuestions.length; i++) {
+            const q = shuffledQuestions[i];
+            const userResp = userAnswers[i];
+            const esCorrecta = (userResp && userResp === q.correctAnswerText);
+            if (esCorrecta) correctCount++;
+            detalles.push({
+                numero: i+1,
+                pregunta: q.text.length > 70 ? q.text.substring(0,67)+'...' : q.text,
+                respuestaAlumno: userResp ? userResp : "(Sin responder)",
+                correcta: esCorrecta,
+                puntos: esCorrecta ? PUNTOS_POR_PREGUNTA : 0
+            });
+        }
+        const puntajeObtenido = correctCount * PUNTOS_POR_PREGUNTA;
+        const porcentaje = Math.round((correctCount / NUM_PREGUNTAS) * 100);
+
+        document.getElementById('puntuacionFinal').innerHTML = `${puntajeObtenido.toFixed(2)} / ${TOTAL_PUNTAJE.toFixed(2)} puntos<br><span style="font-size:1rem;">Aciertos: ${correctCount} de ${NUM_PREGUNTAS} (${porcentaje}%)</span>`;
+
+        const tiempoUtilizado = 40*60 - timeSeconds;
+        const resumenDiv = document.getElementById('resumenNombre');
+        resumenDiv.innerHTML = `
+            <strong>👤 Alumno:</strong> ${escapeHtml(nombreAlumno)}<br>
+            <strong>📘 Ciencias Naturales Experimentales y Tecnología II</strong><br>
+            <strong>👨‍🏫 Prof. Adrián Cruz H.</strong><br>
+            <strong>📊 Puntaje obtenido:</strong> ${puntajeObtenido.toFixed(2)} / ${TOTAL_PUNTAJE.toFixed(2)} puntos<br>
+            <strong>⏱️ Tiempo utilizado:</strong> ${formatearTiempo(tiempoUtilizado)}<br>
+            <strong>🕒 Inicio:</strong> ${formatDateTime(fechaHoraInicio)}<br>
+            <strong>🏁 Término:</strong> ${formatDateTime(fechaHoraFin)}
+        `;
+
+        const tablaBody = document.querySelector('#tablaDetalle tbody');
+        tablaBody.innerHTML = '';
+        detalles.forEach(d => {
+            const row = tablaBody.insertRow();
+            row.insertCell(0).innerText = d.numero;
+            row.insertCell(1).innerText = d.pregunta;
+            row.insertCell(2).innerText = d.respuestaAlumno;
+            const valorCell = row.insertCell(3);
+            valorCell.innerText = d.correcta ? `+${d.puntos.toFixed(2)}` : '0.00';
+            valorCell.style.fontWeight = 'bold';
+            const statusCell = row.insertCell(4);
+            statusCell.innerText = d.correcta ? '✓ Correcto' : '✗ Incorrecto';
+            statusCell.className = d.correcta ? 'correcto' : 'incorrecto';
+        });
+
+        const eventosInfo = document.getElementById('eventosDetalleInfo');
+        eventosInfo.innerHTML = `
+            <p><strong>🔍 Total de eventos detectados:</strong> ${totalSecurityEvents}</p>
+            <ul style="margin:0; padding-left:20px;">
+                <li>📱 Cambio de pestaña / minimizar: ${securityEvents.visibility}</li>
+                <li>📋 Intentos de copiar: ${securityEvents.copy}</li>
+                <li>📌 Intentos de pegar: ${securityEvents.paste}</li>
+                <li>🖥️ Pantalla dividida (resize drástico): ${securityEvents.splitscreen}</li>
+            </ul>
+            <p style="font-size:12px; margin-top:8px;">* Estos eventos se registran con fines de integridad académica.</p>
+        `;
+
+        examenScreen.classList.add('hidden');
+        resultadosScreen.classList.remove('hidden');
+        floatingCounterDiv.classList.add('hidden');
+        detachSecurityListeners();
+    }
+
+    function startExam() {
+        const nombre = nombreInput.value.trim();
+        if (nombre === "") { alert("Por favor ingresa tu nombre completo."); return; }
+        nombreAlumno = nombre;
+        shuffledQuestions = prepareShuffledExamen();
+        userAnswers = new Array(NUM_PREGUNTAS).fill(null);
+        currentIndex = 0;
+        timeSeconds = 40 * 60;
+        examActive = true;
+        fechaHoraInicio = new Date();
+        fechaHoraFin = null;
+        resetSecurityCounters();
+        attachSecurityListeners();
+        floatingCounterDiv.classList.remove('hidden');
+        updateFloatingCounter();
+        if (timerInterval) clearInterval(timerInterval);
+        iniciarTemporizador();
+        renderCurrentQuestion();
+        inicioScreen.classList.add('hidden');
+        examenScreen.classList.remove('hidden');
+        resultadosScreen.classList.add('hidden');
+        initialWindowWidth = window.innerWidth;
+    }
+
+    function resetSecurityCounters() {
+        securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+        totalSecurityEvents = 0;
+        updateFloatingCounter();
+    }
+
+    btnComenzar.addEventListener('click', startExam);
+    btnAnterior.addEventListener('click', goPrev);
+    btnSiguiente.addEventListener('click', goNext);
+    btnFinalizar.addEventListener('click', () => {
+        if (examActive && confirm("¿Finalizar el examen? Se calificará automáticamente.")) {
+            clearInterval(timerInterval);
+            examActive = false;
+            calcularResultados();
+        } else if (!examActive) alert("El examen ya ha finalizado.");
+    });
+    btnReiniciar.addEventListener('click', () => window.location.reload());
+    btnGuardarPDF.addEventListener('click', () => window.print());
+
+    document.addEventListener('copy', (e) => { if(examActive) e.preventDefault(); });
+    document.addEventListener('paste', (e) => { if(examActive) e.preventDefault(); });
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+</script>
+</body>
+</html>
