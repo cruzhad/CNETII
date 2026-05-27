@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Cuestionario - Leyes de los Gases</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #121212;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            color: #eeeeee;
+        }
+        .screen {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #1e1e2f;
+            border-radius: 32px;
+            padding: 20px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        .hidden {
+            display: none;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #bb86fc, #03dac6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .card {
+            background: #2c2c3a;
+            border-radius: 28px;
+            padding: 18px;
+            margin: 16px 0;
+        }
+        input, .radio-group {
+            width: 100%;
+            padding: 12px;
+            background: #3a3a4a;
+            border: none;
+            border-radius: 48px;
+            color: white;
+            font-size: 1rem;
+            margin: 8px 0;
+        }
+        input:focus {
+            outline: 2px solid #bb86fc;
+            background: #2f2f3f;
+        }
+        button {
+            background: #bb86fc;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #121212;
+            width: 100%;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.97);
+            background: #9b6bdc;
+        }
+        .btn-secondary {
+            background: #3a3a4a;
+            color: #eee;
+        }
+        .timer {
+            background: #000000aa;
+            backdrop-filter: blur(8px);
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 8px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .warning {
+            color: #ffb86c;
+        }
+        .danger {
+            color: #ff5e5e;
+        }
+        .radio-group label {
+            display: block;
+            background: #2a2a38;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 48px;
+            border: 1px solid #444;
+            transition: 0.1s;
+        }
+        .radio-group input {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.1);
+            vertical-align: middle;
+        }
+        .progress {
+            font-size: 0.85rem;
+            background: #2a2a38;
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .nav-buttons button {
+            flex: 1;
+            margin-top: 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        .result-table th, .result-table td {
+            border-bottom: 1px solid #444;
+            padding: 8px 4px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .correcto {
+            color: #8bc34a;
+        }
+        .incorrecto {
+            color: #ff5e5e;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            color: #777;
+        }
+        .event-counter {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: #000000cc;
+            backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #ffb86c;
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid #ffb86c66;
+        }
+        .situation-box {
+            background: #1a2a3a;
+            border-left: 3px solid #03dac6;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #a0d8ef;
+        }
+        .scenario-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 8px 0 12px 0;
+        }
+        select.law-select {
+            width: 100%;
+            padding: 12px 44px 12px 18px;
+            background-color: #2a2a38;
+            border: 1px solid #555;
+            border-radius: 48px;
+            color: white;
+            font-size: 1rem;
+            margin: 8px 0;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23bb86fc'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 22px;
+        }
+        select.law-select:focus {
+            outline: 2px solid #bb86fc;
+        }
+        .law-label {
+            font-size: 0.9rem;
+            color: #ffb86c;
+            margin-top: 16px;
+            display: block;
+            font-weight: 600;
+        }
+        .score-badge {
+            display: inline-block;
+            background: #3a3a4a;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .breakdown-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 0.78rem;
+        }
+        .breakdown-chip {
+            padding: 2px 10px;
+            border-radius: 16px;
+            font-weight: 600;
+        }
+        @media (max-width: 500px) {
+            body {
+                padding: 8px;
+            }
+            .screen {
+                padding: 16px;
+            }
+            .event-counter {
+                bottom: 8px;
+                right: 8px;
+                padding: 6px 10px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="inicioScreen" class="screen">
+    <h1>🧪 Leyes de los Gases</h1>
+    <div class="card">
+        <p style="margin:0 0 12px 0;"><strong>Ciencias Naturales Experimentales y Tecnología II</strong><br>Prof. Adrián Cruz H.</p>
+        <label>📝 Nombre del alumno:</label>
+        <input type="text" id="nombreAlumno" placeholder="Escribe tu nombre completo" autocomplete="off">
+        <button id="btnComenzar">▶ COMENZAR EXAMEN</button>
+        <p style="font-size:12px; margin-top:16px;">⏰ 22 minutos • 10 preguntas • Una a la vez • Sin apuntes</p>
+        <p style="font-size:11px; color:#aaa;">🔒 Sistema anti-trampas activo: se registrarán cambios de pestaña, minimizar, copiar/pegar y pantalla dividida.</p>
+    </div>
+    <footer>© Cuestionario interactivo | Seguridad monitoreada</footer>
+</div>
+
+<div id="examenScreen" class="screen hidden">
+    <div class="timer" id="timerDisplay">22:00</div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span class="progress" id="preguntaCounter">Pregunta 1 / 10</span>
+        <span style="font-size: 12px;">🔒 seguridad activa</span>
+    </div>
+    <div id="preguntaContainer" class="card" style="margin-top: 8px;"></div>
+    <div class="nav-buttons">
+        <button id="btnAnterior" class="btn-secondary">◀ Anterior</button>
+        <button id="btnSiguiente">Siguiente ▶</button>
+    </div>
+    <button id="btnFinalizarExamen" class="btn-secondary" style="background:#5a3a7a;">🏁 Finalizar y calificar</button>
+</div>
+
+<div id="resultadosScreen" class="screen hidden">
+    <h2>📋 Resultado Final</h2>
+    <div id="resumenNombre" class="card" style="background:#2c2c3a;"></div>
+    <div class="card">
+        <h3>📊 Calificación</h3>
+        <p id="puntuacionFinal" style="font-size:1.8rem; font-weight:bold;"></p>
+        <div id="desglosePuntaje" style="font-size:0.85rem; margin-top:8px;"></div>
+        <button id="btnGuardarPDF">📄 Guardar como PDF</button>
+        <button id="btnReiniciar">🔄 Volver a inicio</button>
+    </div>
+    <div class="card">
+        <h3>📌 Detalle de respuestas</h3>
+        <div style="overflow-x:auto;">
+            <table class="result-table" id="tablaDetalle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Pregunta</th>
+                        <th>Respuesta MC</th>
+                        <th>Ley seleccionada</th>
+                        <th>Pts MC</th>
+                        <th>Pts Ley</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card" id="eventosDesglose">
+        <h3>⚠️ Registro de actividad (seguridad)</h3>
+        <div id="eventosDetalleInfo"></div>
+    </div>
+</div>
+
+<div id="floatingEventCounter" class="event-counter hidden">0</div>
+
+<script>
+    // ==================== BANCO DE PREGUNTAS ====================
+    const QUESTION_SET = [
+        {
+            title: "1. El globo en el refrigerador",
+            scenario: "Sacaste un globo inflado de una fiesta y lo metiste al refrigerador por una hora. Al sacarlo, notaste que se veía más pequeño. ¿Por qué sucedió esto?",
+            situation: "La presión atmosférica se mantuvo constante, pero la temperatura bajó.",
+            options: [
+                "El volumen aumentó porque el frío contrae las partículas",
+                "El volumen disminuyó porque al bajar la temperatura, las partículas se mueven menos lento y ocupan menos espacio",
+                "La presión interna aumentó y reventó el globo",
+                "El volumen se mantuvo igual pero cambió de color"
+            ],
+            correct: "El volumen disminuyó porque al bajar la temperatura, las partículas se mueven menos lento y ocupan menos espacio",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Charles"
+        },
+        {
+            title: "2. La olla de presión",
+            scenario: "Cuando cocinas en una olla de presión, el vapor no puede escapar (volumen constante). Al calentarla, ¿qué sucede con la presión interna?",
+            situation: "El volumen de la olla es fijo y la cantidad de gas también.",
+            options: [
+                "La presión disminuye porque el calor \"relaja\" las partículas",
+                "La presión se mantiene constante",
+                "La presión aumenta drásticamente porque las partículas se mueven más rápido y chocan con más fuerza contra las paredes",
+                "La presión aumenta pero solo hasta cierto punto y luego baja"
+            ],
+            correct: "La presión aumenta drásticamente porque las partículas se mueven más rápido y chocan con más fuerza contra las paredes",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Gay-Lussac"
+        },
+        {
+            title: "3. La jeringa tapada",
+            scenario: "Tienes una jeringa con la punta tapada (no entra ni sale aire). Si empujas el émbolo reduciendo el volumen a la mitad, ¿qué sucede con la presión del aire atrapado?",
+            situation: "La temperatura se mantiene constante y no hay fuga de gas.",
+            options: [
+                "La presión se reduce a la mitad",
+                "La presión se duplica porque las mismas partículas tienen menos espacio y chocan más seguido",
+                "La presión se mantiene igual",
+                "La presión aumenta pero solo un poco"
+            ],
+            correct: "La presión se duplica porque las mismas partículas tienen menos espacio y chocan más seguido",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Boyle"
+        },
+        {
+            title: "4. Las llantas del auto en verano",
+            scenario: "Un día de verano muy caluroso, revisas la presión de las llantas de tu auto y notas que está más alta de lo normal, aunque no has agregado aire. ¿Por qué?",
+            situation: "El volumen de la llanta es prácticamente constante (es rígida).",
+            options: [
+                "Porque el calor hace que el aire se \"evapore\"",
+                "Porque al aumentar la temperatura, las partículas se mueven más rápido y ejercen más presión contra las paredes de la llanta",
+                "Porque la llanta se expande y crea más presión",
+                "Porque el sol \"aprieta\" la llanta"
+            ],
+            correct: "Porque al aumentar la temperatura, las partículas se mueven más rápido y ejercen más presión contra las paredes de la llanta",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Gay-Lussac"
+        },
+        {
+            title: "5. El globo que sube al cielo",
+            scenario: "Un niño suelta un globo de helio y este sube. A medida que asciende, la presión atmosférica exterior disminuye. Si la temperatura se mantiene constante, ¿qué le pasa al volumen del globo?",
+            situation: "La presión externa baja, la temperatura es constante.",
+            options: [
+                "El globo se encoge porque hace más frío arriba",
+                "El globo mantiene el mismo tamaño",
+                "El globo se expande (aumenta su volumen) porque la presión externa es menor y el gas interior empuja hacia afuera",
+                "El globo explota inmediatamente"
+            ],
+            correct: "El globo se expande (aumenta su volumen) porque la presión externa es menor y el gas interior empuja hacia afuera",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Boyle"
+        },
+        {
+            title: "6. La lata de aerosol al fuego",
+            scenario: "Nunca debes arrojar una lata de desodorante o pintura en aerosol al fuego. ¿Por qué es peligroso?",
+            situation: "El volumen de la lata es constante y rígido.",
+            options: [
+                "Porque el fuego derrite la lata",
+                "Porque al aumentar la temperatura, la presión interna aumenta tanto que la lata puede explotar",
+                "Porque el contenido se evapora",
+                "Porque el metal se vuelve tóxico"
+            ],
+            correct: "Porque al aumentar la temperatura, la presión interna aumenta tanto que la lata puede explotar",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Gay-Lussac"
+        },
+        {
+            title: "7. El pan que sube en el horno",
+            scenario: "Cuando horneas pan, la masa crece. Parte de esto se debe a que las burbujas de gas (CO\u2082) dentro de la masa se expanden con el calor. ¿Qué ley explica esto?",
+            situation: "La presión se mantiene relativamente constante mientras la masa es flexible.",
+            options: [
+                "Ley de Boyle: al bajar la presión, el volumen aumenta",
+                "Ley de Charles: al aumentar la temperatura, el volumen aumenta",
+                "Ley de Gay-Lussac: al aumentar la temperatura, la presión baja",
+                "Ninguna ley de los gases aplica aquí"
+            ],
+            correct: "Ley de Charles: al aumentar la temperatura, el volumen aumenta",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Charles"
+        },
+        {
+            title: "8. El buzo y las burbujas",
+            scenario: "Un buzo exhala bajo el agua y las burbujas de aire suben a la superficie. A medida que suben, ¿qué les pasa a las burbujas?",
+            situation: "La temperatura del agua es constante, pero la presión del agua disminuye al subir.",
+            options: [
+                "Las burbujas se hacen más pequeñas",
+                "Las burbujas mantienen el mismo tamaño",
+                "Las burbujas se hacen más grandes porque la presión externa disminuye",
+                "Las burbujas desaparecen"
+            ],
+            correct: "Las burbujas se hacen más grandes porque la presión externa disminuye",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Boyle"
+        },
+        {
+            title: "9. El termómetro de gas",
+            scenario: "Algunos termómetros funcionan midiendo la presión de un gas en un recipiente cerrado de volumen constante. Si la presión aumenta, ¿qué indica?",
+            situation: "Volumen constante, cantidad de gas constante.",
+            options: [
+                "Que la temperatura bajó",
+                "Que la temperatura subió",
+                "Que el gas se escapó",
+                "Que el recipiente se rompió"
+            ],
+            correct: "Que la temperatura subió",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Gay-Lussac"
+        },
+        {
+            title: "10. La botella plástica en la montaña",
+            scenario: "Llevas una botella de plástico medio llena de aire desde el nivel del mar hasta una montaña alta. Al llegar, la botella se ve inflada/expandida. ¿Por qué?",
+            situation: "La temperatura es similar, pero la presión atmosférica exterior es menor en la montaña.",
+            options: [
+                "Porque el aire de la montaña es \"más ligero\"",
+                "Porque al disminuir la presión externa, el aire dentro de la botella (que está a mayor presión) empuja las paredes hacia afuera aumentando el volumen",
+                "Porque la botella absorbe aire de la montaña",
+                "Porque el plástico se expande con el frío"
+            ],
+            correct: "Porque al disminuir la presión externa, el aire dentro de la botella (que está a mayor presión) empuja las paredes hacia afuera aumentando el volumen",
+            laws: ["Ley de Boyle", "Ley de Charles", "Ley de Gay-Lussac"],
+            correctLaw: "Ley de Boyle"
+        }
+    ];
+
+    // ==================== VARIABLES GLOBALES ====================
+    const TOTAL_PUNTAJE = 10;
+    const NUM_PREGUNTAS = 10;
+    const PUNTOS_POR_PREGUNTA = TOTAL_PUNTAJE / NUM_PREGUNTAS; // 1.0 por pregunta
+    const PUNTOS_MC = PUNTOS_POR_PREGUNTA / 2;   // 0.5
+    const PUNTOS_LEY = PUNTOS_POR_PREGUNTA / 2;  // 0.5
+    const TIMER_SECONDS = 22 * 60;
+
+    let shuffledQuestions = [];
+    let userAnswers = [];
+    let currentIndex = 0;
+    let examActive = false;
+    let timerInterval = null;
+    let timeSeconds = TIMER_SECONDS;
+    let nombreAlumno = "";
+
+    let fechaHoraInicio = null;
+    let fechaHoraFin = null;
+
+    let securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+    let totalSecurityEvents = 0;
+    let lastSplitTime = 0;
+    let initialWindowWidth = window.innerWidth;
+
+    const inicioScreen = document.getElementById('inicioScreen');
+    const examenScreen = document.getElementById('examenScreen');
+    const resultadosScreen = document.getElementById('resultadosScreen');
+    const btnComenzar = document.getElementById('btnComenzar');
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnFinalizar = document.getElementById('btnFinalizarExamen');
+    const btnGuardarPDF = document.getElementById('btnGuardarPDF');
+    const btnReiniciar = document.getElementById('btnReiniciar');
+    const preguntaContainer = document.getElementById('preguntaContainer');
+    const preguntaCounter = document.getElementById('preguntaCounter');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const nombreInput = document.getElementById('nombreAlumno');
+    const floatingCounterDiv = document.getElementById('floatingEventCounter');
+
+    function formatDateTime(date) {
+        if (!date) return "---";
+        var d = date.getDate().toString().padStart(2,'0');
+        var m = (date.getMonth()+1).toString().padStart(2,'0');
+        var y = date.getFullYear();
+        var h = date.getHours().toString().padStart(2,'0');
+        var mi = date.getMinutes().toString().padStart(2,'0');
+        var s = date.getSeconds().toString().padStart(2,'0');
+        return d+'/'+m+'/'+y+' '+h+':'+mi+':'+s;
+    }
+
+    function updateFloatingCounter() {
+        if (floatingCounterDiv) floatingCounterDiv.innerText = totalSecurityEvents;
+    }
+
+    function incrementEvent(type) {
+        if (!examActive) return;
+        if (type === 'visibility') { securityEvents.visibility++; totalSecurityEvents++; }
+        else if (type === 'copy') { securityEvents.copy++; totalSecurityEvents++; }
+        else if (type === 'paste') { securityEvents.paste++; totalSecurityEvents++; }
+        else if (type === 'splitscreen') { securityEvents.splitscreen++; totalSecurityEvents++; }
+        updateFloatingCounter();
+    }
+
+    function handleResizeEvent() {
+        if (!examActive) return;
+        var now = Date.now();
+        if (now - lastSplitTime < 800) return;
+        var currentWidth = window.innerWidth;
+        var isSplit = false;
+        if (window.screen.width && currentWidth / window.screen.width < 0.7) isSplit = true;
+        else if (initialWindowWidth && currentWidth < initialWindowWidth * 0.7) isSplit = true;
+        if (isSplit) {
+            incrementEvent('splitscreen');
+            lastSplitTime = now;
+        }
+    }
+
+    function handleVisibilityChange() {
+        if (!examActive) return;
+        if (document.hidden) incrementEvent('visibility');
+    }
+
+    function handleCopy(e) { if (examActive) { incrementEvent('copy'); e.preventDefault(); return false; } }
+    function handlePaste(e) { if (examActive) { incrementEvent('paste'); e.preventDefault(); return false; } }
+
+    function attachSecurityListeners() {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        document.addEventListener('copy', handleCopy);
+        document.addEventListener('paste', handlePaste);
+        window.addEventListener('resize', handleResizeEvent);
+    }
+
+    function detachSecurityListeners() {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('copy', handleCopy);
+        document.removeEventListener('paste', handlePaste);
+        window.removeEventListener('resize', handleResizeEvent);
+    }
+
+    function shuffleArray(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+    }
+
+    function prepareShuffledExamen() {
+        var indices = [];
+        for (var k = 0; k < QUESTION_SET.length; k++) indices.push(k);
+        shuffleArray(indices);
+        var newSet = [];
+        for (var n = 0; n < indices.length; n++) {
+            var original = QUESTION_SET[indices[n]];
+            var optsCopy = original.options.slice();
+            shuffleArray(optsCopy);
+            var lawsCopy = original.laws.slice();
+            shuffleArray(lawsCopy);
+            newSet.push({
+                title: original.title,
+                scenario: original.scenario,
+                situation: original.situation,
+                optionsShuffled: optsCopy,
+                correctAnswerText: original.correct,
+                lawsShuffled: lawsCopy,
+                correctLaw: original.correctLaw
+            });
+        }
+        return newSet;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderCurrentQuestion() {
+        if (!shuffledQuestions.length) return;
+        var q = shuffledQuestions[currentIndex];
+        var saved = userAnswers[currentIndex];
+
+        var html = '<h3 style="margin-top:0;">' + escapeHtml(q.title) + '</h3>';
+        html += '<p class="scenario-text">' + escapeHtml(q.scenario) + '</p>';
+        html += '<div class="situation-box">📌 <strong>Situación:</strong> ' + escapeHtml(q.situation) + '</div>';
+        html += '<div class="radio-group">';
+        for (var i = 0; i < q.optionsShuffled.length; i++) {
+            var opt = q.optionsShuffled[i];
+            var checked = (saved.mc === opt) ? 'checked' : '';
+            html += '<label style="display:flex; align-items:center;">' +
+                        '<input type="radio" name="preguntaActual" value="' + escapeHtml(opt) + '" ' + checked + '>' +
+                        '<span style="margin-left:10px;">' + escapeHtml(opt) + '</span>' +
+                     '</label>';
+        }
+        html += '</div>';
+        html += '<div style="margin-top:16px;">';
+        html += '<span class="law-label">📋 ¿Qué ley de los gases aplica en esta situación?</span>';
+        html += '<select name="leyActual" class="law-select">';
+        html += '<option value="">-- Selecciona una ley --</option>';
+        for (var j = 0; j < q.lawsShuffled.length; j++) {
+            var law = q.lawsShuffled[j];
+            var sel = (saved.law === law) ? 'selected' : '';
+            html += '<option value="' + escapeHtml(law) + '" ' + sel + '>' + escapeHtml(law) + '</option>';
+        }
+        html += '</select>';
+        html += '</div>';
+
+        preguntaContainer.innerHTML = html;
+
+        var radios = document.querySelectorAll('input[name="preguntaActual"]');
+        for (var r = 0; r < radios.length; r++) {
+            radios[r].addEventListener('change', function(e) {
+                userAnswers[currentIndex].mc = e.target.value;
+            });
+        }
+
+        var lawSelect = document.querySelector('select[name="leyActual"]');
+        if (lawSelect) {
+            lawSelect.addEventListener('change', function(e) {
+                userAnswers[currentIndex].law = e.target.value;
+            });
+        }
+
+        preguntaCounter.innerText = 'Pregunta ' + (currentIndex+1) + ' / ' + shuffledQuestions.length;
+    }
+
+    function goPrev() { if (currentIndex > 0) { currentIndex--; renderCurrentQuestion(); } }
+    function goNext() {
+        if (currentIndex < shuffledQuestions.length - 1) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            alert("Última pregunta. Presiona 'Finalizar' para calificar.");
+        }
+    }
+
+    function formatearTiempo(seg) {
+        return Math.floor(seg/60).toString().padStart(2,'0') + ':' + (seg%60).toString().padStart(2,'0');
+    }
+
+    function iniciarTemporizador() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(function() {
+            if (!examActive) return;
+            if (timeSeconds <= 0) {
+                clearInterval(timerInterval);
+                examActive = false;
+                timerDisplay.innerText = "00:00";
+                alert("⏰ Tiempo agotado. El examen se calificará automáticamente.");
+                calcularResultados();
+            } else {
+                timeSeconds--;
+                timerDisplay.innerText = formatearTiempo(timeSeconds);
+                if (timeSeconds <= 60) {
+                    timerDisplay.classList.add('danger');
+                }
+            }
+        }, 1000);
+    }
+
+    function calcularResultados() {
+        fechaHoraFin = new Date();
+        var correctMC = 0;
+        var correctLaw = 0;
+        var detalles = [];
+        var totalObtenido = 0;
+
+        for (var i = 0; i < shuffledQuestions.length; i++) {
+            var q = shuffledQuestions[i];
+            var resp = userAnswers[i];
+            var mcOk = (resp.mc && resp.mc === q.correctAnswerText);
+            var lawOk = (resp.law && resp.law === q.correctLaw);
+            if (mcOk) correctMC++;
+            if (lawOk) correctLaw++;
+            var ptsMC = mcOk ? PUNTOS_MC : 0;
+            var ptsLaw = lawOk ? PUNTOS_LEY : 0;
+            var ptsTotal = ptsMC + ptsLaw;
+            totalObtenido += ptsTotal;
+
+            detalles.push({
+                numero: i + 1,
+                pregunta: q.title,
+                respuestaAlumno: resp.mc ? resp.mc : "(Sin responder)",
+                respuestaCorrecta: q.correctAnswerText,
+                leySeleccionada: resp.law ? resp.law : "(Sin seleccionar)",
+                leyCorrecta: q.correctLaw,
+                mcOk: mcOk,
+                lawOk: lawOk,
+                ptsMC: ptsMC,
+                ptsLaw: ptsLaw,
+                ptsTotal: ptsTotal
+            });
+        }
+
+        var notaSobre10 = totalObtenido.toFixed(1);
+        var porcentaje = Math.round((totalObtenido / TOTAL_PUNTAJE) * 100);
+        var calColor = totalObtenido >= 6 ? '#8bc34a' : '#ff5e5e';
+
+        document.getElementById('puntuacionFinal').innerHTML =
+            '<span style="color:' + calColor + ';">' + notaSobre10 + ' / ' + TOTAL_PUNTAJE.toFixed(1) + '</span>';
+
+        document.getElementById('desglosePuntaje').innerHTML =
+            '<span style="color:#8bc34a;">✓ Opción múltiple: ' + correctMC + ' de ' + NUM_PREGUNTAS + '</span> &nbsp;|&nbsp; ' +
+            '<span style="color:#03dac6;">✓ Leyes correctas: ' + correctLaw + ' de ' + NUM_PREGUNTAS + '</span> &nbsp;|&nbsp; ' +
+            '<span style="color:#ffb86c;">Porcentaje: ' + porcentaje + '%</span>';
+
+        var tiempoUtilizado = TIMER_SECONDS - timeSeconds;
+        var resumenDiv = document.getElementById('resumenNombre');
+        resumenDiv.innerHTML =
+            '<strong>👤 Alumno:</strong> ' + escapeHtml(nombreAlumno) + '<br>' +
+            '<strong>📘 Ciencias Naturales Experimentales y Tecnología II</strong><br>' +
+            '<strong>👨‍🏫 Prof. Adrián Cruz H.</strong><br>' +
+            '<strong>📊 Nota final:</strong> ' + notaSobre10 + ' / ' + TOTAL_PUNTAJE.toFixed(1) + '<br>' +
+            '<strong>⏱️ Tiempo utilizado:</strong> ' + formatearTiempo(tiempoUtilizado) + '<br>' +
+            '<strong>🕒 Inicio:</strong> ' + formatDateTime(fechaHoraInicio) + '<br>' +
+            '<strong>🏁 Término:</strong> ' + formatDateTime(fechaHoraFin);
+
+        var tablaBody = document.querySelector('#tablaDetalle tbody');
+        tablaBody.innerHTML = '';
+        for (var d = 0; d < detalles.length; d++) {
+            var det = detalles[d];
+            var row = tablaBody.insertRow();
+
+            // #
+            var c0 = row.insertCell(0);
+            c0.innerText = det.numero;
+
+            // Pregunta
+            var c1 = row.insertCell(1);
+            c1.innerText = det.pregunta;
+
+            // Respuesta MC
+            var c2 = row.insertCell(2);
+            if (det.mcOk) {
+                c2.innerHTML = '<span class="correcto">✓ ' + escapeHtml(det.respuestaAlumno) + '</span>';
+            } else {
+                c2.innerHTML =
+                    '<span class="incorrecto">✗ ' + escapeHtml(det.respuestaAlumno) + '</span><br>' +
+                    '<span style="color:#8bc34a; font-size:0.7rem;">→ Correcta: ' + escapeHtml(det.respuestaCorrecta) + '</span>';
+            }
+
+            // Ley seleccionada
+            var c3 = row.insertCell(3);
+            if (det.lawOk) {
+                c3.innerHTML = '<span class="correcto">✓ ' + escapeHtml(det.leySeleccionada) + '</span>';
+            } else {
+                c3.innerHTML =
+                    '<span class="incorrecto">✗ ' + escapeHtml(det.leySeleccionada) + '</span><br>' +
+                    '<span style="color:#8bc34a; font-size:0.7rem;">→ Correcta: ' + escapeHtml(det.leyCorrecta) + '</span>';
+            }
+
+            // Pts MC
+            var c4 = row.insertCell(4);
+            c4.style.fontWeight = 'bold';
+            c4.innerText = '+' + det.ptsMC.toFixed(1);
+            c4.style.color = det.mcOk ? '#8bc34a' : '#ff5e5e';
+
+            // Pts Ley
+            var c5 = row.insertCell(5);
+            c5.style.fontWeight = 'bold';
+            c5.innerText = '+' + det.ptsLaw.toFixed(1);
+            c5.style.color = det.lawOk ? '#8bc34a' : '#ff5e5e';
+
+            // Total
+            var c6 = row.insertCell(6);
+            c6.style.fontWeight = 'bold';
+            c6.innerText = det.ptsTotal.toFixed(1);
+            c6.style.color = (det.mcOk && det.lawOk) ? '#8bc34a' : '#ff5e5e';
+        }
+
+        // Footer row with totals
+        var footRow = tablaBody.insertRow();
+        footRow.style.borderTop = '2px solid #bb86fc';
+        footRow.insertCell(0);
+        var footLabel = footRow.insertCell(1);
+        footLabel.innerHTML = '<strong>TOTALES</strong>';
+        footRow.insertCell(2).innerHTML = '<strong class="correcto">' + correctMC + '/10</strong>';
+        footRow.insertCell(3).innerHTML = '<strong class="correcto">' + correctLaw + '/10</strong>';
+        footRow.insertCell(4).innerHTML = '<strong style="color:#bb86fc;">+' + (correctMC * PUNTOS_MC).toFixed(1) + '</strong>';
+        footRow.insertCell(5).innerHTML = '<strong style="color:#bb86fc;">+' + (correctLaw * PUNTOS_LEY).toFixed(1) + '</strong>';
+        footRow.insertCell(6).innerHTML = '<strong style="color:#bb86fc;">' + notaSobre10 + '</strong>';
+
+        var eventosInfo = document.getElementById('eventosDetalleInfo');
+        eventosInfo.innerHTML =
+            '<p><strong>🔍 Total de eventos detectados:</strong> ' + totalSecurityEvents + '</p>' +
+            '<ul style="margin:0; padding-left:20px;">' +
+                '<li>📱 Cambio de pestaña / minimizar: ' + securityEvents.visibility + '</li>' +
+                '<li>📋 Intentos de copiar: ' + securityEvents.copy + '</li>' +
+                '<li>📌 Intentos de pegar: ' + securityEvents.paste + '</li>' +
+                '<li>🖥️ Pantalla dividida (resize drástico): ' + securityEvents.splitscreen + '</li>' +
+            '</ul>' +
+            '<p style="font-size:12px; margin-top:8px;">* Estos eventos se registran con fines de integridad académica.</p>';
+
+        examenScreen.classList.add('hidden');
+        resultadosScreen.classList.remove('hidden');
+        floatingCounterDiv.classList.add('hidden');
+        detachSecurityListeners();
+    }
+
+    function startExam() {
+        var nombre = nombreInput.value.trim();
+        if (nombre === "") { alert("Por favor ingresa tu nombre completo."); return; }
+        nombreAlumno = nombre;
+        shuffledQuestions = prepareShuffledExamen();
+        userAnswers = [];
+        for (var i = 0; i < NUM_PREGUNTAS; i++) {
+            userAnswers.push({ mc: null, law: null });
+        }
+        currentIndex = 0;
+        timeSeconds = TIMER_SECONDS;
+        examActive = true;
+        fechaHoraInicio = new Date();
+        fechaHoraFin = null;
+        resetSecurityCounters();
+        attachSecurityListeners();
+        floatingCounterDiv.classList.remove('hidden');
+        updateFloatingCounter();
+        if (timerInterval) clearInterval(timerInterval);
+        iniciarTemporizador();
+        renderCurrentQuestion();
+        inicioScreen.classList.add('hidden');
+        examenScreen.classList.remove('hidden');
+        resultadosScreen.classList.add('hidden');
+        initialWindowWidth = window.innerWidth;
+    }
+
+    function resetSecurityCounters() {
+        securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+        totalSecurityEvents = 0;
+        updateFloatingCounter();
+    }
+
+    btnComenzar.addEventListener('click', startExam);
+    btnAnterior.addEventListener('click', goPrev);
+    btnSiguiente.addEventListener('click', goNext);
+    btnFinalizar.addEventListener('click', function() {
+        if (examActive && confirm("¿Finalizar el examen? Se calificará automáticamente.")) {
+            clearInterval(timerInterval);
+            examActive = false;
+            calcularResultados();
+        } else if (!examActive) {
+            alert("El examen ya ha finalizado.");
+        }
+    });
+    btnReiniciar.addEventListener('click', function() { window.location.reload(); });
+    btnGuardarPDF.addEventListener('click', function() { window.print(); });
+
+    document.addEventListener('copy', function(e) { if(examActive) e.preventDefault(); });
+    document.addEventListener('paste', function(e) { if(examActive) e.preventDefault(); });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+</script>
+</body>
+</html>
