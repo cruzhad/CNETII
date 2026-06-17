@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Cuestionario - Segunda Ley de la Termodinámica (Entropía)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #0b0b1a;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            color: #eeeeee;
+        }
+        .screen {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #161628;
+            border-radius: 32px;
+            padding: 20px 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            transition: all 0.2s;
+        }
+        .hidden {
+            display: none;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .card {
+            background: #22223a;
+            border-radius: 28px;
+            padding: 18px;
+            margin: 16px 0;
+        }
+        input, .radio-group {
+            width: 100%;
+            padding: 12px;
+            background: #2e2e48;
+            border: none;
+            border-radius: 48px;
+            color: white;
+            font-size: 1rem;
+            margin: 8px 0;
+        }
+        input:focus {
+            outline: 2px solid #ff6b6b;
+            background: #252540;
+        }
+        button {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0b0b1a;
+            width: 100%;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.97);
+            opacity: 0.85;
+        }
+        .btn-secondary {
+            background: #2e2e48;
+            color: #eee;
+        }
+        .timer {
+            background: #000000aa;
+            backdrop-filter: blur(8px);
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            font-family: monospace;
+            padding: 8px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .warning {
+            color: #feca57;
+        }
+        .danger {
+            color: #ff5e5e;
+        }
+        .radio-group label {
+            display: block;
+            background: #1e1e36;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 48px;
+            border: 1px solid #3a3a58;
+            transition: 0.1s;
+        }
+        .radio-group input {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.1);
+            vertical-align: middle;
+        }
+        .progress {
+            font-size: 0.85rem;
+            background: #1e1e36;
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .nav-buttons button {
+            flex: 1;
+            margin-top: 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        .result-table th, .result-table td {
+            border-bottom: 1px solid #3a3a58;
+            padding: 8px 4px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .correcto {
+            color: #8bc34a;
+        }
+        .incorrecto {
+            color: #ff5e5e;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            color: #666;
+        }
+        .event-counter {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: #000000cc;
+            backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #feca57;
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid #feca5766;
+        }
+        .situation-box {
+            background: #1a1a30;
+            border-left: 3px solid #feca57;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #d4c97a;
+        }
+        .scenario-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 8px 0 12px 0;
+        }
+        select.concept-select {
+            width: 100%;
+            padding: 12px 44px 12px 18px;
+            background-color: #1e1e36;
+            border: 1px solid #444;
+            border-radius: 48px;
+            color: white;
+            font-size: 1rem;
+            margin: 8px 0;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b6b'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 22px;
+        }
+        select.concept-select:focus {
+            outline: 2px solid #ff6b6b;
+        }
+        .concept-label {
+            font-size: 0.9rem;
+            color: #feca57;
+            margin-top: 16px;
+            display: block;
+            font-weight: 600;
+        }
+        .score-badge {
+            display: inline-block;
+            background: #2e2e48;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .breakdown-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 0.78rem;
+        }
+        .breakdown-chip {
+            padding: 2px 10px;
+            border-radius: 16px;
+            font-weight: 600;
+        }
+        @media (max-width: 500px) {
+            body {
+                padding: 8px;
+            }
+            .screen {
+                padding: 16px;
+            }
+            .event-counter {
+                bottom: 8px;
+                right: 8px;
+                padding: 6px 10px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="inicioScreen" class="screen">
+    <h1>🌀 Segunda Ley de la Termodinámica</h1>
+    <div class="card">
+        <p style="margin:0 0 12px 0;"><strong>Ciencias Naturales Experimentales y Tecnología II</strong><br>Prof. Adrián Cruz H.</p>
+        <label>📝 Nombre del alumno:</label>
+        <input type="text" id="nombreAlumno" placeholder="Escribe tu nombre completo" autocomplete="off">
+        <button id="btnComenzar">▶ COMENZAR EXAMEN</button>
+        <p style="font-size:12px; margin-top:16px;">⏰ 25 minutos · 8 preguntas · Una a la vez · Sin apuntes</p>
+        <p style="font-size:11px; color:#aaa;">🔒 Sistema anti-trampas activo: se registrarán cambios de pestaña, minimizar, copiar/pegar y pantalla dividida.</p>
+    </div>
+    <footer>© Cuestionario interactivo | Seguridad monitoreada</footer>
+</div>
+
+<div id="examenScreen" class="screen hidden">
+    <div class="timer" id="timerDisplay">25:00</div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span class="progress" id="preguntaCounter">Pregunta 1 / 8</span>
+        <span style="font-size: 12px;">🔒 seguridad activa</span>
+    </div>
+    <div id="preguntaContainer" class="card" style="margin-top: 8px;"></div>
+    <div class="nav-buttons">
+        <button id="btnAnterior" class="btn-secondary">◀ Anterior</button>
+        <button id="btnSiguiente">Siguiente ▶</button>
+    </div>
+    <button id="btnFinalizarExamen" class="btn-secondary" style="background:#4a2a6a;">🏁 Finalizar y calificar</button>
+</div>
+
+<div id="resultadosScreen" class="screen hidden">
+    <h2>📋 Resultado Final</h2>
+    <div id="resumenNombre" class="card" style="background:#22223a;"></div>
+    <div class="card">
+        <h3>📊 Calificación</h3>
+        <p id="puntuacionFinal" style="font-size:1.8rem; font-weight:bold;"></p>
+        <div id="desglosePuntaje" style="font-size:0.85rem; margin-top:8px;"></div>
+        <button id="btnGuardarPDF">📄 Guardar como PDF</button>
+        <button id="btnReiniciar">🔄 Volver a inicio</button>
+    </div>
+    <div class="card">
+        <h3>📌 Detalle de respuestas</h3>
+        <div style="overflow-x:auto;">
+            <table class="result-table" id="tablaDetalle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Pregunta</th>
+                        <th>Respuesta MC</th>
+                        <th>Concepto seleccionado</th>
+                        <th>Pts MC</th>
+                        <th>Pts Concepto</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card" id="eventosDesglose">
+        <h3>⚠️ Registro de actividad (seguridad)</h3>
+        <div id="eventosDetalleInfo"></div>
+    </div>
+</div>
+
+<div id="floatingEventCounter" class="event-counter hidden">0</div>
+
+<script>
+    // ==================== BANCO DE PREGUNTAS ====================
+    const QUESTION_SET = [
+        {
+            title: "1. La pantalla rota",
+            scenario: "Tu teléfono se cae al suelo y la pantalla se rompe en muchos pedazos. Sin embargo, la pantalla nunca se auto-repara sola. ¿Por qué, según la Segunda Ley de la Termodinámica?",
+            situation: "La pantalla intacta tiene UNA forma de estar; la pantalla rota tiene MUCHAS formas de estar rota.",
+            options: [
+                "Porque el vidrio es frágil y no tiene memoria",
+                "Porque el desorden (pantalla rota) tiene muchas más formas de existir que el orden (pantalla intacta), y el universo tiende naturalmente hacia los estados con más formas posibles",
+                "Porque la gravedad impide que los pedazos se junten",
+                "Porque la energía del golpe se perdió para siempre",
+                "Porque el teléfono no tiene un mecanismo interno de reparación"
+            ],
+            correct: "Porque el desorden (pantalla rota) tiene muchas más formas de existir que el orden (pantalla intacta), y el universo tiende naturalmente hacia los estados con más formas posibles",
+            concepts: ["Entropía: el desorden tiene más formas de ser que el orden", "Proceso adiabático: no hay intercambio de calor", "Trabajo: la energía se convierte en calor"],
+            correctConcept: "Entropía: el desorden tiene más formas de ser que el orden"
+        },
+        {
+            title: "2. Las monedas y el temblor",
+            scenario: "Imagina 100 monedas perfectamente apiladas en una sola torre (orden absoluto). Un temblor agita la mesa y las monedas caen dispersas en miles de posiciones diferentes. ¿Qué representa el temblor en términos de entropía?",
+            situation: "Las monedas ordenadas = UNA configuración posible. Las monedas dispersas = MILES de configuraciones posibles.",
+            options: [
+                "El temblor disminuye la entropía porque mueve las monedas",
+                "El temblor no cambia nada porque las monedas siguen siendo las mismas",
+                "El temblor añade energía al sistema, lo que permite que las monedas accedan a las miles de configuraciones desordenadas, aumentando la entropía",
+                "El temblor solo afecta la posición vertical de las monedas",
+                "El temblor crea nuevas monedas, aumentando la materia del sistema"
+            ],
+            correct: "El temblor añade energía al sistema, lo que permite que las monedas accedan a las miles de configuraciones desordenadas, aumentando la entropía",
+            concepts: ["La entropía (S) mide cuántos caminos diferentes tiene un sistema", "Proceso isocórico: el volumen no cambia", "Energía interna: la energía total del sistema"],
+            correctConcept: "La entropía (S) mide cuántos caminos diferentes tiene un sistema"
+        },
+        {
+            title: "3. La manzana en la nevera",
+            scenario: "Dejas una manzana en la nevera durante semanas. Con el tiempo, los hongos y bacterias descomponen sus moléculas ordenadas (proteínas, azúcares estructurados) en piezas más pequeñas y dispersas. ¿Por qué la manzana se descompone sola, pero no se 'recompone' sola?",
+            situation: "Las moléculas ordenadas de la manzana se transforman en moléculas dispersas y desordenadas.",
+            options: [
+                "Porque los hongos destruyen la manzana a propósito",
+                "Porque la nevera está demasiado fría para que la manzana se mantenga",
+                "Porque las configuraciones desordenadas (más dispersas) son muchísimas más que las configuraciones ordenadas, así que la descomposición es el resultado más probable",
+                "Porque la manzana pierde agua y por eso se rompe",
+                "Porque las bacterias roban la energía de la manzana"
+            ],
+            correct: "Porque las configuraciones desordenadas (más dispersas) son muchísimas más que las configuraciones ordenadas, así que la descomposición es el resultado más probable",
+            concepts: ["El desorden crece porque tiene más caminos que el orden", "Proceso adiabático: no hay calor externo", "Calor absorbido por el sistema"],
+            correctConcept: "El desorden crece porque tiene más caminos que el orden"
+        },
+        {
+            title: "4. La habitación que se desordena",
+            scenario: "Tu habitación está perfectamente ordenada: toda la ropa en el armario, todos los libros en el librero, todo en su lugar. Pasan los días y la habitación se desordena sola. ¿Por qué nunca se ordena sola?",
+            situation: "Ordenada = UNA configuración posible. Desordenada = MUCHÍSIMAS configuraciones posibles.",
+            options: [
+                "Porque la gravedad tira de las cosas al suelo",
+                "Porque hay muchísimas formas de estar desordenada pero solo una forma de estar ordenada; sin trabajo (energía) que restaure el orden, el sistema permanece en el estado más probable",
+                "Porque el polvo acumula energía con el tiempo",
+                "Porque las personas generan electricidad estática que mueve los objetos",
+                "Porque el aire de la habitación empuja todo"
+            ],
+            correct: "Porque hay muchísimas formas de estar desordenada pero solo una forma de estar ordenada; sin trabajo (energía) que restaure el orden, el sistema permanece en el estado más probable",
+            concepts: ["El orden requiere trabajo; el desorden sucede espontáneamente", "Proceso isocórico: el volumen no cambia", "Energía interna: la temperatura del sistema"],
+            correctConcept: "El orden requiere trabajo; el desorden sucede espontáneamente"
+        },
+        {
+            title: "5. El café caliente y el aire frío",
+            scenario: "Dejas una taza de café caliente sobre la mesa. El café se enfría hasta alcanzar la temperatura del ambiente. ¿Es posible que el café se vuelva a calentar solo, devolviendo el calor al aire?",
+            situation: "El café caliente tiene energía concentrada (menos formas de estar). El café frío tiene energía dispersa (infinitas formas de estar).",
+            options: [
+                "Sí, si esperas el tiempo suficiente el café se calienta de nuevo",
+                "No, porque lo caliente concentrado tiene UNA forma de ser, mientras que lo frío disperso tiene INFINITAS formas; el sistema va naturalmente hacia donde hay más formas posibles",
+                "Sí, porque la energía se recicla continuamente",
+                "No, porque la taza absorbe todo el calor permanentemente",
+                "Depende del material de la taza"
+            ],
+            correct: "No, porque lo caliente concentrado tiene UNA forma de ser, mientras que lo frío disperso tiene INFINITAS formas; el sistema va naturalmente hacia donde hay más formas posibles",
+            concepts: ["La energía se dispersa del concentrado al disperso (entropía sube)", "Proceso adiabático: no hay intercambio de calor", "Trabajo realizado por el sistema"],
+            correctConcept: "La energía se dispersa del concentrado al disperso (entropía sube)"
+        },
+        {
+            title: "6. La flecha del tiempo",
+            scenario: "El universo hace 13.8 mil millones de años era superdenso, superordenado, con temperatura uniforme. Hoy el universo tiene galaxias dispersas, estrellas en explosión, planetas y vida. ¿Qué relación tiene esto con la Segunda Ley?",
+            situation: "El pasado del universo = mucho orden (baja entropía). El presente del universo = mucho desorden (alta entropía).",
+            options: [
+                "No tiene relación; el universo simplemente cambió de tamaño",
+                "La Segunda Ley indica que la entropía siempre sube en un sistema aislado; eso significa que el pasado estaba más ordenado y el futuro estará más desordenado, creando la 'flecha del tiempo'",
+                "El universo se está enfriando porque pierde materia",
+                "Las galaxias se forman porque la gravedad reduce la entropía",
+                "La flecha del tiempo es solo una ilusión humana sin base física"
+            ],
+            correct: "La Segunda Ley indica que la entropía siempre sube en un sistema aislado; eso significa que el pasado estaba más ordenado y el futuro estará más desordenado, creando la 'flecha del tiempo'",
+            concepts: ["La Segunda Ley: la entropía (S) siempre sube en un sistema aislado", "Proceso isocórico: el volumen no cambia", "Calor neto absorbido y trabajo realizado"],
+            correctConcept: "La Segunda Ley: la entropía (S) siempre sube en un sistema aislado"
+        },
+        {
+            title: "7. El desorden como motor de la vida",
+            scenario: "A primera vista, la creciente entropía (desorden) parece una 'mala noticia' porque todo se descompone y envejece. Sin embargo, también hay una 'buena noticia'. ¿Cuál es el papel positivo del desorden creciente según el texto?",
+            situation: "Sin desorden creciente (entropía), no habría cambio, variedad ni vida.",
+            options: [
+                "El desorden destruye todo, así que no hay nada positivo",
+                "El desorden creciente genera cambio, variedad y vida; sin entropía creciente, nada sucedería y el universo sería estático e inerte",
+                "El desorden solo afecta a los objetos grandes, no a los seres vivos",
+                "La buena noticia es que la entropía eventualmente se detiene",
+                "El desorden permite que la energía se cree de la nada"
+            ],
+            correct: "El desorden creciente genera cambio, variedad y vida; sin entropía creciente, nada sucedería y el universo sería estático e inerte",
+            concepts: ["El desorden no es un error del universo, es lo que hace posible todo", "Proceso adiabático: no hay intercambio de calor", "Proceso isocórico: el volumen no cambia"],
+            correctConcept: "El desorden no es un error del universo, es lo que hace posible todo"
+        },
+        {
+            title: "8. Ralentizar la descomposición",
+            scenario: "Quieres conservar una manzana el mayor tiempo posible. Un compañero sugiere meterla en el freezer, ya que la baja temperatura reduce el movimiento molecular y ralentiza la descomposición. ¿Qué dice la Segunda Ley sobre esta estrategia?",
+            situation: "Baja temperatura = menos movimiento molecular = cambio más lento. Pero no se detiene por completo.",
+            options: [
+                "El freezer detiene completamente la entropía, así que la manzana se conserva para siempre",
+                "El freezer aumenta la entropía porque enfría la manzana",
+                "El freezer solo funciona si la manzana está en un recipiente al vacío",
+                "El freezer ralentiza el proceso (menos movimiento molecular), pero no lo detiene; la entropía sigue subiendo, solo más lentamente. Nada es eterno",
+                "El freezer acelera la descomposición porque congela las bacterias"
+            ],
+            correct: "El freezer ralentiza el proceso (menos movimiento molecular), pero no lo detiene; la entropía sigue subiendo, solo más lentamente. Nada es eterno",
+            concepts: ["La entropía siempre sube, solo se puede ralentizar, no detener", "La entropía (S) mide cuántos caminos tiene el sistema", "Proceso adiabático: no hay intercambio de calor"],
+            correctConcept: "La entropía siempre sube, solo se puede ralentizar, no detener"
+        }
+    ];
+
+    // ==================== VARIABLES GLOBALES ====================
+    const TOTAL_PUNTAJE = 10;
+    const NUM_PREGUNTAS = 8;
+    const PUNTOS_POR_PREGUNTA = TOTAL_PUNTAJE / NUM_PREGUNTAS; // 1.25
+    const PUNTOS_MC = PUNTOS_POR_PREGUNTA / 2;      // 0.625
+    const PUNTOS_CONCEPTO = PUNTOS_POR_PREGUNTA / 2; // 0.625
+    const TIMER_SECONDS = 25 * 60;
+
+    let shuffledQuestions = [];
+    let userAnswers = [];
+    let currentIndex = 0;
+    let examActive = false;
+    let timerInterval = null;
+    let timeSeconds = TIMER_SECONDS;
+    let nombreAlumno = "";
+
+    let fechaHoraInicio = null;
+    let fechaHoraFin = null;
+
+    let securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+    let totalSecurityEvents = 0;
+    let lastSplitTime = 0;
+    let initialWindowWidth = window.innerWidth;
+
+    const inicioScreen = document.getElementById('inicioScreen');
+    const examenScreen = document.getElementById('examenScreen');
+    const resultadosScreen = document.getElementById('resultadosScreen');
+    const btnComenzar = document.getElementById('btnComenzar');
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnFinalizar = document.getElementById('btnFinalizarExamen');
+    const btnGuardarPDF = document.getElementById('btnGuardarPDF');
+    const btnReiniciar = document.getElementById('btnReiniciar');
+    const preguntaContainer = document.getElementById('preguntaContainer');
+    const preguntaCounter = document.getElementById('preguntaCounter');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const nombreInput = document.getElementById('nombreAlumno');
+    const floatingCounterDiv = document.getElementById('floatingEventCounter');
+
+    function formatDateTime(date) {
+        if (!date) return "---";
+        var d = date.getDate().toString().padStart(2,'0');
+        var m = (date.getMonth()+1).toString().padStart(2,'0');
+        var y = date.getFullYear();
+        var h = date.getHours().toString().padStart(2,'0');
+        var mi = date.getMinutes().toString().padStart(2,'0');
+        var s = date.getSeconds().toString().padStart(2,'0');
+        return d+'/'+m+'/'+y+' '+h+':'+mi+':'+s;
+    }
+
+    function updateFloatingCounter() {
+        if (floatingCounterDiv) floatingCounterDiv.innerText = totalSecurityEvents;
+    }
+
+    function incrementEvent(type) {
+        if (!examActive) return;
+        if (type === 'visibility') { securityEvents.visibility++; totalSecurityEvents++; }
+        else if (type === 'copy') { securityEvents.copy++; totalSecurityEvents++; }
+        else if (type === 'paste') { securityEvents.paste++; totalSecurityEvents++; }
+        else if (type === 'splitscreen') { securityEvents.splitscreen++; totalSecurityEvents++; }
+        updateFloatingCounter();
+    }
+
+    function handleResizeEvent() {
+        if (!examActive) return;
+        var now = Date.now();
+        if (now - lastSplitTime < 800) return;
+        var currentWidth = window.innerWidth;
+        var isSplit = false;
+        if (window.screen.width && currentWidth / window.screen.width < 0.7) isSplit = true;
+        else if (initialWindowWidth && currentWidth < initialWindowWidth * 0.7) isSplit = true;
+        if (isSplit) {
+            incrementEvent('splitscreen');
+            lastSplitTime = now;
+        }
+    }
+
+    function handleVisibilityChange() {
+        if (!examActive) return;
+        if (document.hidden) incrementEvent('visibility');
+    }
+
+    function handleCopy(e) { if (examActive) { incrementEvent('copy'); e.preventDefault(); return false; } }
+    function handlePaste(e) { if (examActive) { incrementEvent('paste'); e.preventDefault(); return false; } }
+
+    function attachSecurityListeners() {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        document.addEventListener('copy', handleCopy);
+        document.addEventListener('paste', handlePaste);
+        window.addEventListener('resize', handleResizeEvent);
+    }
+
+    function detachSecurityListeners() {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('copy', handleCopy);
+        document.removeEventListener('paste', handlePaste);
+        window.removeEventListener('resize', handleResizeEvent);
+    }
+
+    function shuffleArray(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+    }
+
+    function prepareShuffledExamen() {
+        var indices = [];
+        for (var k = 0; k < QUESTION_SET.length; k++) indices.push(k);
+        shuffleArray(indices);
+        var newSet = [];
+        for (var n = 0; n < indices.length; n++) {
+            var original = QUESTION_SET[indices[n]];
+            var optsCopy = original.options.slice();
+            shuffleArray(optsCopy);
+            var conceptsCopy = original.concepts.slice();
+            shuffleArray(conceptsCopy);
+            newSet.push({
+                title: original.title,
+                scenario: original.scenario,
+                situation: original.situation,
+                optionsShuffled: optsCopy,
+                correctAnswerText: original.correct,
+                conceptsShuffled: conceptsCopy,
+                correctConcept: original.correctConcept
+            });
+        }
+        return newSet;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderCurrentQuestion() {
+        if (!shuffledQuestions.length) return;
+        var q = shuffledQuestions[currentIndex];
+        var saved = userAnswers[currentIndex];
+
+        var html = '<h3 style="margin-top:0;">' + escapeHtml(q.title) + '</h3>';
+        html += '<p class="scenario-text">' + escapeHtml(q.scenario) + '</p>';
+        html += '<div class="situation-box">📌 <strong>Situación:</strong> ' + escapeHtml(q.situation) + '</div>';
+        html += '<div class="radio-group">';
+        for (var i = 0; i < q.optionsShuffled.length; i++) {
+            var opt = q.optionsShuffled[i];
+            var checked = (saved.mc === opt) ? 'checked' : '';
+            html += '<label style="display:flex; align-items:center;">' +
+                        '<input type="radio" name="preguntaActual" value="' + escapeHtml(opt) + '" ' + checked + '>' +
+                        '<span style="margin-left:10px;">' + escapeHtml(opt) + '</span>' +
+                     '</label>';
+        }
+        html += '</div>';
+        html += '<div style="margin-top:16px;">';
+        html += '<span class="concept-label">📋 ¿Qué concepto de la Segunda Ley aplica en esta situación?</span>';
+        html += '<select name="conceptoActual" class="concept-select">';
+        html += '<option value="">-- Selecciona un concepto --</option>';
+        for (var j = 0; j < q.conceptsShuffled.length; j++) {
+            var concept = q.conceptsShuffled[j];
+            var sel = (saved.concept === concept) ? 'selected' : '';
+            html += '<option value="' + escapeHtml(concept) + '" ' + sel + '>' + escapeHtml(concept) + '</option>';
+        }
+        html += '</select>';
+        html += '</div>';
+
+        preguntaContainer.innerHTML = html;
+
+        var radios = document.querySelectorAll('input[name="preguntaActual"]');
+        for (var r = 0; r < radios.length; r++) {
+            radios[r].addEventListener('change', function(e) {
+                userAnswers[currentIndex].mc = e.target.value;
+            });
+        }
+
+        var conceptSelect = document.querySelector('select[name="conceptoActual"]');
+        if (conceptSelect) {
+            conceptSelect.addEventListener('change', function(e) {
+                userAnswers[currentIndex].concept = e.target.value;
+            });
+        }
+
+        preguntaCounter.innerText = 'Pregunta ' + (currentIndex+1) + ' / ' + shuffledQuestions.length;
+    }
+
+    function goPrev() { if (currentIndex > 0) { currentIndex--; renderCurrentQuestion(); } }
+    function goNext() {
+        if (currentIndex < shuffledQuestions.length - 1) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            alert("Última pregunta. Presiona 'Finalizar' para calificar.");
+        }
+    }
+
+    function formatearTiempo(seg) {
+        return Math.floor(seg/60).toString().padStart(2,'0') + ':' + (seg%60).toString().padStart(2,'0');
+    }
+
+    function iniciarTemporizador() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(function() {
+            if (!examActive) return;
+            if (timeSeconds <= 0) {
+                clearInterval(timerInterval);
+                examActive = false;
+                timerDisplay.innerText = "00:00";
+                alert("⏰ Tiempo agotado. El examen se calificará automáticamente.");
+                calcularResultados();
+            } else {
+                timeSeconds--;
+                timerDisplay.innerText = formatearTiempo(timeSeconds);
+                if (timeSeconds <= 60) {
+                    timerDisplay.classList.add('danger');
+                }
+            }
+        }, 1000);
+    }
+
+    function calcularResultados() {
+        fechaHoraFin = new Date();
+        var correctMC = 0;
+        var correctConcepto = 0;
+        var detalles = [];
+        var totalObtenido = 0;
+
+        for (var i = 0; i < shuffledQuestions.length; i++) {
+            var q = shuffledQuestions[i];
+            var resp = userAnswers[i];
+            var mcOk = (resp.mc && resp.mc === q.correctAnswerText);
+            var conceptOk = (resp.concept && resp.concept === q.correctConcept);
+            if (mcOk) correctMC++;
+            if (conceptOk) correctConcepto++;
+            var ptsMC = mcOk ? PUNTOS_MC : 0;
+            var ptsConcepto = conceptOk ? PUNTOS_CONCEPTO : 0;
+            var ptsTotal = ptsMC + ptsConcepto;
+            totalObtenido += ptsTotal;
+
+            detalles.push({
+                numero: i + 1,
+                pregunta: q.title,
+                respuestaAlumno: resp.mc ? resp.mc : "(Sin responder)",
+                respuestaCorrecta: q.correctAnswerText,
+                conceptoSeleccionado: resp.concept ? resp.concept : "(Sin seleccionar)",
+                conceptoCorrecto: q.correctConcept,
+                mcOk: mcOk,
+                conceptOk: conceptOk,
+                ptsMC: ptsMC,
+                ptsConcepto: ptsConcepto,
+                ptsTotal: ptsTotal
+            });
+        }
+
+        var notaSobre10 = totalObtenido.toFixed(2);
+        var porcentaje = Math.round((totalObtenido / TOTAL_PUNTAJE) * 100);
+        var calColor = totalObtenido >= 6.0 ? '#8bc34a' : '#ff5e5e';
+
+        document.getElementById('puntuacionFinal').innerHTML =
+            '<span style="color:' + calColor + ';">' + notaSobre10 + ' / ' + TOTAL_PUNTAJE.toFixed(1) + '</span>';
+
+        document.getElementById('desglosePuntaje').innerHTML =
+            '<span style="color:#8bc34a;">✓ Opción múltiple: ' + correctMC + ' de ' + NUM_PREGUNTAS + '</span> &nbsp;|&nbsp; ' +
+            '<span style="color:#feca57;">✓ Conceptos correctos: ' + correctConcepto + ' de ' + NUM_PREGUNTAS + '</span> &nbsp;|&nbsp; ' +
+            '<span style="color:#ff6b6b;">Porcentaje: ' + porcentaje + '%</span>';
+
+        var tiempoUtilizado = TIMER_SECONDS - timeSeconds;
+        var resumenDiv = document.getElementById('resumenNombre');
+        resumenDiv.innerHTML =
+            '<strong>👤 Alumno:</strong> ' + escapeHtml(nombreAlumno) + '<br>' +
+            '<strong>📘 Ciencias Naturales Experimentales y Tecnología II</strong><br>' +
+            '<strong>👨‍🏫 Prof. Adrián Cruz H.</strong><br>' +
+            '<strong>📊 Nota final:</strong> ' + notaSobre10 + ' / ' + TOTAL_PUNTAJE.toFixed(1) + '<br>' +
+            '<strong>⏱️ Tiempo utilizado:</strong> ' + formatearTiempo(tiempoUtilizado) + '<br>' +
+            '<strong>🕒 Inicio:</strong> ' + formatDateTime(fechaHoraInicio) + '<br>' +
+            '<strong>🏁 Término:</strong> ' + formatDateTime(fechaHoraFin);
+
+        var tablaBody = document.querySelector('#tablaDetalle tbody');
+        tablaBody.innerHTML = '';
+        for (var d = 0; d < detalles.length; d++) {
+            var det = detalles[d];
+            var row = tablaBody.insertRow();
+
+            var c0 = row.insertCell(0);
+            c0.innerText = det.numero;
+
+            var c1 = row.insertCell(1);
+            c1.innerText = det.pregunta;
+
+            var c2 = row.insertCell(2);
+            if (det.mcOk) {
+                c2.innerHTML = '<span class="correcto">✓ ' + escapeHtml(det.respuestaAlumno) + '</span>';
+            } else {
+                c2.innerHTML =
+                    '<span class="incorrecto">✗ ' + escapeHtml(det.respuestaAlumno) + '</span><br>' +
+                    '<span style="color:#8bc34a; font-size:0.7rem;">→ Correcta: ' + escapeHtml(det.respuestaCorrecta) + '</span>';
+            }
+
+            var c3 = row.insertCell(3);
+            if (det.conceptOk) {
+                c3.innerHTML = '<span class="correcto">✓ ' + escapeHtml(det.conceptoSeleccionado) + '</span>';
+            } else {
+                c3.innerHTML =
+                    '<span class="incorrecto">✗ ' + escapeHtml(det.conceptoSeleccionado) + '</span><br>' +
+                    '<span style="color:#8bc34a; font-size:0.7rem;">→ Correcto: ' + escapeHtml(det.conceptoCorrecto) + '</span>';
+            }
+
+            var c4 = row.insertCell(4);
+            c4.style.fontWeight = 'bold';
+            c4.innerText = '+' + det.ptsMC.toFixed(2);
+            c4.style.color = det.mcOk ? '#8bc34a' : '#ff5e5e';
+
+            var c5 = row.insertCell(5);
+            c5.style.fontWeight = 'bold';
+            c5.innerText = '+' + det.ptsConcepto.toFixed(2);
+            c5.style.color = det.conceptOk ? '#8bc34a' : '#ff5e5e';
+
+            var c6 = row.insertCell(6);
+            c6.style.fontWeight = 'bold';
+            c6.innerText = det.ptsTotal.toFixed(2);
+            c6.style.color = (det.mcOk && det.conceptOk) ? '#8bc34a' : '#ff5e5e';
+        }
+
+        var footRow = tablaBody.insertRow();
+        footRow.style.borderTop = '2px solid #ff6b6b';
+        footRow.insertCell(0);
+        var footLabel = footRow.insertCell(1);
+        footLabel.innerHTML = '<strong>TOTALES</strong>';
+        footRow.insertCell(2).innerHTML = '<strong class="correcto">' + correctMC + '/8</strong>';
+        footRow.insertCell(3).innerHTML = '<strong class="correcto">' + correctConcepto + '/8</strong>';
+        footRow.insertCell(4).innerHTML = '<strong style="color:#ff6b6b;">+' + (correctMC * PUNTOS_MC).toFixed(2) + '</strong>';
+        footRow.insertCell(5).innerHTML = '<strong style="color:#ff6b6b;">+' + (correctConcepto * PUNTOS_CONCEPTO).toFixed(2) + '</strong>';
+        footRow.insertCell(6).innerHTML = '<strong style="color:#ff6b6b;">' + notaSobre10 + '</strong>';
+
+        var eventosInfo = document.getElementById('eventosDetalleInfo');
+        eventosInfo.innerHTML =
+            '<p><strong>🔍 Total de eventos detectados:</strong> ' + totalSecurityEvents + '</p>' +
+            '<ul style="margin:0; padding-left:20px;">' +
+                '<li>📱 Cambio de pestaña / minimizar: ' + securityEvents.visibility + '</li>' +
+                '<li>📋 Intentos de copiar: ' + securityEvents.copy + '</li>' +
+                '<li>📌 Intentos de pegar: ' + securityEvents.paste + '</li>' +
+                '<li>🖥️ Pantalla dividida (resize drástico): ' + securityEvents.splitscreen + '</li>' +
+            '</ul>' +
+            '<p style="font-size:12px; margin-top:8px;">* Estos eventos se registran con fines de integridad académica.</p>';
+
+        examenScreen.classList.add('hidden');
+        resultadosScreen.classList.remove('hidden');
+        floatingCounterDiv.classList.add('hidden');
+        detachSecurityListeners();
+    }
+
+    function startExam() {
+        var nombre = nombreInput.value.trim();
+        if (nombre === "") { alert("Por favor ingresa tu nombre completo."); return; }
+        nombreAlumno = nombre;
+        shuffledQuestions = prepareShuffledExamen();
+        userAnswers = [];
+        for (var i = 0; i < NUM_PREGUNTAS; i++) {
+            userAnswers.push({ mc: null, concept: null });
+        }
+        currentIndex = 0;
+        timeSeconds = TIMER_SECONDS;
+        examActive = true;
+        fechaHoraInicio = new Date();
+        fechaHoraFin = null;
+        resetSecurityCounters();
+        attachSecurityListeners();
+        floatingCounterDiv.classList.remove('hidden');
+        updateFloatingCounter();
+        if (timerInterval) clearInterval(timerInterval);
+        iniciarTemporizador();
+        renderCurrentQuestion();
+        inicioScreen.classList.add('hidden');
+        examenScreen.classList.remove('hidden');
+        resultadosScreen.classList.add('hidden');
+        initialWindowWidth = window.innerWidth;
+    }
+
+    function resetSecurityCounters() {
+        securityEvents = { visibility: 0, copy: 0, paste: 0, splitscreen: 0 };
+        totalSecurityEvents = 0;
+        updateFloatingCounter();
+    }
+
+    btnComenzar.addEventListener('click', startExam);
+    btnAnterior.addEventListener('click', goPrev);
+    btnSiguiente.addEventListener('click', goNext);
+    btnFinalizar.addEventListener('click', function() {
+        if (examActive && confirm("¿Finalizar el examen? Se calificará automáticamente.")) {
+            clearInterval(timerInterval);
+            examActive = false;
+            calcularResultados();
+        } else if (!examActive) {
+            alert("El examen ya ha finalizado.");
+        }
+    });
+    btnReiniciar.addEventListener('click', function() { window.location.reload(); });
+    btnGuardarPDF.addEventListener('click', function() { window.print(); });
+
+    document.addEventListener('copy', function(e) { if(examActive) e.preventDefault(); });
+    document.addEventListener('paste', function(e) { if(examActive) e.preventDefault(); });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+</script>
+</body>
+</html>
